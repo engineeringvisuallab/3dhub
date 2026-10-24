@@ -3,7 +3,7 @@
 import { instanceParams, resolveParams } from './assembly.js';
 import { materialize } from './generate.js';
 import { evalExpr, evalVec } from './expr.js';
-import { fromEuler, compose, apply, mulRV, rotFromTo, rotAxis, mulRR, eulerFromR, sub, norm, len, dot } from './math3.js';
+import { fromEuler, compose, apply, mulRV, rotFromTo, rotAxis, mulRR, eulerFromR, rotEuler, sub, norm, len, dot } from './math3.js';
 
 const clone = o => JSON.parse(JSON.stringify(o));
 function worldPort(inst, comp, params, pd) {
@@ -29,12 +29,20 @@ function portDefs(comp, params) { // ports to try, in default size (generator co
 export function autoAttach(assembly, library, selectedId, componentId, rules, opts = {}) {
   const comp = library[componentId], used = usedPorts(assembly), reasons = [];
   if (!comp) return { error: 'unknown component ' + componentId };
-  const freePorts = worldPorts(assembly, selectedId, library).filter(p => !used.has(p.inst + '.' + p.id));
+  let freePorts = worldPorts(assembly, selectedId, library).filter(p => !used.has(p.inst + '.' + p.id));
+  if (opts.fromPort) { // the user picked which port of the selected object to use
+    const chosen = freePorts.filter(p => p.id === opts.fromPort);
+    if (!chosen.length) return { error: `port ${opts.fromPort} of ${selectedId} is not free`, reasons };
+    freePorts = chosen;
+  }
   if (!freePorts.length) return { error: 'selected object has no free port', reasons };
-  for (const A of freePorts) for (const pd0 of [...portDefs(comp, opts.params)].sort((x, y) => dot(x.dir, A.d) - dot(y.dir, A.d))) { // prefer the port that faces A: no extra rotation
+  for (const A of freePorts) for (const pd0 of [...portDefs(comp, opts.params)].filter(x => !opts.toPort || x.id === opts.toPort).sort((x, y) => (comp.inlet ? (y.id === comp.inlet) - (x.id === comp.inlet) : 0) || dot(x.dir, A.d) - dot(y.dir, A.d))) { // a component with "inlet" (bend, tee, reducer) is tried by that port first, so "turn up / left" is seen along the flow; otherwise prefer the port that faces A: no extra rotation
     // adopt size: bind parameters used as "$name" in the new port to the selected port's value
     const over = { ...(opts.params || {}) };
-    for (const k of rules.mustMatch) if (typeof pd0[k] === 'string' && pd0[k][0] === '$' && A[k] !== undefined) over[pd0[k].slice(1)] = A[k];
+    for (const k of rules.mustMatch) { // a port field is either "$name" or (generated ports) named in pd.bind
+      const src = typeof pd0[k] === 'string' && pd0[k][0] === '$' ? pd0[k].slice(1) : pd0.bind && pd0.bind[k];
+      if (src && A[k] !== undefined) over[src] = A[k];
+    }
     let params; try { params = resolveParams(comp, over); } catch (e) { reasons.push(`${A.inst}.${A.id} -> ${componentId}.${pd0.id}: ${e.message}`); continue; }
     const pd = comp.generator ? (materialize(comp, params).ports.find(x => x.id === pd0.id) || pd0) : pd0; // generated ports depend on the resolved parameters
     const probe = { id: '_', component: componentId, params: over, pos: [0,0,0], rot: [0,0,0] };
@@ -63,6 +71,22 @@ export function moveInstance(assembly, id, delta, { withAttached = false } = {})
   const detached = [];
   if (!withAttached) out.links = (out.links || []).filter(l => { const hit = l.a.split('.')[0] === id || l.b.split('.')[0] === id; if (hit) detached.push(l); return !hit; });
   for (const r of out.rebarSets || []) if (ids.has(r.host)) { /* rebar follows host automatically (host-local) */ }
+  return { assembly: out, moved: [...ids], detached };
+}
+// Rotate about the vertical axis through the object's own origin (default 90 deg). withAttached=true turns everything connected
+// through links around the same pivot, so links stay intact; false detaches the object (same rule as moveInstance).
+export function rotateInstance(assembly, id, deg = 90, { withAttached = false } = {}) {
+  const out = clone(assembly), ids = new Set([id]);
+  if (withAttached) { let grow = true; while (grow) { grow = false; for (const l of out.links || []) {
+    const a = l.a.split('.')[0], b = l.b.split('.')[0];
+    if (ids.has(a) !== ids.has(b)) { ids.add(a); ids.add(b); grow = true; } } } }
+  const piv = out.instances.find(i => i.id === id).pos, Rz = rotEuler([0, 0, deg]);
+  for (const i of out.instances) if (ids.has(i.id)) {
+    i.pos = apply({ R: Rz, t: [0, 0, 0] }, sub(i.pos, piv)).map((v, k) => +(v + piv[k]).toFixed(3));
+    i.rot = eulerFromR(mulRR(Rz, rotEuler(i.rot || [0, 0, 0]))).map(v => +v.toFixed(4));
+  }
+  const detached = [];
+  if (!withAttached) out.links = (out.links || []).filter(l => { const hit = l.a.split('.')[0] === id || l.b.split('.')[0] === id; if (hit) detached.push(l); return !hit; });
   return { assembly: out, moved: [...ids], detached };
 }
 // Links whose ports no longer coincide (after manual edits)

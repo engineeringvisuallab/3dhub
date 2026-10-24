@@ -16,11 +16,12 @@ core/
     snap.js      select object + click model -> auto attach by ports; move / detach / broken links
     generate.js  generator components: json names a generator, it builds shapes + ports from the options
     gen/door.js  the rich door (17 designs, glass, handles, side glass, fanlight, extras)
+    gen/pipefit.js  flanged bend (90 / 45), tee, reducer: direction (up/down/left/right) is a design choice
     collision.js conflict checker (solid/void/rebar/clearance, cover check)
   rules/         conflict-rules.json, port-rules.json (which ports mate, what must match)
   export/        formats.json  (what each export needs)
   examples/      sample assemblies
-  tests/         run.mjs (engine) + door.mjs (rich door)   -> npm test
+  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts)   -> npm test
 app/             interface skeleton (panels spec) - built in a later step
 ```
 
@@ -55,3 +56,15 @@ To add another one: write `gen/<name>.js` exporting `generate(params)` -> `{shap
 ## Save / load and export
 `engine/io.js`: `serialize(assembly)` and `parse(text, library)` (validates units, models, parameters, links; throws English messages).
 `engine/export.js`: `toGLB(items)` and `toOBJ(items)` from `flatten().items`. Metres, Y-up. Tests: `npm test`.
+
+## Pump house parts (round 5)
+New components: `di-bend-90`, `di-bend-45`, `di-tee`, `di-reducer` (generators in `gen/pipefit.js`), `dismantling-joint` (adjustable length 150-600 mm),
+`check-valve`, `butterfly-valve`, `rcc-beam`, `pump-plinth`. Flange parts adopt DN / PN from the part they attach to.
+Engine changes in `snap.js`:
+- `autoAttach(..., { fromPort, toPort })`: the user picks which free port of the selected object (and which port of the new part) to use.
+- A component with `"inlet": "A"` is tried by that port first, so "turn up / left / right" is always seen along the flow.
+- Generated ports can name the parameter a size field comes from: `bind: { DN: "DN2" }` (reducer outlet).
+- `rotateInstance(assembly, id, deg, { withAttached })`: turns an object, or the whole connected group, around the vertical axis through the object's origin.
+`rules/port-rules.json`: `bearing` (column) and `face-v` (slab, wall top, beam) now mate, so a beam sits on a column and a slab on a beam.
+Example: `examples/pump-station-line.assembly.json` (slab, plinth, pump, joint, check valve, butterfly valve, bends, pipes; Load it in the Studio).
+Limits: a bend is two straight arms (no torus shape yet), sizes are a generic envelope (not a maker's catalogue), only boxes and cylinders.

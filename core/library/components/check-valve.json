@@ -1,0 +1,111 @@
+{
+ "id": "check-valve",
+ "name": "Swing check valve, flanged",
+ "category": "water-supply/valve",
+ "kind": "parametric",
+ "tags": [
+  "valve"
+ ],
+ "units": "mm",
+ "parameters": {
+  "DN": {
+   "min": 100,
+   "max": 600,
+   "default": 300
+  },
+  "PN": {
+   "default": 16
+  }
+ },
+ "derived": {
+  "FTF": {
+   "from": "DN",
+   "table": {
+    "100": 230,
+    "150": 267,
+    "200": 292,
+    "250": 330,
+    "300": 356,
+    "400": 406,
+    "500": 521,
+    "600": 635
+   }
+  },
+  "FOD": {
+   "from": "DN",
+   "table": {
+    "100": 220,
+    "150": 285,
+    "200": 340,
+    "250": 405,
+    "300": 460,
+    "400": 580,
+    "500": 715,
+    "600": 840
+   }
+  }
+ },
+ "shapes": [
+  {
+   "id": "body",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": "$FOD/2",
+   "length": "$FTF",
+   "color": 3361930
+  },
+  {
+   "id": "cover",
+   "role": "solid",
+   "type": "box",
+   "size": [
+    "$DN*0.8",
+    "$FTF*0.7",
+    "$DN*0.5"
+   ],
+   "at": [
+    0,
+    0,
+    "$FOD/2+$DN*0.2"
+   ],
+   "color": 3361930
+  }
+ ],
+ "ports": [
+  {
+   "id": "A",
+   "at": [
+    0,
+    "-$FTF/2",
+    0
+   ],
+   "dir": [
+    0,
+    -1,
+    0
+   ],
+   "type": "flange",
+   "DN": "$DN",
+   "PN": "$PN",
+   "std": "EN1092-2"
+  },
+  {
+   "id": "B",
+   "at": [
+    0,
+    "$FTF/2",
+    0
+   ],
+   "dir": [
+    0,
+    1,
+    0
+   ],
+   "type": "flange",
+   "DN": "$DN",
+   "PN": "$PN",
+   "std": "EN1092-2"
+  }
+ ]
+}

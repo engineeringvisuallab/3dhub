@@ -14,7 +14,8 @@
    "thread"
   ],
   "bearing": [
-   "bearing"
+   "bearing",
+   "face-v"
   ],
   "face": [
    "face"
@@ -23,7 +24,8 @@
    "face-h"
   ],
   "face-v": [
-   "face-v"
+   "face-v",
+   "bearing"
   ]
  },
  "mustMatch": [

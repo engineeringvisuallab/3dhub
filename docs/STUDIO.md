@@ -33,6 +33,9 @@ save/load (.json), export GLB and OBJ. Details: `app/README.md`.
 | brick-wall, boundary-wall, window, gate | building | `face-h` left/right; `face-v` top/bottom for walls |
 | rcc-slab | building | `face-v` (sits on a wall top, a wall stands on it) |
 | rcc-column, rcc-wall-opening, table | structure / misc | (see `core/README.md`) |
+| **di-bend-90, di-bend-45, di-tee, di-reducer** | water-supply / fitting | flange ports, DN/PN adopted; turn / branch = up, down, left, right |
+| **dismantling-joint** (length 150-600), **check-valve**, **butterfly-valve** | water-supply | flange ports, same DN/PN |
+| **rcc-beam**, **pump-plinth** | structure | `face-v`: beam on a column top, slab on a beam, plinth on a slab |
 
 Example: select a wall, click Door, click Window, click Brick wall, click Gate = one wall line. Select the first wall, click Slab = slab on top.
 
@@ -83,7 +86,23 @@ Order: window, staircase, column, railing, room-interior, rebar   (door is done:
 If the model has many options like the door, add a generator in core/engine/gen/ and register it in core/engine/generate.js.
 ```
 
-## Changes in this update (round 4: open the Studio easily)
+## Pump house (what the owner wants the Studio for)
+A big model such as a pump house: civil structure (slab, plinth, column, beam, walls, door, window) plus a pipe line (pump, dismantling joint, check valve, butterfly / gate valve, bends, tee, reducer) at different heights.
+How to build: select a part, optionally pick **Next part attaches at** (port A / B / C ...), click the next model in the list: it attaches and becomes the selected part, so a line grows click by click.
+For a bend or tee, set Turn / Branch (up, down, left, right) in Properties. Move, raise or turn the whole line with the buttons ("Move with attached parts" ticked).
+Load `core/examples/pump-station-line.assembly.json` to see a finished line.
+Honest limits: a bend is two straight arms (a smooth bend needs a new `torus` shape type in `core/engine/shapes.js`, not done); sizes are a generic envelope; walls attach only in a straight line (no corner part yet), so place wall corners by position;
+the pump has flange ports only, so it is placed by position (raise it on a plinth so flanged fittings clear the floor: the conflict checker reports it if not);
+pipe through a wall uses `rcc-wall-opening` (round opening) by position. Next steps are listed below.
+
+## Changes in this update (round 5: pump house parts and easy placement)
+- New: `core/engine/gen/pipefit.js`, `core/tests/pipefit.mjs`, `core/examples/pump-station-line.assembly.json`; components `di-bend-90`, `di-bend-45`, `di-tee`, `di-reducer`, `dismantling-joint`, `check-valve`, `butterfly-valve`, `rcc-beam`, `pump-plinth`
+- Changed: `core/engine/snap.js` (fromPort / toPort, inlet preference, `bind`, `rotateInstance`), `core/engine/generate.js` (registers bend, tee, reducer), `core/rules/port-rules.json` (bearing <-> face-v), `core/package.json` (npm test runs pipefit tests), `app/studio.js` (new ids, port choice, move / turn buttons, arrow keys, "Move with attached parts" on by default), `app/README.md`, `core/README.md`, `docs/STUDIO.md`
+- Tested: `cd core && npm test` = 110 checks (42 new): every size of every new part, all four turns, size adoption, reducer rules, port choice, rotate keeps links, beam on column, a 9-part pump line with no overlap.
+- Not tested in a real browser: the new buttons, the port select, arrow keys, and how bends look in 3D (syntax check only).
+- Nothing to delete.
+
+## Changes in round 4 (open the Studio easily)
 - New: `start-studio.bat` (Windows: starts a local server and opens the Studio)
 - Changed: `site/index.html` ("Open 3D Studio" button + menu link to `../app/index.html`), `app/index.html` (clear red message for `file://` and for three.js load failure, "Getting started" box, three.js is loaded before `studio.js`), `app/studio.js` (hides the Getting started box once a model is placed; names the failing JSON file), `README.md`, `app/README.md`, `docs/STUDIO.md`
 - Nothing to delete, nothing to move. No engine change; `cd core && npm test` still passes.

@@ -24,7 +24,7 @@ On GitHub Pages: `<site>/app/index.html`.
 - 3D scene: orbit (left drag), pan (right drag or Shift+drag), zoom (wheel), grid, "Frame all".
 - "3D models" tab (left): categories + search. Drag a model into the scene to place it freely.
 - Select an object, then click a model: it **auto-attaches** to a free compatible port of the selected object (size/PN adopted).
-- Properties (right): parameters (numbers, or choice lists for models like the door), a Details list for generated models, position, rotation, "move with attached parts", delete.
+- Properties (right): **Next part attaches at** (choose the free port, or Auto), **Move and turn** (step 10-1000 mm, -X +X -Y +Y Down Up, Turn +-90; arrow keys and Page Up / Down do the same), parameters (numbers, or choice lists for models like the door), a Details list for generated models, position, rotation, "move with attached parts", delete.
 - **Conflict panel** (right, under Properties): uses `core/engine/collision.js`. Conflicts are red, warnings amber.
   Objects in a conflict are tinted red in the scene. Click an item: it selects the object and frames the objects involved.
 - **Save / Load** (header): Save downloads `<name>.json` (assembly, see `core/schema/assembly.schema.json`). Load reads it back and
@@ -32,6 +32,9 @@ On GitHub Pages: `<site>/app/index.html`.
 - **Export GLB / OBJ** (header): generated from the assembly with our own writer (`core/engine/export.js`).
   Units: metres, Y-up (the glTF rule). Helper zones (clearance, openings) are not exported.
 - Status bar: object/link count, broken links, conflict and warning counts.
+
+## Moving parts
+"Move with attached parts" is ticked by default: moving or turning a part moves everything connected to it, so a pipe line stays joined. Untick it to move one part alone (its links are removed and the status bar says so).
 
 ## Next
 - Convert the rich parametric models in `models/` into library components (see `docs/STUDIO.md`).

@@ -1,15 +1,15 @@
 // EVLab 3D Studio - browser interface on top of core/engine (assembly, snap). Z is up, units are mm.
 import { flatten, resolveParams } from '../core/engine/assembly.js';
-import { autoAttach, moveInstance, brokenLinks, nextId } from '../core/engine/snap.js';
+import { autoAttach, moveInstance, rotateInstance, brokenLinks, nextId, worldPorts, usedPorts } from '../core/engine/snap.js';
 import { check } from '../core/engine/collision.js';
 import { materialize } from '../core/engine/generate.js';
 import { serialize, parse } from '../core/engine/io.js';
 import { toGLB, toOBJ, colorOf } from '../core/engine/export.js';
 
-const IDS = ['di-pipe', 'di-pipe-fl', 'gate-valve', 'end-suction-pump', 'rcc-column', 'rcc-wall-opening', 'rcc-slab', 'brick-wall', 'boundary-wall', 'door', 'window', 'gate', 'table'];
+const IDS = ['di-pipe', 'di-pipe-fl', 'gate-valve', 'end-suction-pump', 'rcc-column', 'rcc-wall-opening', 'rcc-slab', 'brick-wall', 'boundary-wall', 'door', 'window', 'gate', 'table', 'di-bend-90', 'di-bend-45', 'di-tee', 'di-reducer', 'dismantling-joint', 'check-valve', 'butterfly-valve', 'rcc-beam', 'pump-plinth'];
 const $ = s => document.querySelector(s);
 const lib = {};
-let rules, crules, report = { conflicts: [], warnings: [] }, conflictIds = new Set(), asm = { name: 'Untitled', units: 'mm', instances: [], links: [] }, sel = null, withAttached = false;
+let rules, crules, report = { conflicts: [], warnings: [] }, conflictIds = new Set(), asm = { name: 'Untitled', units: 'mm', instances: [], links: [] }, sel = null, withAttached = true, attachPort = '', step = 100;
 
 // ---------- 3D view ----------
 const view = $('#view');
@@ -116,7 +116,7 @@ function status() {
   $('#count').textContent = `${asm.instances.length} objects, ${asm.links.length} links` + (broken ? `, ${broken} broken` : '') + `, ${report.conflicts.length} conflicts, ${report.warnings.length} warnings`;
   if (broken) say(`${broken} link(s) no longer touch. Move the part back or detach it.`, true);
 }
-function select(id) { sel = id; rebuild(); }
+function select(id) { if (id !== sel) attachPort = ''; sel = id; rebuild(); }
 
 function addFree(componentId, at) {
   const id = nextId(asm, componentId);
@@ -139,7 +139,7 @@ function addFree(componentId, at) {
 }
 function addFromLibrary(componentId) {
   if (!sel) { const n = asm.instances.length; return addFree(componentId, [cam.target.x + n * 40, cam.target.y]); }
-  const r = autoAttach(asm, lib, sel, componentId, rules);
+  const r = autoAttach(asm, lib, sel, componentId, rules, attachPort ? { fromPort: attachPort } : {});
   if (r.error) { say(r.error + (r.reasons?.length ? ' (' + r.reasons[0] + ')' : ''), true); return; }
   asm = r.assembly; say(`Attached ${lib[componentId].name} to ${r.link.a}.`);
   select(r.instance.id);
@@ -176,6 +176,20 @@ view.addEventListener('drop', e => {
   addFree(id, [Math.round(p.x), Math.round(p.y)]);
 });
 
+// ---------- move / rotate with buttons (keeps attached parts together while "Move with attached parts" is ticked) ----------
+function nudge(delta) {
+  if (!sel) return;
+  const r = moveInstance(asm, sel, delta, { withAttached });
+  asm = r.assembly; say(r.detached.length ? `Detached from ${r.detached.length} link(s). Tick \"Move with attached parts\" to keep them.` : '');
+  rebuild();
+}
+function turn(deg) {
+  if (!sel) return;
+  const r = rotateInstance(asm, sel, deg, { withAttached });
+  asm = r.assembly; say(r.detached.length ? `Detached from ${r.detached.length} link(s). Tick \"Move with attached parts\" to keep them.` : '');
+  rebuild();
+}
+
 // ---------- properties panel ----------
 function props() {
   const el = $('#props');
@@ -203,10 +217,21 @@ function props() {
   const trio = (name, key, arr) => `<div class="row row3"><label>${name}</label>${arr.map((v, i) => `<input type="number" data-${key}="${i}" value="${+v.toFixed(3)}">`).join('')}</div>`;
   h += `<h2>Placement (mm / deg)</h2>${trio('Position', 'pos', inst.pos)}${trio('Rotation', 'rot', inst.rot || [0, 0, 0])}`;
   h += `<div class="row"><label></label><span><input type="checkbox" id="wa"${withAttached ? ' checked' : ''}> Move with attached parts</span></div>`;
+  // which free port the next clicked model attaches to
+  const used = usedPorts(asm), free = worldPorts(asm, inst.id, lib).filter(p => !used.has(p.inst + '.' + p.id));
+  if (attachPort && !free.some(p => p.id === attachPort)) attachPort = '';
+  h += `<h2>Next part attaches at</h2><div class="row"><label>Port</label><select id="ap"><option value="">Auto (first free)</option>${free.map(p => `<option value="${esc(p.id)}"${p.id === attachPort ? ' selected' : ''}>${esc(p.id)}${p.DN ? ' (DN ' + p.DN + ')' : ''} - ${esc(p.type)}</option>`).join('')}</select></div>`;
+  h += `<h2>Move and turn</h2><div class="row"><label>Step (mm)</label><select id="stp">${[10, 50, 100, 500, 1000].map(v => `<option${v === step ? ' selected' : ''}>${v}</option>`).join('')}</select></div>`;
+  h += '<div class="actions" id="pad"><button data-m="-1,0,0">-X</button><button data-m="1,0,0">+X</button><button data-m="0,-1,0">-Y</button><button data-m="0,1,0">+Y</button><button data-m="0,0,-1">Down</button><button data-m="0,0,1">Up</button></div>';
+  h += '<div class="actions"><button data-r="-90">Turn -90</button><button data-r="90">Turn +90</button></div><p class="hint">Keys: arrow keys move X / Y, Page Up / Page Down move up / down.</p>';
   h += '<div class="actions"><button id="del" class="danger">Delete</button></div>';
   el.innerHTML = h;
   $('#del').onclick = () => remove(inst.id);
   $('#wa').onchange = e => { withAttached = e.target.checked; };
+  $('#ap').onchange = e => { attachPort = e.target.value; };
+  $('#stp').onchange = e => { step = +e.target.value; };
+  el.querySelectorAll('[data-m]').forEach(b => b.onclick = () => nudge(b.dataset.m.split(',').map(v => +v * step)));
+  el.querySelectorAll('[data-r]').forEach(b => b.onclick = () => turn(+b.dataset.r));
   el.querySelectorAll('[data-p]').forEach(i => i.onchange = () => {
     const prev = inst.params, d = comp.parameters[i.dataset.p];
     let v = +i.value; // choice parameters keep the option's own type (text or number)
@@ -280,6 +305,8 @@ addEventListener('keydown', e => {
   if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
   if ((e.key === 'Delete' || e.key === 'Backspace') && sel) remove(sel);
   if (e.key === 'Escape') select(null);
+  const k = { ArrowLeft: [-1, 0, 0], ArrowRight: [1, 0, 0], ArrowUp: [0, 1, 0], ArrowDown: [0, -1, 0], PageUp: [0, 0, 1], PageDown: [0, 0, -1] }[e.key];
+  if (k && sel) { e.preventDefault(); nudge(k.map(v => v * step)); }
 });
 
 // ---------- start ----------

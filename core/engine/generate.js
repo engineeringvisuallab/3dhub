@@ -2,8 +2,9 @@
 // Their json names a generator ("generator": "door"); the generator turns the resolved parameters into shapes + ports.
 // Everything else in the engine only sees plain shapes and ports, so snap, collision, save/load and export work unchanged.
 import * as door from './gen/door.js';
+import * as pipefit from './gen/pipefit.js';
 
-const GEN = { door };
+const GEN = { door, bend: pipefit.bend, tee: pipefit.tee, reducer: pipefit.reducer };
 const memo = new Map();
 
 export function validateParams(comp, params) {

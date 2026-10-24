@@ -1,0 +1,113 @@
+{
+ "id": "rcc-beam",
+ "name": "RCC beam (rectangular)",
+ "category": "structure/beam",
+ "kind": "parametric",
+ "tags": [
+  "concrete",
+  "beam"
+ ],
+ "units": "mm",
+ "description": "Rectangular RCC beam along X. Origin = bottom centre. B (bottom) sits on a column top or a wall top; T (top) carries a slab; L and R join beams in a line.",
+ "parameters": {
+  "L": {
+   "min": 1000,
+   "max": 9000,
+   "step": 50,
+   "default": 4000,
+   "label": "Span length",
+   "short": "L"
+  },
+  "b": {
+   "min": 150,
+   "max": 600,
+   "step": 25,
+   "default": 300,
+   "label": "Width",
+   "short": "b"
+  },
+  "d": {
+   "min": 200,
+   "max": 1000,
+   "step": 25,
+   "default": 450,
+   "label": "Overall depth",
+   "short": "d"
+  }
+ },
+ "shapes": [
+  {
+   "id": "body",
+   "role": "solid",
+   "type": "box",
+   "size": [
+    "$L",
+    "$b",
+    "$d"
+   ],
+   "at": [
+    0,
+    0,
+    "$d/2"
+   ]
+  }
+ ],
+ "ports": [
+  {
+   "id": "B",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "dir": [
+    0,
+    0,
+    -1
+   ],
+   "type": "face-v"
+  },
+  {
+   "id": "T",
+   "at": [
+    0,
+    0,
+    "$d"
+   ],
+   "dir": [
+    0,
+    0,
+    1
+   ],
+   "type": "face-v"
+  },
+  {
+   "id": "L",
+   "at": [
+    "-$L/2",
+    0,
+    "$d/2"
+   ],
+   "dir": [
+    -1,
+    0,
+    0
+   ],
+   "type": "face-h"
+  },
+  {
+   "id": "R",
+   "at": [
+    "$L/2",
+    0,
+    "$d/2"
+   ],
+   "dir": [
+    1,
+    0,
+    0
+   ],
+   "type": "face-h"
+  }
+ ]
+}
