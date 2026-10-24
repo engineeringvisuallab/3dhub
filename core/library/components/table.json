@@ -1,0 +1,4 @@
+{ "id": "table", "name": "Table", "category": "furniture", "kind": "parametric", "tags": ["furniture"], "units": "mm",
+  "parameters": { "W": {"default":1200}, "D": {"default":600}, "Ht": {"default":750} },
+  "shapes": [ { "id": "top", "role": "solid", "type": "box", "size": ["$W", "$D", 30], "at": [0, 0, "$Ht-15"] },
+    { "id": "legs-block", "role": "solid", "type": "box", "size": ["$W-100", "$D-100", "$Ht-30"], "at": [0, 0, "($Ht-30)/2"] } ] }

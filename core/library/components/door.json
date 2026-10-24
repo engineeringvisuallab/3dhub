@@ -1,0 +1,486 @@
+{
+ "id": "door",
+ "name": "Door in wall line (rich: wood, steel, aluminium, PVC)",
+ "category": "building/door",
+ "kind": "parametric",
+ "generator": "door",
+ "tags": [
+  "door"
+ ],
+ "units": "mm",
+ "description": "Door with frame, one or two leaves, 17 designs, glass kinds, handles, side glass, fanlight and extras. Shapes are generated from the options by core/engine/gen/door.js (rules ported from models/building/door/parametric/door.html). Origin = bottom centre of the whole unit (frame + side glass). Outside = -Y. Ports L and R (face-h) sit on the outer edges, so walls attach in a line.",
+ "parameters": {
+  "design": {
+   "label": "Door type and design",
+   "default": "p4",
+   "options": [
+    {
+     "v": "p4",
+     "label": "Wood - 4 panel"
+    },
+    {
+     "v": "p6",
+     "label": "Wood - 6 panel"
+    },
+    {
+     "v": "p2",
+     "label": "Wood - 2 panel"
+    },
+    {
+     "v": "shaker",
+     "label": "Wood - Shaker (flat panels)"
+    },
+    {
+     "v": "glass",
+     "label": "Wood - Half glass"
+    },
+    {
+     "v": "louvre",
+     "label": "Wood - Louvred"
+    },
+    {
+     "v": "groove",
+     "label": "Wood - Modern grooved flush"
+    },
+    {
+     "v": "flush",
+     "label": "Wood - Flush"
+    },
+    {
+     "v": "zbrace",
+     "label": "Wood - Ledged and braced (Z)"
+    },
+    {
+     "v": "stpanel",
+     "label": "Steel - Pressed 4 panel"
+    },
+    {
+     "v": "stflush",
+     "label": "Steel - Flush sheet"
+    },
+    {
+     "v": "stfire",
+     "label": "Steel - Fire-rated look with vision panel"
+    },
+    {
+     "v": "stgrill",
+     "label": "Steel - Security grill"
+    },
+    {
+     "v": "alfull",
+     "label": "Aluminium - Full glass"
+    },
+    {
+     "v": "almid",
+     "label": "Aluminium - Glass + lower panel"
+    },
+    {
+     "v": "pvcrib",
+     "label": "PVC / WPC - Ribbed flush"
+    },
+    {
+     "v": "pvcpanel",
+     "label": "PVC / WPC - 2 panel"
+    }
+   ],
+   "short": "Design"
+  },
+  "finish": {
+   "label": "Finish (must fit the door type, otherwise the first finish of the type is used)",
+   "default": "teak",
+   "options": [
+    {
+     "v": "teak",
+     "label": "Teak (wood)"
+    },
+    {
+     "v": "mahogany",
+     "label": "Mahogany (wood)"
+    },
+    {
+     "v": "oak",
+     "label": "Oak (wood, PVC print)"
+    },
+    {
+     "v": "walnut",
+     "label": "Walnut (wood)"
+    },
+    {
+     "v": "grey",
+     "label": "Grey (steel, PVC)"
+    },
+    {
+     "v": "white",
+     "label": "White (steel, aluminium, PVC)"
+    },
+    {
+     "v": "brown",
+     "label": "Brown (steel)"
+    },
+    {
+     "v": "black",
+     "label": "Black (steel, aluminium)"
+    },
+    {
+     "v": "green",
+     "label": "Green (steel)"
+    },
+    {
+     "v": "silver",
+     "label": "Anodised silver (aluminium)"
+    },
+    {
+     "v": "bronze",
+     "label": "Bronze (aluminium)"
+    },
+    {
+     "v": "ivory",
+     "label": "Ivory (PVC)"
+    }
+   ],
+   "short": "Finish"
+  },
+  "leaves": {
+   "label": "Leaves",
+   "default": 1,
+   "options": [
+    {
+     "v": 1,
+     "label": "Single"
+    },
+    {
+     "v": 2,
+     "label": "Double"
+    }
+   ],
+   "short": "Leaves"
+  },
+  "W": {
+   "label": "Total leaf width (single leaf up to 1200, double door from 1000)",
+   "unit": "mm",
+   "min": 600,
+   "max": 2400,
+   "step": 25,
+   "default": 900,
+   "short": "Width"
+  },
+  "doorH": {
+   "label": "Leaf height",
+   "unit": "mm",
+   "min": 1800,
+   "max": 2700,
+   "step": 50,
+   "default": 2100,
+   "short": "Height"
+  },
+  "thickness": {
+   "label": "Leaf thickness",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "Automatic"
+    },
+    {
+     "v": 30,
+     "label": "30 mm"
+    },
+    {
+     "v": 32,
+     "label": "32 mm"
+    },
+    {
+     "v": 35,
+     "label": "35 mm"
+    },
+    {
+     "v": 38,
+     "label": "38 mm"
+    },
+    {
+     "v": 45,
+     "label": "45 mm"
+    },
+    {
+     "v": 50,
+     "label": "50 mm"
+    }
+   ],
+   "short": "Thickness"
+  },
+  "hingeSide": {
+   "label": "Hinges on (single leaf), seen from outside",
+   "default": "L",
+   "options": [
+    {
+     "v": "L",
+     "label": "Left"
+    },
+    {
+     "v": "R",
+     "label": "Right"
+    }
+   ],
+   "short": "Hinges on"
+  },
+  "swing": {
+   "label": "Opens",
+   "default": "out",
+   "options": [
+    {
+     "v": "out",
+     "label": "Outward"
+    },
+    {
+     "v": "in",
+     "label": "Inward"
+    }
+   ],
+   "short": "Opens"
+  },
+  "openAngle": {
+   "label": "Leaf open angle (0 = closed)",
+   "unit": "deg",
+   "min": 0,
+   "max": 120,
+   "step": 5,
+   "default": 0,
+   "short": "Open angle"
+  },
+  "hardware": {
+   "label": "Hardware finish",
+   "default": "steel",
+   "options": [
+    {
+     "v": "steel",
+     "label": "Stainless"
+    },
+    {
+     "v": "brass",
+     "label": "Brass"
+    },
+    {
+     "v": "black",
+     "label": "Black"
+    }
+   ],
+   "short": "Hardware"
+  },
+  "handle": {
+   "label": "Handle",
+   "default": "lever",
+   "options": [
+    {
+     "v": "lever",
+     "label": "Lever"
+    },
+    {
+     "v": "knob",
+     "label": "Knob"
+    },
+    {
+     "v": "bar",
+     "label": "Pull bar"
+    },
+    {
+     "v": "digital",
+     "label": "Digital lock + lever"
+    }
+   ],
+   "short": "Handle"
+  },
+  "glass": {
+   "label": "Glass",
+   "default": "clear",
+   "options": [
+    {
+     "v": "clear",
+     "label": "Clear"
+    },
+    {
+     "v": "frost",
+     "label": "Frosted (acid etched)"
+    },
+    {
+     "v": "grey",
+     "label": "Tinted grey"
+    },
+    {
+     "v": "bronze",
+     "label": "Tinted bronze"
+    },
+    {
+     "v": "blue",
+     "label": "Reflective blue"
+    },
+    {
+     "v": "lowe",
+     "label": "Low-E (green tint)"
+    },
+    {
+     "v": "reeded",
+     "label": "Reeded / fluted (privacy)"
+    },
+    {
+     "v": "pebble",
+     "label": "Pebble (obscure)"
+    },
+    {
+     "v": "wired",
+     "label": "Wired"
+    },
+    {
+     "v": "stained",
+     "label": "Stained / decorative"
+    },
+    {
+     "v": "mirror",
+     "label": "Mirror"
+    }
+   ],
+   "short": "Glass"
+  },
+  "glassType": {
+   "label": "Glass type (recorded in the details only)",
+   "default": "tempered",
+   "options": [
+    {
+     "v": "tempered",
+     "label": "Tempered"
+    },
+    {
+     "v": "laminated",
+     "label": "Laminated"
+    }
+   ],
+   "short": "Glass type"
+  },
+  "sideGlass": {
+   "label": "Side glass panels",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "None"
+    },
+    {
+     "v": 1,
+     "label": "One side (right)"
+    },
+    {
+     "v": 2,
+     "label": "Both sides"
+    }
+   ],
+   "short": "Side glass"
+  },
+  "fanlight": {
+   "label": "Fanlight above door",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "short": "Fanlight"
+  },
+  "peephole": {
+   "label": "Peephole",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "short": "Peephole"
+  },
+  "closer": {
+   "label": "Door closer",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "short": "Closer"
+  },
+  "kickplate": {
+   "label": "Kick plate",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "short": "Kick plate"
+  },
+  "letterbox": {
+   "label": "Letterbox",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "short": "Letterbox"
+  },
+  "numberplate": {
+   "label": "Number plate",
+   "default": 0,
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "short": "Number plate"
+  },
+  "t": {
+   "label": "Wall thickness (match the wall you attach)",
+   "unit": "mm",
+   "min": 100,
+   "max": 400,
+   "default": 230,
+   "short": "Wall thick."
+  },
+  "H": {
+   "label": "Wall height above the door (match the wall)",
+   "unit": "mm",
+   "min": 2800,
+   "max": 4500,
+   "default": 3000,
+   "short": "Wall height"
+  }
+ },
+ "shapes": [],
+ "ports": []
+}

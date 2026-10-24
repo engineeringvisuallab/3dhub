@@ -1,0 +1,132 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Boundary Wall</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(66vh,600px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Boundary Wall – parametric</h1><p>EVLab 3D Hub · five wall and fence types · column size, footing and quantities follow the height · designs that fail the rules cannot be downloaded</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<label>Wall type<select id="ty"></select></label>
+<label>Total height H: <b id="Hv"></b><input type="range" id="H" min="1200" max="3000" step="100"></label>
+<label>Column spacing (c/c): <b id="bv"></b><input type="range" id="bay" min="1500" max="4000" step="100"></label>
+<label>Number of bays shown: <b id="nv"></b><input type="range" id="n" min="2" max="6" step="1" value="3"></label>
+<label>Foundation depth: <b id="Dv"></b><input type="range" id="D" min="600" max="2000" step="100" value="1000"></label>
+<label id="grow">Grille bar clear gap: <b id="gv"></b><input type="range" id="gap" min="75" max="150" step="5" value="100"></label>
+<div class="row"><div id="trow"><label>Wall thickness<select id="t"><option value="230">230 mm (9")</option><option value="115">115 mm (4.5")</option></select></label></div><div id="frow"><label>Finish<select id="fin"></select></label></div></div>
+<label id="crow">Coping<select id="cop"><option value="flat">Flat</option><option value="gable">Sloped (gable)</option><option value="none">None</option></select></label>
+<label><input type="checkbox" id="sv"> Hide soil: see the foundation (view only)</label>
+<ul id="chk"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative rules for boundary walls (free-standing, normal soil). Brick count assumes 240×115×70 mm bricks with 10 mm joints. Confirm with a structural engineer and soil data before construction.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const TY={brick:'Brick wall with RCC columns',precast:'Precast concrete panel wall',grille:'Plinth wall with MS grille',chain:'Chain-link fence on GI posts',security:'Security wall with barbed-wire arms'};
+const FIN={brick:[0xa8503a,'Exposed brick'],cream:[0xe8dcc0,'Plaster – cream'],white:[0xf2f2ee,'Plaster – white'],grey:[0x9a9a98,'Plaster – grey']};
+const DEF={brick:[2100,3000,1000],precast:[2100,2400,1000],grille:[1800,3000,1000],chain:[2100,3000,1000],security:[2600,3000,1200]};
+Object.keys(TY).forEach(k=>$('ty').add(new Option(TY[k],k)));Object.keys(FIN).forEach(k=>$('fin').add(new Option(FIN[k][1],k)));$('fin').value='cream';
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.05,300);S.add(new THREE.AmbientLight(0xffffff,.65));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+let model=null,soil=null,spec={},bad=false;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.2,roughness:.7,transparent:o<1,opacity:o,side:THREE.DoubleSide});
+function build(fit){
+ const ty=$('ty').value,H=+$('H').value,bay=+$('bay').value,n=+$('n').value,D=+$('D').value,gap=+$('gap').value,fin=$('fin').value,cop=$('cop').value;
+ const hasT=ty=='brick'||ty=='grille'||ty=='security',hasC=ty=='brick'||ty=='security';
+ $('trow').style.display=hasT?'':'none';$('frow').style.display=ty=='chain'?'none':'';$('crow').style.display=hasC?'':'none';$('grow').style.display=ty=='grille'?'':'none';
+ $('Hv').textContent=H+' mm';$('bv').textContent=bay+' mm';$('nv').textContent=n;$('Dv').textContent=D+' mm';$('gv').textContent=gap+' mm';
+ const t=ty=='precast'?75:ty=='chain'?150:+$('t').value,mm=x=>Math.round(x);
+ // heights: Hc = column / post top, hw = wall height used for the rule
+ const Hc=ty=='security'?H-400:H,hw=ty=='brick'?H-100:ty=='security'?Hc-100:H;
+ const c=ty=='brick'||ty=='security'?Math.max(t,Math.ceil(hw/10/25)*25):ty=='precast'?(H<=1800?150:200):ty=='grille'?230:0,pr=ty=='chain'?(H<=2400?30:38):0;
+ const cz=ty=='chain'?0:Math.max(c,ty=='precast'?c:t),cw=ty=='chain'?2*pr:c;
+ const F=ty=='chain'?450:ty=='precast'?600:900,fh=ty=='chain'?D:300,ph=ty=='chain'?300:ty=='precast'?0:150;
+ const Dmin=ty=='chain'?Math.max(600,Math.ceil(H/3/100)*100):Math.max(900,Math.ceil(.4*H/100)*100);
+ const ck=[],chk=(ok,tx)=>ck.push([ok,tx]);
+ if(ty=='brick'){const lim=t==230?2400:1200,bl=t==230?3500:2400;chk(hw<=lim,'Wall height '+hw+' mm for '+t+' mm brick (max '+lim+')');chk(bay<=bl,'Column spacing '+bay+' mm (max '+bl+' for '+t+' mm brick)')}
+ if(ty=='security'){chk(t==230,'Security wall needs 230 mm brick (selected '+t+')');chk(hw<=2400,'Brick height '+hw+' mm (max 2400)');chk(H>=2400,'Overall height with wire '+H+' mm (min 2400)');chk(bay<=3500,'Column spacing '+bay+' mm (max 3500)')}
+ if(ty=='precast'){chk(H<=2400,'Panel wall height '+H+' mm (max 2400)');chk(bay<=2500,'Post spacing '+bay+' mm (max 2500, panel length)')}
+ if(ty=='grille'){chk(H<=2400,'Total height '+H+' mm (max 2400)');chk(bay<=3000,'Column spacing '+bay+' mm (max 3000)');chk(gap<=100,'Bar clear gap '+gap+' mm (max 100, child safety)');chk(H>=1200,'Height '+H+' mm (min 1200)')}
+ if(ty=='chain'){chk(H<=3000,'Fence height '+H+' mm (max 3000)');chk(bay<=3000,'Post spacing '+bay+' mm (max 3000)')}
+ chk(D>=Dmin,'Foundation depth '+D+' mm (min '+Dmin+')');
+ // geometry
+ if(model){model.traverse(o=>{o.geometry&&o.geometry.dispose()});S.remove(model)}
+ if(soil){soil.traverse(o=>{o.geometry&&o.geometry.dispose()});S.remove(soil)}
+ const g=model=new THREE.Group(),names=[];g.name='BoundaryWall_'+ty+'_H'+H;g.scale.setScalar(.001);S.add(g);
+ const wc=ty=='precast'&&fin=='brick'?0xb9b9b5:FIN[fin][0],wallM=M(wc),colM=M(ty=='precast'?0x9a9a98:fin=='brick'?0xc9c4b8:FIN[fin][0]),conc=M(0x8d8d8a),steel=M(0x1a1a1a),galv=M(0xaab0b8),meshM=M(0x9aa5b1,.3);
+ let P=g;const grp=nm=>{const q=new THREE.Group();q.name=nm;names.push(nm);g.add(q);return P=q};
+ const add=(geo,m,x=0,y=0,z=0)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);P.add(o);return o};
+ const bx=(w,h,d,m,x,y,z)=>add(new THREE.BoxGeometry(w,h,d),m,x,y,z);
+ const cl=(a,r,len,m,x=0,y=0,z=0,sg=12)=>{const q=new THREE.CylinderGeometry(r,r,len,sg);if(a=='x')q.rotateZ(Math.PI/2);if(a=='z')q.rotateX(Math.PI/2);return add(q,m,x,y,z)};
+ const xs=i=>(i-n/2)*bay,xm=i=>(xs(i)+xs(i+1))/2,w=bay-cw,Ltot=n*bay+cw;
+ grp('Foundation');
+ for(let i=0;i<=n;i++){const x=xs(i);bx(F,fh,F,conc,x,-D+fh/2,0);if(ty!='chain')bx(Math.max(c,50),D-fh,cz,colM,x,-(D-fh)/2,0)}
+ if(hasT){for(let i=0;i<n;i++){bx(w,fh,t+300,conc,xm(i),-D+fh/2,0);bx(w,D-fh,t,M(0x8d8d8a),xm(i),-(D-fh)/2,0)}}
+ grp(ty=='chain'?'Posts':'Columns');
+ for(let i=0;i<=n;i++){const x=xs(i);if(ty=='chain')cl('y',pr,H,galv,x,H/2,0,16);else{bx(c,Hc,cz,colM,x,Hc/2,0);bx(c+60,60,cz+60,conc,x,Hc-30,0)}}
+ if(ph>0){grp(ty=='chain'?'Plinth_Beam':'Plinth_Band');for(let i=0;i<n;i++)bx(ty=='chain'?bay-2*pr:w,ph,ty=='chain'?150:t,conc,xm(i),ph/2,0)}
+ if(ty=='brick'||ty=='security'){
+  const top=hw-50;grp('Brick_Panels');for(let i=0;i<n;i++)bx(w,top-ph,t,wallM,xm(i),(top+ph)/2,0);
+  if(cop!='none'){grp('Coping');for(let i=0;i<n;i++){if(cop=='flat')bx(w,50,t+60,conc,xm(i),hw-25,0);else{const hh=(t+60)/2,sh=new THREE.Shape();sh.moveTo(-hh,0);sh.lineTo(hh,0);sh.lineTo(0,70);sh.closePath();const q=new THREE.ExtrudeGeometry(sh,{depth:w,bevelEnabled:false});q.rotateY(-Math.PI/2);q.translate(w/2,0,0);add(q,conc,xm(i),top,0)}}}
+ }
+ if(ty=='security'){grp('Wire_Arms');const La=400/Math.cos(Math.PI/4);for(let i=0;i<=n;i++){const x=xs(i);for(const s of[-1,1]){const a=cl('y',14,La,steel,x,Hc+200,s*200,8);a.rotation.x=s*Math.PI/4}cl('y',14,400,steel,x,Hc+200,0,8)}
+  grp('Barbed_Wire');for(const z of[-400,0,400])cl('x',3,n*bay,steel,0,H,z,6)}
+ if(ty=='precast'){grp('Precast_Panels');const k=Math.ceil((H-50)/500),pp=(H-50)/k;for(let i=0;i<n;i++)for(let j=0;j<k;j++)bx(w+40,pp-10,75,wallM,xm(i),j*pp+(pp-10)/2+5,0)}
+ if(ty=='grille'){const Hp=600,y1=Hp+60,y2=H-100,len=y2-y1;grp('Plinth_Wall');for(let i=0;i<n;i++)bx(w,Hp-ph,t,wallM,xm(i),(ph+Hp)/2,0);
+  grp('Grille');for(let i=0;i<n;i++){bx(w,40,40,steel,xm(i),Hp+20,0);bx(w,40,40,steel,xm(i),H-60,0);const nb=Math.ceil((w-40-16)/(gap+16))+1,sp=(w-40)/(nb-1);for(let j=0;j<nb;j++){const x=xm(i)-w/2+20+j*sp;cl('y',8,len,steel,x,(y1+y2)/2,0,8);add(new THREE.ConeGeometry(12,50,8),steel,x,y2+25,0)}}}
+ if(ty=='chain'){grp('Fence_Mesh');const y0=ph+20,y1=H-100;for(let i=0;i<n;i++){bx(bay-2*pr,y1-y0,3,meshM,xm(i),(y0+y1)/2,0);for(let j=0;j<=4;j++)cl('x',3.5,bay-2*pr,galv,xm(i),y0+j*(y1-y0)/4,0,6)}}
+ // quantities
+ const A=(hasT?n*w*((ty=='brick'||ty=='security'?hw-50:600)-ph)/1e6:0),bricks=hasT?Math.round(A*50*t/115):0;
+ const conc3=((n+1)*(F*F*fh+(ty=='chain'?0:c*cz*(D-fh)+c*cz*Hc))+(hasT?n*w*(t+300)*fh:0)+(ph>0&&ty!='chain'?n*w*t*ph:0))/1e9;
+ const pa=ty=='precast'?n*(w+40)*(H-50)/1e6:0;
+ ck.push([true,'Column '+(ty=='chain'?'GI pipe OD '+2*pr+' mm':c+' × '+cz+' mm')+', footing '+F+' × '+F+' × '+fh+' mm',1]);
+ ck.push([true,'Length '+mm(Ltot)+' mm, height '+H+' mm, '+(n+1)+' columns',1]);
+ ck.push([true,'RCC about '+conc3.toFixed(2)+' m³'+(hasT?', brickwork '+A.toFixed(1)+' m² (≈'+bricks+' bricks)':'')+(pa?', precast panels '+pa.toFixed(1)+' m²':''),1]);
+ ck.push([true,ty=='chain'?'Add stay posts at ends and corners, and every 15 m on long runs':ty=='precast'?'Slot panels into the post grooves; leave 10 mm gaps for movement':'Provide an expansion joint at least every 12 m',1]);
+ bad=ck.some(x=>!x[0]);$('chk').innerHTML=ck.map(x=>'<li'+(x[2]?' class="info"':x[0]?'':' class="bad"')+'>'+x[1]+'</li>').join('');$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';
+ // soil (view only, not exported)
+ soil=new THREE.Group();soil.scale.setScalar(.001);const sm=new THREE.Mesh(new THREE.BoxGeometry(Ltot+2000,D+300,2400),M(0x7a5c3a,.4));sm.position.y=-(D+300)/2-2;soil.add(sm);soil.visible=!$('sv').checked;S.add(soil);
+ spec={name:g.name,units:'mm',type:TY[ty],height:H,column_spacing:bay,bays:n,length:mm(Ltot),wall_thickness:hasT||ty=='precast'?t:null,column:{size:ty=='chain'?'GI pipe OD '+2*pr:c+'x'+cz,top:Hc},foundation:{depth:D,min_depth:Dmin,pad:[F,F,fh]},quantities:{rcc_m3:+conc3.toFixed(2),brickwork_m2:+A.toFixed(1),bricks_approx:bricks,precast_panel_m2:+pa.toFixed(1)},groups:names,animations:[],checks:ck.map(x=>(x[0]?'OK: ':'FAIL: ')+x[1]),note:'Indicative rules, confirm with structural engineer'};
+ if(fit){const bb=new THREE.Box3().setFromObject(g),ce=bb.getCenter(new THREE.Vector3()),z=bb.getSize(new THREE.Vector3()),d=Math.max(z.x,z.y,z.z);C.position.set(ce.x+d*.5,ce.y+d*.35,ce.z+d*.95);C.lookAt(ce);ctl&&ctl.target.copy(ce);ctl&&ctl.update()}
+}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const sv=[];model.traverse(o=>{const m=o.material;if(m&&m.transparent){sv.push([m,m.opacity]);m.opacity=1;m.transparent=false}});model.updateMatrixWorld(true);const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ sv.forEach(([m,o])=>{m.opacity=o;m.transparent=true});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+const setDef=()=>{const d=DEF[$('ty').value];$('H').value=d[0];$('bay').value=d[1];$('D').value=d[2]};
+$('ty').onchange=()=>{setDef();build(true)};['D','gap'].forEach(i=>$(i).oninput=()=>build(false));['H','bay','n'].forEach(i=>$(i).oninput=()=>build(i=='n'));['t','fin','cop'].forEach(i=>$(i).onchange=()=>build(false));$('sv').oninput=()=>{if(soil)soil.visible=!$('sv').checked};
+addEventListener('resize',size);size();setDef();build(true);loop();
+</script></body></html>

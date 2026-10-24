@@ -1,0 +1,101 @@
+{
+  "id": "pump",
+  "name": "Pumps (end-suction, inline, split-case, submersible, vertical turbine)",
+  "category": "water-supply/pumps",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "type": [
+      "end-suction",
+      "inline",
+      "split-case",
+      "submersible",
+      "vertical-turbine"
+    ],
+    "DN": [
+      50,
+      65,
+      80,
+      100,
+      125,
+      150,
+      200,
+      250,
+      300
+    ],
+    "PN": [
+      10,
+      16
+    ],
+    "flow_m3h": {
+      "min": 5,
+      "max": 600,
+      "step": 5
+    },
+    "head_m": {
+      "min": 5,
+      "max": 150,
+      "step": 5
+    },
+    "settingDepth_m": {
+      "min": 3,
+      "max": 30,
+      "step": 1,
+      "types": [
+        "submersible",
+        "vertical-turbine"
+      ]
+    },
+    "motor_kW": "auto from duty (IEC 4-pole, 15% margin)"
+  },
+  "rules": {
+    "deliveryVelocityMax_ms": 3.0,
+    "suctionVelocityMax_ms": 2.0,
+    "singleStageHeadMax_m": {
+      "end-suction": 100,
+      "inline": 80,
+      "split-case": 150
+    },
+    "stagesMax": 30,
+    "motorMax_kW": 110,
+    "submersibleMotorMax_kW": {
+      "96": 3,
+      "142": 22,
+      "190": 75,
+      "240": 200
+    },
+    "powerKW": "0.002725*Q*H/eta"
+  },
+  "ports": [
+    {
+      "id": "in",
+      "dir": [
+        -1,
+        0,
+        0
+      ],
+      "type": "flange"
+    },
+    {
+      "id": "out",
+      "dir": [
+        0,
+        1,
+        0
+      ],
+      "type": "flange"
+    }
+  ],
+  "groups": [
+    "Casing",
+    "Rotor",
+    "Motor",
+    "Baseplate (type dependent)"
+  ],
+  "animations": [
+    "Run"
+  ],
+  "files": {
+    "parametric": "parametric/pump.html"
+  }
+}

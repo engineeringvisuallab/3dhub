@@ -1,0 +1,37 @@
+{
+ "unit": "mm",
+ "mates": {
+  "flange": [
+   "flange"
+  ],
+  "spigot": [
+   "socket"
+  ],
+  "socket": [
+   "spigot"
+  ],
+  "thread": [
+   "thread"
+  ],
+  "bearing": [
+   "bearing"
+  ],
+  "face": [
+   "face"
+  ],
+  "face-h": [
+   "face-h"
+  ],
+  "face-v": [
+   "face-v"
+  ]
+ },
+ "mustMatch": [
+  "DN",
+  "PN",
+  "std"
+ ],
+ "note": "A port pair mates only if types are allowed here and every field in mustMatch that BOTH ports define is equal. Directions must be opposite and positions coincide after snapping.",
+ "adoptSize": "if the new component has a size parameter (e.g. DN) used by the port, the app sets it to the selected port's size automatically (if inside its min/max)",
+ "gapTol_mm": 1
+}

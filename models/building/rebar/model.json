@@ -1,0 +1,76 @@
+{
+  "id": "rebar",
+  "name": "Reinforcement bar types, shapes and cage capacity",
+  "category": "building/rebar",
+  "tier": "free",
+  "units": "mm",
+  "barTypes": {
+    "plain": {
+      "fy": 250
+    },
+    "g420": {
+      "fy": 420
+    },
+    "tmt500": {
+      "fy": 500
+    },
+    "epoxy": {
+      "fy": 420
+    }
+  },
+  "diameters": [
+    8,
+    10,
+    12,
+    16,
+    20,
+    22,
+    25,
+    28,
+    32,
+    36
+  ],
+  "shapes": [
+    "straight",
+    "L",
+    "J",
+    "U",
+    "crank",
+    "stirrup",
+    "spiral",
+    "lap"
+  ],
+  "modes": [
+    "bar",
+    "beam",
+    "column"
+  ],
+  "concrete_fc": [
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "outputs": [
+    "area",
+    "weight",
+    "yield force",
+    "design tension capacity",
+    "ld",
+    "ldh",
+    "lap B/A",
+    "bend dia",
+    "beam phiMn",
+    "beam phiVn",
+    "safe UDL",
+    "column phiPn,max",
+    "steel kg/m3"
+  ],
+  "basis": "ACI 318 simplified, BNBC style limits",
+  "exports": [
+    "glb",
+    "obj",
+    "spec.json"
+  ]
+}

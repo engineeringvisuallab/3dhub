@@ -1,0 +1,101 @@
+{
+  "id": "boundary-wall",
+  "name": "Boundary Wall (brick, precast, grille, chain-link, security)",
+  "category": "building/boundary-wall",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "type": [
+      "brick",
+      "precast",
+      "grille",
+      "chain-link",
+      "security"
+    ],
+    "height": {
+      "min": 1200,
+      "max": 3000,
+      "step": 100
+    },
+    "columnSpacing": {
+      "min": 1500,
+      "max": 4000,
+      "step": 100
+    },
+    "bays": {
+      "min": 2,
+      "max": 6
+    },
+    "foundationDepth": {
+      "min": 600,
+      "max": 2000,
+      "step": 100
+    },
+    "wallThickness": [
+      115,
+      230
+    ],
+    "coping": [
+      "flat",
+      "gable",
+      "none"
+    ],
+    "grilleGap": {
+      "min": 75,
+      "max": 150,
+      "step": 5
+    },
+    "finish": [
+      "exposed brick",
+      "plaster cream",
+      "plaster white",
+      "plaster grey"
+    ]
+  },
+  "rules": {
+    "brick": {
+      "maxHeight": {
+        "230": 2400,
+        "115": 1200
+      },
+      "maxBay": {
+        "230": 3500,
+        "115": 2400
+      }
+    },
+    "precast": {
+      "maxHeight": 2400,
+      "maxBay": 2500
+    },
+    "grille": {
+      "maxHeight": 2400,
+      "maxBay": 3000,
+      "barGapMax": 100
+    },
+    "chain": {
+      "maxHeight": 3000,
+      "maxBay": 3000
+    },
+    "security": {
+      "minOverallHeight": 2400,
+      "maxBrickHeight": 2400,
+      "maxBay": 3500,
+      "thickness": 230
+    },
+    "foundationDepthMin": "max(900, 0.4*H) (chain-link: max(600, H/3))",
+    "columnSize": "max(t, wallHeight/10) rounded to 25"
+  },
+  "groups": [
+    "Foundation",
+    "Columns / Posts",
+    "Plinth",
+    "Brick_Panels / Precast_Panels / Grille / Fence_Mesh",
+    "Coping",
+    "Wire_Arms",
+    "Barbed_Wire"
+  ],
+  "animations": [],
+  "files": {
+    "parametric": "parametric/boundary-wall.html"
+  }
+}

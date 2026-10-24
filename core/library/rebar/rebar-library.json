@@ -1,0 +1,7 @@
+{ "id": "rebar-library", "units": "mm", "note": "Single source of reinforcement. Components never model their own rebar; they only say tags:[host] and a rebar set references a template here.",
+  "grades": { "plain": {"fy":250}, "g420": {"fy":420}, "tmt500": {"fy":500}, "epoxy": {"fy":420} },
+  "diameters": [8,10,12,16,20,22,25,28,32,36],
+  "kinds": ["straight","L","J","U","crank","stirrup","spiral","lap","hook"],
+  "templates": { "column-cage": "core/engine/rebar.js#columnCage", "beam-cage": "core/engine/rebar.js#beamCage", "slab-mesh": "todo", "footing-mat": "todo", "wall-mesh": "todo" },
+  "userControls": ["bar grade","main bar dia","bars per face","stirrup dia","stirrup spacing","cover","add / remove single bar","add stirrup","hook / bend type"],
+  "quantities": ["bar bending schedule","weight kg","steel kg/m3"] }

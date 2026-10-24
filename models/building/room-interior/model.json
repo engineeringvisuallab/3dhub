@@ -1,0 +1,88 @@
+{
+  "id": "room-interior",
+  "name": "Room interior: bedroom with wardrobe, bed, desk, dresser",
+  "category": "building/room-interior",
+  "tier": "free",
+  "units": "mm",
+  "types": [
+    "bedroom"
+  ],
+  "parameters": {
+    "W": {
+      "min": 3000,
+      "max": 5200,
+      "step": 100
+    },
+    "L": {
+      "min": 3200,
+      "max": 6000,
+      "step": 100
+    },
+    "H": {
+      "min": 2700,
+      "max": 3400,
+      "step": 50
+    },
+    "windowWidth": {
+      "min": 900,
+      "max": 1800,
+      "step": 100
+    },
+    "wardrobeLength": {
+      "min": 1800,
+      "max": 4000,
+      "step": 100
+    },
+    "wardrobeDoors": [
+      "sliding",
+      "hinged"
+    ],
+    "bedWidth": [
+      1000,
+      1500,
+      1800
+    ],
+    "cabinetFinish": [
+      "walnut",
+      "oak",
+      "white",
+      "grey",
+      "navy"
+    ]
+  },
+  "groups": [
+    "Shell",
+    "Window",
+    "Curtain",
+    "Door",
+    "Wardrobe",
+    "Bed",
+    "HeadboardWall",
+    "BedsideTable",
+    "PendantLamp",
+    "Rug",
+    "Desk",
+    "Chair",
+    "Bookshelf",
+    "Dresser",
+    "Mirror"
+  ],
+  "animations": [
+    "Open",
+    "Close"
+  ],
+  "rules": [
+    "floor area >= 9.5 m2, narrow side >= 2.4 m",
+    "ceiling >= 2.75 m",
+    "window >= 10% of floor",
+    "wardrobe to bed >= 0.9 m (hinged: leaf + 0.5 m)",
+    "desk to bed >= 0.75 m",
+    "dresser to bedside >= 0.6 m",
+    "door swing clear"
+  ],
+  "exports": [
+    "glb",
+    "obj",
+    "spec.json"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "id": "window",
+  "name": "Windows: casement, sliding, awning, double hung, louvre, fixed",
+  "category": "building/window",
+  "tier": "free",
+  "units": "mm",
+  "types": [
+    "casement",
+    "awning",
+    "sliding",
+    "doublehung",
+    "louvre",
+    "fixed"
+  ],
+  "materials": [
+    "wood",
+    "aluminium",
+    "uPVC",
+    "steel"
+  ],
+  "parameters": {
+    "W": {
+      "min": 400,
+      "max": 3000,
+      "step": 50
+    },
+    "H": {
+      "min": 400,
+      "max": 2400,
+      "step": 50
+    },
+    "sill": {
+      "min": 0,
+      "max": 1500,
+      "step": 50
+    },
+    "glass": [
+      "clear",
+      "frosted",
+      "grey",
+      "bronze",
+      "blue"
+    ],
+    "glassThickness": [
+      5,
+      6,
+      8,
+      10,
+      "DGU 6-12-6"
+    ],
+    "grill": [
+      "none",
+      "bars",
+      "grid",
+      "ornate"
+    ],
+    "fanlight": true,
+    "glassKinds": [
+      "clear",
+      "frost",
+      "grey",
+      "bronze",
+      "blue",
+      "lowe",
+      "reeded",
+      "pebble",
+      "wired",
+      "stained",
+      "mirror"
+    ],
+    "glassTreatment": [
+      "annealed",
+      "tempered",
+      "laminated"
+    ],
+    "net": true,
+    "blinds": [
+      "roller",
+      "venetian"
+    ],
+    "sideShutters": [
+      "louvre"
+    ],
+    "safetyGlassRule": "sill<800mm or pane>2m2"
+  },
+  "rules": {
+    "maxSashWidth": {
+      "casement": 850,
+      "awning": 1000,
+      "sliding": 1100,
+      "doublehung": 1300
+    },
+    "maxOpeningSashHeight": 1500,
+    "minGlassByArea": "<=1m2:5mm, <=2:6, <=3:8, else 10"
+  },
+  "ports": [],
+  "compat": {
+    "allowedIn": [
+      "wall"
+    ]
+  },
+  "files": {
+    "parametric": "parametric/window.html"
+  }
+}

@@ -1,0 +1,7 @@
+{ "id": "rcc-wall-opening", "name": "RCC wall with round pipe opening", "category": "structure/wall", "kind": "parametric", "tags": ["concrete", "wall", "host"],
+  "units": "mm",
+  "parameters": { "L": {"min":1000,"max":12000,"default":3000}, "T": {"min":150,"max":600,"default":250}, "H": {"min":1000,"max":6000,"default":2500},
+    "openDia": {"min":50,"max":1500,"default":350}, "openZ": {"min":100,"max":5000,"default":1200}, "openX": {"min":-5000,"max":5000,"default":0} },
+  "shapes": [
+    { "id": "body", "role": "solid", "type": "box", "size": ["$L", "$T", "$H"] },
+    { "id": "opening", "role": "void", "type": "cylinder", "axis": "y", "radius": "$openDia/2", "length": "$T+20", "at": ["$openX", 0, "$openZ-$H/2"], "accepts": ["pipe"] } ] }

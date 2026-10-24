@@ -1,0 +1,21 @@
+{
+  "view": "glb",
+  "download": {
+    "now": [
+      "glb",
+      "obj",
+      "spec.json (inside zip)"
+    ],
+    "next": [
+      "fbx",
+      "dae",
+      "step"
+    ],
+    "later": [
+      "ifc",
+      "dwg"
+    ]
+  },
+  "zipOnlyInPublishedPage": true,
+  "units": "model in mm, exported in metres"
+}

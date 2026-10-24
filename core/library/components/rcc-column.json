@@ -1,0 +1,8 @@
+{ "id": "rcc-column", "name": "RCC column", "category": "structure/column", "kind": "parametric", "tags": ["concrete", "host"],
+  "units": "mm",
+  "parameters": { "b": {"min":200,"max":1200,"step":25,"default":300}, "h": {"min":200,"max":1200,"step":25,"default":450}, "H": {"min":1000,"max":6000,"step":50,"default":3000},
+    "cover": {"min":25,"max":75,"step":5,"default":40}, "mainDia": {"default":16}, "nx": {"min":2,"max":8,"default":3}, "ny": {"min":2,"max":8,"default":2}, "tieDia": {"default":8}, "tieSpacing": {"min":75,"max":300,"default":150} },
+  "shapes": [ { "id": "body", "role": "solid", "type": "box", "size": ["$b", "$h", "$H"] } ],
+  "ports": [ { "id": "base", "at": [0,0,"-$H/2"], "dir": [0,0,-1], "type": "bearing" }, { "id": "top", "at": [0,0,"$H/2"], "dir": [0,0,1], "type": "bearing" } ],
+  "reinforcement": { "templates": ["column-cage"], "default": "column-cage" },
+  "exports": ["glb","obj","stl","ifc","dxf","step"] }

@@ -1,0 +1,219 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – RCC Column</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(66vh,600px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+svg{width:100%;height:auto;display:block;margin-top:8px;background:var(--bg);border:1px solid var(--bd);border-radius:8px}input[type=text]{width:100%;padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px;box-sizing:border-box}.sw{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;margin-top:10px}.sw label{margin:0;display:flex;align-items:center;gap:5px}h4{margin:14px 0 0;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}.k{font-size:12px;color:var(--mut);margin-top:6px}.k i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 8px;vertical-align:-1px}.k i:first-child{margin-left:0}</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>RCC Column with Reinforcement – parametric</h1><p>EVLab 3D Hub · rectangular and round columns · main bars, ties, cross-ties and spiral are real separate bars from the rebar library · rules are checked live · designs that fail cannot be downloaded</p></header>
+<main><div><div class="card" id="view"></div><div class="k" id="key"><i style="background:#b8b8b4"></i>Concrete<i style="background:#b4532a"></i>Main bars<i style="background:#2f6fb0"></i>Ties / spiral<i style="background:#2f9e6e"></i>Cross-ties</div></div>
+<div class="card">
+<label>Section<select id="sh"><option value="rect">Rectangular / square</option><option value="round">Round</option></select></label>
+<div id="rb"><label>Width b: <b id="bv"></b><input type="range" id="b" min="200" max="1000" step="25" value="300"></label>
+<label>Depth h: <b id="hv"></b><input type="range" id="h" min="200" max="1000" step="25" value="450"></label></div>
+<div id="rr"><label>Diameter D: <b id="Dv"></b><input type="range" id="D" min="250" max="1200" step="50" value="400"></label></div>
+<label>Height H (base to top): <b id="Hv"></b><input type="range" id="H" min="1500" max="8000" step="100" value="3000"></label>
+<div class="row"><div><label>Concrete<select id="fc"><option>20</option><option selected>25</option><option>30</option><option>35</option><option>40</option></select></label></div><div><label>Cover<select id="cv"><option>40</option><option>50</option><option>75</option></select></label></div></div>
+<h4>Main bars</h4>
+<div class="row"><div><label>Grade<select id="gr"><option value="250">Plain (fy 250)</option><option value="420">G420 (fy 420)</option><option value="500" selected>TMT 500 (fy 500)</option></select></label></div><div><label>Dia (mm)<select id="dm"><option>12</option><option selected>16</option><option>20</option><option>22</option><option>25</option><option>28</option><option>32</option></select></label></div></div>
+<div id="rbars" class="row"><div><label>Bars along b: <b id="nxv"></b><input type="range" id="nx" min="2" max="8" step="1" value="3"></label></div><div><label>Bars along h: <b id="nyv"></b><input type="range" id="ny" min="2" max="8" step="1" value="3"></label></div></div>
+<div id="rrbars"><label>Number of bars: <b id="nrv"></b><input type="range" id="nr" min="6" max="24" step="1" value="8"></label></div>
+<label>Embed into footing (bar bends in): <b id="emv"></b><input type="range" id="em" min="0" max="900" step="50" value="450"></label>
+<div class="sw"><label><input type="checkbox" id="tl" checked> Top lap projection 40d</label></div>
+<h4>Ties / stirrups</h4>
+<div class="row"><div><label>Tie dia (mm)<select id="dt"><option selected>8</option><option>10</option><option>12</option></select></label></div><div><label>Spacing c/c: <b id="smv"></b><input type="range" id="sm" min="75" max="300" step="25" value="150"></label></div></div>
+<div id="rtype"><label>Round column ties<select id="tt"><option value="spiral">Spiral</option><option value="hoops">Separate hoops</option></select></label><label id="prow">Spiral pitch: <b id="pv"></b><input type="range" id="pt" min="25" max="100" step="5" value="60"></label></div>
+<div class="sw"><label><input type="checkbox" id="se" checked> Closer ties at both ends (seismic)</label><label id="xtl"><input type="checkbox" id="xt" checked> Auto cross-ties</label></div>
+<label>Extra ties at heights (mm from base, comma separated)<input type="text" id="ex" placeholder="e.g. 1500, 1650"></label>
+<h4>View</h4>
+<div class="sw"><label><input type="checkbox" id="vc" checked> Concrete</label><label><input type="checkbox" id="vt" checked> See-through concrete</label><label><input type="checkbox" id="vr" checked> Rebar</label></div>
+<svg id="sec" viewBox="0 0 260 260"></svg>
+<ul id="chk"></ul>
+<label>Include in model download<select id="inc"><option value="both">Concrete + rebar (separate objects)</option><option value="rebar">Rebar only</option><option value="conc">Concrete only</option></select></label>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + DXF drawing + bar schedule + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option><option value="dxf">DXF drawing only (AutoCAD)</option><option value="csv">Bar bending schedule (CSV)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative rules (ACI 318 / BNBC style) for a braced column under axial load. Bar sizes, spacing and capacity must be confirmed by a structural engineer. Rebar is generated from the shared EVLab rebar library; it is never baked into the concrete.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+/*PURE*/
+const V={add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],mul:(a,s)=>[a[0]*s,a[1]*s,a[2]*s],dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],len:a=>Math.hypot(a[0],a[1],a[2]),nrm:a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]}};
+const lin=(a,b,n)=>n==1?[(a+b)/2]:Array.from({length:n},(_,i)=>a+(b-a)*i/(n-1));
+function dedupe(p){const o=[p[0]];for(let i=1;i<p.length;i++)if(V.len(V.sub(p[i],o[o.length-1]))>1e-6)o.push(p[i]);return o}
+function rotAx(v,ax,a){const c=Math.cos(a),s=Math.sin(a),k=V.dot(ax,v)*(1-c),x=V.cross(ax,v);return[v[0]*c+x[0]*s+ax[0]*k,v[1]*c+x[1]*s+ax[1]*k,v[2]*c+x[2]*s+ax[2]*k]}
+// rounds every interior corner with a bend of centre-line radius rad (bar bend)
+function fillet(pts,rad){pts=dedupe(pts);const n=pts.length,out=[pts[0]];
+ for(let i=1;i<n-1;i++){const P=pts[i],A=pts[i-1],B=pts[i+1],u=V.nrm(V.sub(A,P)),v=V.nrm(V.sub(B,P)),phi=Math.acos(Math.max(-1,Math.min(1,V.dot(u,v))));
+  if(phi>3.1||phi<.05){out.push(P);continue}
+  let d=rad/Math.tan(phi/2),r=rad;const lim=.48*Math.min(V.len(V.sub(A,P)),V.len(V.sub(B,P)));if(d>lim){d=lim;r=d*Math.tan(phi/2)}
+  const T1=V.add(P,V.mul(u,d)),T2=V.add(P,V.mul(v,d)),cen=V.add(P,V.mul(V.nrm(V.add(u,v)),r/Math.sin(phi/2))),a=V.sub(T1,cen),b=V.sub(T2,cen);
+  const ang=Math.acos(Math.max(-1,Math.min(1,V.dot(V.nrm(a),V.nrm(b))))),ax=V.nrm(V.cross(a,b)),k=Math.max(3,Math.ceil(ang/.3));
+  for(let j=0;j<=k;j++)out.push(V.add(cen,rotAx(a,ax,ang*j/k)))}
+ out.push(pts[n-1]);return out}
+function plen(p){let s=0;for(let i=1;i<p.length;i++)s+=V.len(V.sub(p[i],p[i-1]));return s}
+// tube mesh around a centre line (positions + indices), end caps included
+function tubeData(pts,r,sides=8){pts=dedupe(pts);const n=pts.length,pos=[],idx=[];
+ const tn=pts.map((p,i)=>V.nrm(V.sub(pts[Math.min(n-1,i+1)],pts[Math.max(0,i-1)])));let nr=Math.abs(tn[0][1])<.9?[0,1,0]:[1,0,0];
+ for(let i=0;i<n;i++){const t=tn[i];nr=V.nrm(V.sub(nr,V.mul(t,V.dot(nr,t))));const bn=V.cross(t,nr),p=pts[i];
+  for(let k=0;k<sides;k++){const a=2*Math.PI*k/sides,c=Math.cos(a)*r,s=Math.sin(a)*r;pos.push(p[0]+nr[0]*c+bn[0]*s,p[1]+nr[1]*c+bn[1]*s,p[2]+nr[2]*c+bn[2]*s)}}
+ for(let i=0;i<n-1;i++)for(let k=0;k<sides;k++){const a=i*sides+k,b=i*sides+(k+1)%sides,c=(i+1)*sides+k,d=(i+1)*sides+(k+1)%sides;idx.push(a,c,b,b,c,d)}
+ for(const [i,s] of[[0,1],[n-1,-1]]){const ci=pos.length/3;pos.push(...pts[i]);for(let k=0;k<sides;k++){const a=i*sides+k,b=i*sides+(k+1)%sides;if(s>0)idx.push(ci,b,a);else idx.push(ci,a,b)}}
+ return{pos,idx}}
+// which interior bars need a cross-tie: every bar must be within 150 mm clear of a supported bar (corners are supported by the tie)
+function supportSet(pos,dm){const n=pos.length,S=new Set([0,n-1]);let last=0;
+ for(let guard=0;guard<50;guard++){let reach=last;while(reach+1<n&&(pos[reach+1]-pos[last]-dm)<=150)reach++;
+  if(reach>=n-1)break;if(pos[n-1]-pos[reach+1]-dm<=150)break;
+  if(reach===last){S.add(last+1);last=last+1}else{S.add(reach);last=reach}}
+ return[...S].filter(i=>i>0&&i<n-1)}
+function tieLevels(p,minDim,big){const lo=Math.max(big,p.H/6,450),sEnd=p.seismic?Math.max(50,Math.floor(Math.min(minDim/4,6*p.dm,150)/5)*5):p.sMid,se=Math.min(sEnd,p.sMid),top=p.H-50,z=[];
+ let y=50;while(y<=lo&&y<top){z.push(y);y+=se}
+ let m=(z.length?z[z.length-1]:50)+p.sMid;const tops=[];for(let t=top;t>=p.H-lo&&t>50;t-=se)tops.push(t);tops.reverse();const firstTop=tops.length?tops[0]:top+1;
+ while(m<firstTop-1){z.push(m);m+=p.sMid}
+ return[...z,...tops].filter((v,i,a)=>i==0||v-a[i-1]>p.dt*1.5)}
+function design(p){
+ const rect=p.shape=='rect',off=p.cover+p.dt+p.dm/2,bars=[],ck=[],c=(ok,t,info)=>ck.push([ok,t,info]);
+ const minDim=rect?Math.min(p.b,p.h):p.D,big=rect?Math.max(p.b,p.h):p.D,hr=2.5*p.dt,hm=3.5*p.dm;
+ const d={rect,bars:[],mains:[],xs:null,zs:null,crossAt:[]};
+ let mains=[],clear;
+ if(rect){const xs=lin(-p.b/2+off,p.b/2-off,p.nx),zs=lin(-p.h/2+off,p.h/2-off,p.ny);d.xs=xs;d.zs=zs;
+  for(let i=0;i<p.nx;i++){mains.push([xs[i],zs[0]]);mains.push([xs[i],zs[p.ny-1]])}for(let j=1;j<p.ny-1;j++){mains.push([xs[0],zs[j]]);mains.push([xs[p.nx-1],zs[j]])}
+  clear=Math.min(xs[1]-xs[0],zs[1]-zs[0])-p.dm}
+ else{const rb=p.D/2-off;d.rb=rb;for(let k=0;k<p.nr;k++){const a=2*Math.PI*k/p.nr;mains.push([rb*Math.cos(a),rb*Math.sin(a)])}clear=2*rb*Math.sin(Math.PI/p.nr)-p.dm}
+ d.mains=mains;const nB=mains.length,Ast=nB*Math.PI*p.dm*p.dm/4,Ag=rect?p.b*p.h:Math.PI*p.D*p.D/4,rho=Ast/Ag;
+ const yb=p.embed>0?-p.embed:0,yt=p.topLap?p.H+40*p.dm:p.H-p.cover,hook=Math.max(12*p.dm,150);
+ mains.forEach((m,i)=>{const dir=V.nrm([-m[0],0,-m[1]]);let path;
+  if(p.embed>0&&(Math.abs(m[0])+Math.abs(m[1]))>1e-6)path=fillet([[m[0]+dir[0]*hook,yb,m[1]+dir[2]*hook],[m[0],yb,m[1]],[m[0],yt,m[1]]],hm);else path=[[m[0],yb,m[1]],[m[0],yt,m[1]]];
+  bars.push({id:'Main_Bar_'+String(i+1).padStart(2,'0'),type:'main',dia:p.dm,path})});
+ const lv=tieLevels(p,minDim,big);d.levels=lv;const ext=p.extraY.filter(y=>y>0&&y<p.H);d.extra=ext;let tn=0;
+ const tieAt=y=>{tn++;const id='Tie_'+String(tn).padStart(2,'0');
+  if(rect){const hx=p.b/2-p.cover-p.dt/2,hz=p.h/2-p.cover-p.dt/2,L=Math.max(10*p.dt,90),q=Math.SQRT1_2,yy=y+p.dt*1.1;
+   bars.push({id,type:'tie',dia:p.dt,path:fillet([[-hx+q*L,y,-hz+q*L],[-hx,y,-hz],[hx,y,-hz],[hx,y,hz],[-hx,y,hz],[-hx,yy,-hz],[-hx+q*L,yy,-hz+q*L]],hr)})}
+  else{const rs=p.D/2-p.cover-p.dt/2,pts=[];for(let k=0;k<=56;k++){const a=2*Math.PI*1.08*k/56;pts.push([rs*Math.cos(a),y+(a>2*Math.PI?p.dt*1.1:0),rs*Math.sin(a)])}bars.push({id,type:'tie',dia:p.dt,path:pts})}};
+ const useSpiral=!rect&&p.tieType=='spiral';
+ if(useSpiral){const rs=p.D/2-p.cover-p.dt/2,pts=[],turns=(p.H-100)/p.pitch,N=Math.ceil(turns*36);for(let k=0;k<=N;k++){const a=2*Math.PI*k/36;pts.push([rs*Math.cos(a),50+p.pitch*a/(2*Math.PI),rs*Math.sin(a)])}bars.push({id:'Spiral_01',type:'tie',dia:p.dt,path:pts})}
+ else{lv.forEach(tieAt)}
+ ext.forEach(tieAt);
+ let cn=0;
+ if(rect&&p.cross){const hx=p.b/2-p.cover-p.dt/2,hz=p.h/2-p.cover-p.dt/2,L=Math.max(8*p.dt,75),q=Math.SQRT1_2;
+  const ix=supportSet(d.xs,p.dm),iz=supportSet(d.zs,p.dm);d.crossAt={ix,iz};
+  const ys=lv.concat(ext);
+  ys.forEach((y,k)=>{if(k%2)return;
+   ix.forEach(i=>{const x=d.xs[i],s=x>=0?-1:1,yy=y+p.dt*1.1;cn++;bars.push({id:'Crosstie_'+String(cn).padStart(2,'0'),type:'cross',dia:p.dt,path:fillet([[x+s*q*L,yy,-hz+q*L],[x,yy,-hz],[x,yy,hz],[x+s*q*L,yy,hz-q*L]],hr)})});
+   iz.forEach(j=>{const z=d.zs[j],s=z>=0?-1:1,yy=y+p.dt*2.2;cn++;bars.push({id:'Crosstie_'+String(cn).padStart(2,'0'),type:'cross',dia:p.dt,path:fillet([[-hx+q*L,yy,z+s*q*L],[-hx,yy,z],[hx,yy,z],[hx-q*L,yy,z+s*q*L]],hr)})})})}
+ bars.forEach(b=>{b.len=plen(b.path)});d.bars=bars;
+ // checks
+ c(minDim>=(rect?200:250),'Section '+(rect?p.b+' × '+p.h:'Ø'+p.D)+' mm (min '+(rect?'200 × 200':'Ø250')+')');
+ c(p.cover>=40,'Cover '+p.cover+' mm (min 40 for columns)');
+ c(nB>=(rect?4:6),nB+' main bars (min '+(rect?4:6)+')');
+ c(rho>=.01&&rho<=.04,'Steel '+(rho*100).toFixed(2)+' % of section (allowed 1 – 4 %)');
+ c(clear>=Math.max(40,1.5*p.dm),'Clear bar spacing '+Math.round(clear)+' mm (min '+Math.max(40,1.5*p.dm)+')');
+ c(p.dt>=Math.max(8,p.dm/4),'Tie dia '+p.dt+' mm (min '+Math.max(8,Math.ceil(p.dm/4))+')');
+ if(useSpiral)c(p.pitch>=25&&p.pitch<=75,'Spiral pitch '+p.pitch+' mm (25 – 75)');else c(p.sMid<=Math.min(16*p.dm,48*p.dt,minDim),'Tie spacing '+p.sMid+' mm (max '+Math.min(16*p.dm,48*p.dt,minDim)+')');
+ const r=rect?.3*minDim:.25*p.D,sl=p.H/r;c(sl<=100,'Slenderness kL/r = '+sl.toFixed(0)+' with k = 1 (max 100)');
+ const phi=useSpiral?.75:.65,f=useSpiral?.85:.80,fy=Math.min(p.fy,550),Pn=f*(.85*p.fc*(Ag-Ast)+fy*Ast)/1000,cap=phi*Pn;
+ c(true,'Design axial capacity φPn,max ≈ '+cap.toFixed(0)+' kN'+(sl<=22?' (short column)':' (slender: add moment magnification)'),1);
+ if(rect&&p.cross)c(true,'Cross-ties: '+cn+' fitted ('+(d.crossAt.ix.length+d.crossAt.iz.length)+' bar position(s) supported)',1);
+ // quantities and schedule
+ const wt=(dia,L)=>dia*dia/162.2*L/1000,sch=new Map();let kg=0;
+ bars.forEach(b=>{const w=wt(b.dia,b.len);kg+=w;const k=b.type+'|'+b.dia+'|'+Math.round(b.len/10)*10;let e=sch.get(k);if(!e){e={type:b.type,dia:b.dia,len:Math.round(b.len/10)*10,n:0,kg:0};sch.set(k,e)}e.n++;e.kg+=w});
+ const marks={main:'M',tie:'T',cross:'X'};let mi={M:0,T:0,X:0};
+ d.schedule=[...sch.values()].map(e=>{const m=marks[e.type];mi[m]++;return{mark:m+mi[m],shape:e.type=='main'?(p.embed>0?'L-bend + straight':'straight'):e.type=='cross'?'cross-tie (135° hooks)':(useSpiral?'spiral':rect?'closed tie (135° hooks)':'round hoop with lap'),dia:e.dia,count:e.n,len:e.len,total_m:+(e.n*e.len/1000).toFixed(2),kg:+e.kg.toFixed(1)}});
+ const conc=Ag*p.H/1e9;
+ d.qty={concrete_m3:+conc.toFixed(3),steel_kg:+kg.toFixed(1),steel_kg_per_m3:+(kg/conc).toFixed(0),steel_percent:+(rho*100).toFixed(2),main_bars:nB,ties:bars.filter(b=>b.type=='tie').length,cross_ties:cn,phi_Pn_max_kN:+cap.toFixed(0)};
+ d.checks=ck;d.Ag=Ag;d.Ast=Ast;d.ok=ck.every(x=>x[0]);d.useSpiral=useSpiral;return d}
+function csv(d){return'Mark,Shape,Dia mm,Count,Length each mm,Total m,Weight kg\r\n'+d.schedule.map(r=>[r.mark,r.shape,r.dia,r.count,r.len,r.total_m,r.kg].join(',')).join('\r\n')+'\r\nTOTAL,,,,,,'+d.qty.steel_kg+'\r\n'}
+function dxf(d,p){const E=[],L={CONCRETE:7,MAIN_BARS:1,TIES:5,CROSSTIES:3,TEXT:2};
+ const line=(l,a,b)=>E.push('0\nLINE\n8\n'+l+'\n10\n'+a[0].toFixed(2)+'\n20\n'+a[1].toFixed(2)+'\n30\n0\n11\n'+b[0].toFixed(2)+'\n21\n'+b[1].toFixed(2)+'\n31\n0');
+ const circ=(l,c,r)=>E.push('0\nCIRCLE\n8\n'+l+'\n10\n'+c[0].toFixed(2)+'\n20\n'+c[1].toFixed(2)+'\n30\n0\n40\n'+r.toFixed(2));
+ const txt=(x,y,h,s)=>E.push('0\nTEXT\n8\nTEXT\n10\n'+x.toFixed(2)+'\n20\n'+y.toFixed(2)+'\n30\n0\n40\n'+h+'\n1\n'+s);
+ const rect=d.rect,W=rect?p.b:p.D,H=p.H,xo=W/2,hx=rect?p.b/2-p.cover-p.dt/2:0,hz=rect?p.h/2-p.cover-p.dt/2:0,rs=rect?0:p.D/2-p.cover-p.dt/2;
+ // elevation (X to the right, Y up), base at y=0
+ const box=(l,x0,y0,x1,y1)=>{line(l,[x0,y0],[x1,y0]);line(l,[x1,y0],[x1,y1]);line(l,[x1,y1],[x0,y1]);line(l,[x0,y1],[x0,y0])};
+ box('CONCRETE',0,0,W,H);
+ const bx=rect?d.xs:d.mains.map(m=>m[0]),yb=p.embed>0?-p.embed:0,yt=p.topLap?p.H+40*p.dm:p.H-p.cover;
+ [...new Set(bx.map(v=>Math.round(v*10)/10))].forEach(x=>line('MAIN_BARS',[xo+x,yb],[xo+x,yt]));
+ const sw=rect?hx:rs;d.levels.concat(d.extra).forEach(y=>{line('TIES',[xo-sw,y],[xo+sw,y])});
+ if(d.useSpiral){for(let y=50;y<H-50;y+=p.pitch)line('TIES',[xo-sw,y],[xo+sw,y+p.pitch/2])}
+ txt(0,-p.embed-250,60,'ELEVATION  H='+H+'  main bars '+d.qty.main_bars+'-'+String.fromCharCode(216)+p.dm+'  ties '+String.fromCharCode(216)+p.dt+' @ '+(d.useSpiral?p.pitch+' pitch spiral':p.sMid+' c/c'+(p.seismic?' (closer at ends)':'')));
+ // section at right
+ const sx=W+800+W/2,sy=H/2;
+ if(rect){box('CONCRETE',sx-p.b/2,sy-p.h/2,sx+p.b/2,sy+p.h/2);box('TIES',sx-hx,sy-hz,sx+hx,sy+hz)}else{circ('CONCRETE',[sx,sy],p.D/2);circ('TIES',[sx,sy],rs)}
+ d.mains.forEach(m=>circ('MAIN_BARS',[sx+m[0],sy+m[1]],p.dm/2));
+ if(rect&&p.cross){d.crossAt.ix.forEach(i=>line('CROSSTIES',[sx+d.xs[i],sy-hz],[sx+d.xs[i],sy+hz]));d.crossAt.iz.forEach(j=>line('CROSSTIES',[sx-hx,sy+d.zs[j]],[sx+hx,sy+d.zs[j]]))}
+ txt(sx-W/2,sy-(rect?p.h:p.D)/2-250,60,'SECTION  '+(rect?p.b+' x '+p.h:String.fromCharCode(216)+p.D)+'  cover '+p.cover);
+ txt(0,H+300,50,'EVLab 3D Hub - RCC column - indicative, confirm with a structural engineer');
+ const lay=Object.keys(L).map(n=>'0\nLAYER\n2\n'+n+'\n70\n0\n62\n'+L[n]+'\n6\nCONTINUOUS').join('\n');
+ return'0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n'+Object.keys(L).length+'\n'+lay+'\n0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n'+E.join('\n')+'\n0\nENDSEC\n0\nEOF\n'}
+/*ENDPURE*/
+const $=id=>document.getElementById(id);
+const rd=()=>({shape:$('sh').value,b:+$('b').value,h:+$('h').value,D:+$('D').value,H:+$('H').value,fc:+$('fc').value,cover:+$('cv').value,fy:+$('gr').value,dm:+$('dm').value,nx:+$('nx').value,ny:+$('ny').value,nr:+$('nr').value,embed:+$('em').value,topLap:$('tl').checked,dt:+$('dt').value,sMid:+$('sm').value,tieType:$('tt').value,pitch:+$('pt').value,seismic:$('se').checked,cross:$('xt').checked,extraY:$('ex').value.split(/[,\s]+/).map(Number).filter(v=>isFinite(v)&&v>0)});
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.05,300);S.add(new THREE.AmbientLight(0xffffff,.7));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+let model=null,GC=null,GR=null,D=null,spec={},bad=false,P0=null;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.25,roughness:.65,transparent:o<1,opacity:o,side:THREE.DoubleSide});
+const MAT={main:M(0xb4532a),tie:M(0x2f6fb0),cross:M(0x2f9e6e)};
+function meshOf(t,m,name){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(t.pos,3));g.setIndex(t.idx);g.computeVertexNormals();const o=new THREE.Mesh(g,m);o.name=name;return o}
+function build(fit){
+ const p=P0=rd(),rect=p.shape=='rect';
+ $('rb').style.display=rect?'':'none';$('rr').style.display=rect?'none':'';$('rbars').style.display=rect?'':'none';$('rrbars').style.display=rect?'none':'';$('rtype').style.display=rect?'none':'';$('xtl').style.display=rect?'':'none';$('prow').style.display=!rect&&p.tieType=='spiral'?'':'none';
+ $('bv').textContent=p.b+' mm';$('hv').textContent=p.h+' mm';$('Dv').textContent=p.D+' mm';$('Hv').textContent=p.H+' mm';$('nxv').textContent=p.nx;$('nyv').textContent=p.ny;$('nrv').textContent=p.nr;$('emv').textContent=p.embed+' mm';$('smv').textContent=p.sMid+' mm';$('pv').textContent=p.pitch+' mm';
+ D=design(p);
+ if(model){model.traverse(o=>{o.geometry&&o.geometry.dispose()});S.remove(model)}
+ const g=model=new THREE.Group();g.name='RCC_Column_'+(rect?p.b+'x'+p.h:'D'+p.D)+'_H'+p.H;g.scale.setScalar(.001);S.add(g);
+ GC=new THREE.Group();GC.name='Concrete';GR=new THREE.Group();GR.name='Rebar';g.add(GC,GR);
+ const cg=rect?new THREE.BoxGeometry(p.b,p.H,p.h):new THREE.CylinderGeometry(p.D/2,p.D/2,p.H,64);const cm=new THREE.Mesh(cg,M(0xb8b8b4,$('vt').checked?.28:1));cm.position.y=p.H/2;cm.name='Concrete_Column';cm.userData.cm=1;GC.add(cm);
+ const sub={main:'Main_Bars',tie:'Ties',cross:'Crossties'},gs={};
+ D.bars.forEach(b=>{const t=b.type;if(!gs[t]){gs[t]=new THREE.Group();gs[t].name=sub[t];GR.add(gs[t])}gs[t].add(meshOf(tubeData(b.path,b.dia/2,8),MAT[t],b.id))});
+ GC.visible=$('vc').checked;GR.visible=$('vr').checked;
+ $('chk').innerHTML=D.checks.map(x=>'<li'+(x[2]?' class="info"':x[0]?'':' class="bad"')+'>'+x[1]+'</li>').join('');bad=!D.ok;$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';
+ section(p);
+ spec={name:g.name,units:'mm',type:rect?'Rectangular RCC column':'Round RCC column',section:rect?{b:p.b,h:p.h}:{D:p.D},height:p.H,cover:p.cover,concrete_fc_MPa:p.fc,rebar:{grade_fy_MPa:p.fy,main:{dia:p.dm,count:D.qty.main_bars,embed_into_footing:p.embed,top_projection:p.topLap?40*p.dm:0},ties:{dia:p.dt,type:D.useSpiral?'spiral':'closed ties',spacing:D.useSpiral?p.pitch:p.sMid,seismic_end_zones:p.seismic,extra_tie_heights:D.extra},cross_ties:D.qty.cross_ties},quantities:D.qty,groups:['Concrete','Rebar','Rebar/Main_Bars','Rebar/Ties','Rebar/Crossties'],rebar_library:'core/library/rebar/rebar-library.json',animations:[],checks:D.checks.map(x=>(x[0]?'OK: ':'FAIL: ')+x[1]),note:'Indicative rules, confirm with structural engineer'};
+ if(fit){const bb=new THREE.Box3().setFromObject(g),ce=bb.getCenter(new THREE.Vector3()),z=bb.getSize(new THREE.Vector3()),d=Math.max(z.x,z.y,z.z);C.position.set(ce.x+d*.9,ce.y+d*.25,ce.z+d*1.1);C.lookAt(ce);ctl&&ctl.target.copy(ce);ctl&&ctl.update()}
+}
+function section(p){const rect=p.shape=='rect',W=rect?p.b:p.D,Hh=rect?p.h:p.D,s=200/Math.max(W,Hh),cx=130,cy=130,r=v=>v*s;let o='';
+ if(rect){o+='<rect x="'+(cx-r(W/2))+'" y="'+(cy-r(Hh/2))+'" width="'+r(W)+'" height="'+r(Hh)+'" fill="none" stroke="currentColor" stroke-width="1.5"/>';const hx=p.b/2-p.cover-p.dt/2,hz=p.h/2-p.cover-p.dt/2;o+='<rect x="'+(cx-r(hx))+'" y="'+(cy-r(hz))+'" width="'+r(2*hx)+'" height="'+r(2*hz)+'" rx="'+r(3)+'" fill="none" stroke="#2f6fb0" stroke-width="'+Math.max(1,r(p.dt))+'"/>';
+  if(p.cross){D.crossAt.ix.forEach(i=>o+='<line x1="'+(cx+r(D.xs[i]))+'" y1="'+(cy-r(hz))+'" x2="'+(cx+r(D.xs[i]))+'" y2="'+(cy+r(hz))+'" stroke="#2f9e6e" stroke-width="'+Math.max(1,r(p.dt))+'"/>');D.crossAt.iz.forEach(j=>o+='<line x1="'+(cx-r(hx))+'" y1="'+(cy+r(D.zs[j]))+'" x2="'+(cx+r(hx))+'" y2="'+(cy+r(D.zs[j]))+'" stroke="#2f9e6e" stroke-width="'+Math.max(1,r(p.dt))+'"/>')}}
+ else{o+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r(p.D/2)+'" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="'+cx+'" cy="'+cy+'" r="'+r(p.D/2-p.cover-p.dt/2)+'" fill="none" stroke="#2f6fb0" stroke-width="'+Math.max(1,r(p.dt))+'"/>'}
+ D.mains.forEach(m=>o+='<circle cx="'+(cx+r(m[0]))+'" cy="'+(cy+r(m[1]))+'" r="'+Math.max(2,r(p.dm/2))+'" fill="#b4532a"/>');
+ o+='<text x="130" y="16" text-anchor="middle" font-size="11" fill="currentColor">'+(rect?p.b+' × '+p.h:'Ø'+p.D)+' · '+D.qty.main_bars+'-Ø'+p.dm+' · Ø'+p.dt+(D.useSpiral?' spiral @ '+p.pitch:' @ '+p.sMid)+'</text>';$('sec').innerHTML=o}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),Pp=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  Pp.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...Pp,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const e=new TextEncoder(),fm=$('fmt').value,inc=$('inc').value,nm=model.name,base='EVLab_'+nm,fs=[];
+ const needModel=fm=='zip'||fm=='glb'||fm=='obj';let ex=null;
+ if(needModel){ex=new THREE.Group();ex.name=nm;ex.scale.setScalar(.001);if(inc!='rebar')ex.add(GC.clone());if(inc!='conc')ex.add(GR.clone());
+  const sv=[];ex.traverse(o=>{const m=o.material;if(m&&m.transparent){sv.push([m,m.opacity]);m.opacity=1;m.transparent=false}});ex.updateMatrixWorld(true);
+  if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(ex,r,{binary:true,onlyVisible:false}));fs.push({n:nm+'.glb',d:new Uint8Array(b)})}
+  if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:nm+'.obj',d:e.encode(new THREE.OBJExporter().parse(ex))});
+  sv.forEach(([m,o])=>{m.opacity=o;m.transparent=true})}
+ if(fm=='zip'||fm=='dxf')fs.push({n:nm+'_drawing.dxf',d:e.encode(dxf(D,P0))});
+ if(fm=='zip'||fm=='csv')fs.push({n:nm+'_bar_schedule.csv',d:e.encode(csv(D))});
+ if(fm=='zip')fs.push({n:nm+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['b','h','D','H','nx','ny','nr','em','sm','pt'].forEach(i=>$(i).oninput=()=>build(i=='H'||i=='D'));['sh','fc','cv','gr','dm','dt','tt','se','xt','tl'].forEach(i=>$(i).onchange=()=>build(i=='sh'));$('ex').onchange=()=>build(false);
+$('vc').onchange=()=>{GC.visible=$('vc').checked};$('vr').onchange=()=>{GR.visible=$('vr').checked};$('vt').onchange=()=>{GC.traverse(o=>{if(o.userData.cm){o.material.opacity=$('vt').checked?.28:1;o.material.transparent=$('vt').checked}})};
+addEventListener('resize',size);size();build(true);loop();
+</script></body></html>

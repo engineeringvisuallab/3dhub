@@ -1,0 +1,17 @@
+{
+  "unit": "mm",
+  "tolerance_mm": 0.5,
+  "sampleStep_mm": 60,
+  "roles": {
+    "solid": "real material; two solids may never overlap",
+    "void": "opening / sleeve / pocket cut out of its own instance; things listed in `accepts` may pass through",
+    "rebar": "bar segment; allowed only inside its host (cover enforced), never through any other solid or bar",
+    "clearance": "soft zone (handwheel, access, bolt removal); intrusion = warning"
+  },
+  "rebar": { "minCover_mm": 25, "ignoreSameSet": true, "note": "stirrup touches main bar; same-set touching is normal. Set minCover per member (column 40, beam 30, slab 20, footing 50) in the rebar set." },
+  "examples": {
+    "pipe-in-wall-opening": "allowed: wall has void accepts:[pipe]",
+    "table-in-wall": "conflict: solid vs solid",
+    "pipe-bigger-than-opening": "conflict: pipe overlaps wall material"
+  }
+}

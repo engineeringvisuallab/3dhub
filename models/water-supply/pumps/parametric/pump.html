@@ -1,0 +1,155 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Pumps</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(66vh,600px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Pumps – parametric</h1><p>EVLab 3D Hub · five pump types · motor, size and stages follow the duty (flow and head) · designs that fail the rules cannot be downloaded</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<label>Pump type<select id="ty"></select></label>
+<div class="row"><div><label>Suction / pipe DN<select id="dn"></select></label></div><div><label>Pressure class<select id="pn"><option value="16">PN16</option><option value="10">PN10</option></select></label></div></div>
+<label>Flow Q: <b id="Qv"></b><input type="range" id="Q" min="5" max="600" step="5" value="50"></label>
+<label>Total head H: <b id="Hv"></b><input type="range" id="Hd" min="5" max="150" step="5" value="40"></label>
+<label id="dpr">Setting depth / riser length: <b id="dpv"></b><input type="range" id="dp" min="3" max="30" step="1" value="6"></label>
+<label><input type="checkbox" id="sv"> Transparent casing: see the impeller (view only)</label>
+<ul id="chk"></ul>
+<button id="tg" style="background:var(--bg);color:var(--fg);border:1px solid var(--bd)"></button>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative sizes: EN 1092-2 flanges, DI pipe OD, IEC 4-pole motor frames. Power = 0.002725·Q·H/η plus 15% margin. Confirm with manufacturer pump curves and NPSH before construction.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const DNL=[50,65,80,100,125,150,200,250,300],OD={50:66,65:82,80:98,100:118,125:144,150:170,200:222,250:274,300:326};
+// flange [OD, bolt circle, bolts, bolt dia, thickness] (EN 1092-2)
+const FLG={50:[165,125,4,16,19],65:[185,145,4,16,19],80:[200,160,8,16,19],100:[220,180,8,16,19],125:[250,210,8,16,19],150:[285,240,8,20,19],200:{16:[340,295,12,20,20],10:[340,295,8,20,20]},250:{16:[405,355,12,24,22],10:[395,350,12,20,22]},300:{16:[460,410,12,24,24.5],10:[445,400,12,20,24.5]}};
+const fl=(d,p)=>{const f=FLG[d];return Array.isArray(f)?f:f[p]};
+// motor [kW, shaft height, length, diameter] (IEC 4-pole, indicative)
+const MOT=[[.75,80,290,170],[1.1,80,320,170],[1.5,90,340,190],[2.2,100,380,210],[3,100,400,210],[4,112,400,230],[5.5,132,480,270],[7.5,132,520,270],[11,160,620,320],[15,160,680,320],[18.5,180,700,360],[22,180,740,360],[30,200,800,400],[37,225,820,450],[45,225,900,450],[55,250,930,500],[75,280,1050,560],[90,280,1100,560],[110,315,1250,630]];
+const TY={end:['End-suction centrifugal (horizontal)',.70],inline:['Vertical inline centrifugal',.65],split:['Horizontal split-case (double suction)',.80],sub:['Submersible borehole (multistage)',.60],turb:['Vertical turbine (line shaft)',.72]};
+const HL={end:100,inline:80,split:150},SUBMAX={96:3,142:22,190:75,240:200};
+Object.keys(TY).forEach(k=>$('ty').add(new Option(TY[k][0],k)));DNL.forEach(d=>$('dn').add(new Option('DN'+d,d)));$('dn').value=100;
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.05,300);S.add(new THREE.AmbientLight(0xffffff,.65));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+let model=null,spec={},rotor=null,AX='x',run=true,bad=false;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.25,roughness:.6,transparent:o<1,opacity:o});
+function build(fit){
+ const ty=$('ty').value,dn=+$('dn').value,pn=+$('pn').value,Q=+$('Q').value,Hd=+$('Hd').value,dep=+$('dp').value,bore=ty=='sub'||ty=='turb';
+ $('dpr').style.display=bore?'':'none';$('Qv').textContent=Q+' m³/h';$('Hv').textContent=Hd+' m';$('dpv').textContent=dep+' m';
+ const ds=dn,dd=ty=='end'?DNL[Math.max(0,DNL.indexOf(dn)-1)]:dn,eta=TY[ty][1],Pk=.002725*Q*Hd/eta;
+ let mot=MOT.find(m=>m[0]>=Pk*1.15);const noMot=!mot;if(noMot)mot=MOT[MOT.length-1];
+ const [kW,Hm0,Lm,Dm]=mot,vs=Q/3600/(Math.PI*(ds/2000)**2),vd=Q/3600/(Math.PI*(dd/2000)**2);
+ const pO=ty=='sub'?(dn<=65?96:dn<=100?142:dn<=150?190:240):2*dn,nst=bore?Math.ceil(Hd/(pO*(ty=='sub'?.055:.045))):1;
+ const ck=[],chk=(ok,t)=>ck.push([ok,t]);
+ chk(vd<=3,'Delivery velocity '+vd.toFixed(2)+' m/s in DN'+dd+' (max 3.0)');
+ if(!bore)chk(vs<=2,'Suction velocity '+vs.toFixed(2)+' m/s in DN'+ds+' (max 2.0)');
+ chk(!noMot,'Shaft power '+Pk.toFixed(1)+' kW at η '+Math.round(eta*100)+'% → '+(noMot?'motor above 110 kW, not in this model':kW+' kW motor (15% margin)'));
+ if(HL[ty])chk(Hd<=HL[ty],'Head '+Hd+' m (single-stage limit '+HL[ty]+' m for this type)');
+ if(bore)chk(nst<=30,nst+' stage'+(nst>1?'s':'')+' needed (max 30)');
+ if(ty=='sub')chk(kW<=SUBMAX[pO],'Motor '+kW+' kW in '+pO+' mm body (max '+SUBMAX[pO]+' kW)');
+ if(model){model.traverse(o=>{o.geometry&&o.geometry.dispose()});S.remove(model)}
+ const g=model=new THREE.Group(),names=[];g.name='Pump_'+ty+'_DN'+dn+'_PN'+pn;g.scale.setScalar(.001);S.add(g);
+ const tr=$('sv').checked,casM=M(0x1f5fa8,tr?.3:1),casM2=M(0x3b82c8,tr?.3:1),dark=M(0x222222),steel=M(0xaab0b8),green=M(0x2e8b57),grey=M(0x555b62),imp=M(0xd9a441),borM=M(0x9aa5b1,.18);
+ let P=g;const grp=n=>{const q=new THREE.Group();q.name=n;names.push(n);g.add(q);return P=q};
+ const add=(geo,m,x=0,y=0,z=0)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);P.add(o);return o};
+ const bx=(w,h,d,m,x,y,z)=>add(new THREE.BoxGeometry(w,h,d),m,x,y,z);
+ const cl=(a,r,len,m,x=0,y=0,z=0,sg=40)=>{const q=new THREE.CylinderGeometry(r,r,len,sg);if(a=='x')q.rotateZ(Math.PI/2);if(a=='z')q.rotateX(Math.PI/2);return add(q,m,x,y,z)};
+ const pt=(a,q,s=0,t=0)=>a=='x'?[q,s,t]:a=='y'?[s,q,t]:[s,t,q];
+ const flg=(a,p,d,u=0,v=0)=>{const [D,K,n,bd,ft]=fl(d,pn);cl(a,D/2,ft,casM,...pt(a,p,u,v),48);for(let i=0;i<n;i++){const t=i/n*6.2832;cl(a,bd*.6,ft*1.7,steel,...pt(a,p,u+K/2*Math.cos(t),v+K/2*Math.sin(t)),8)}};
+ const vn=(a,r,w,c,x=0,y=0,z=0)=>{for(let i=0;i<c;i++){const q=new THREE.Group();q.rotation[a]=i/c*6.2832;q.position.set(x,y,z);P.add(q);const d=a=='x'?[w,r,8]:a=='y'?[r,w,8]:[8,r,w],p=a=='y'?[r/2,0,0]:[0,r/2,0],o=new THREE.Mesh(new THREE.BoxGeometry(...d),steel);o.position.set(...p);q.add(o)}};
+ const motor=(a,s,L,D)=>{grp('Motor');cl(a,D/2,L,green,...pt(a,s+L/2));for(let i=1;i<8;i++)cl(a,D/2+7,12,green,...pt(a,s+L*.1*i));cl(a,D*.46,L*.22,dark,...pt(a,s+L*1.11));const tb=D*.3;bx(tb,tb,tb,dark,...pt(a,s+L*(a=='y'?.8:.4),D/2+tb*.4,0))};
+ const pr=OD[dd]/2+14,prS=OD[ds]/2+14;let H0,W0,L0;
+ if(ty=='end'){
+  const Rv=1.5*ds,cw=.9*ds+60,Hm=Math.max(Hm0,Rv+40),xS=-cw/2-220,yD=Rv+240,bl=Math.max(.9*Dm,200),xm=cw/2+bl,xe=xm+Lm*1.22,Wb=Math.max(Dm,Rv*1.4)+160;
+  grp('Casing');cl('x',Rv,cw,casM,0,0,0,48);cl('x',prS,220,casM,xS/2-cw/4,0,0);flg('x',xS,ds);cl('y',pr,yD-Rv*.6,casM,0,(yD+Rv*.6)/2,0);flg('y',yD,dd);bx(cw*.7,Hm-.7*Rv,Rv*.9,casM,0,-(Hm+.7*Rv)/2,0);
+  grp('Bracket');cl('x',Math.max(.3*Dm,70),bl,steel,cw/2+bl/2);
+  motor('x',xm,Lm,Dm);bx(Lm*.6,Hm-Dm/2,Dm*.9,green,xm+Lm*.5,-(Hm+Dm/2)/2,0);
+  grp('Baseplate');bx(xe+80-(xS-100),120,Wb,grey,(xe+80+xS-100)/2,-Hm-60,0);
+  rotor=grp('Rotor');AX='x';cl('x',.1*ds+10,xm+cw*.3,steel,(xm-cw*.3)/2);cl('x',Rv*.8,cw*.4,imp);vn('x',Rv*.75,cw*.4,6);
+  L0=xe+80-(xS-100);W0=Wb;H0=Hm+yD+120;
+ }else if(ty=='inline'){
+  const Rc=ds+60,hc=1.4*ds+120,ftf=2*(Rc+170),ln=Math.max(150,.5*Dm),y0=hc/2+ln;
+  grp('Casing');cl('y',Rc,hc,casM,0,0,0,48);cl('x',prS,ftf,casM);flg('x',-ftf/2,ds);flg('x',ftf/2,ds);bx(Rc*1.6,50,Rc*1.6,grey,0,-hc/2-25,0);
+  grp('Lantern');cl('y',Math.max(.3*Dm,80),ln,steel,0,hc/2+ln/2,0);
+  motor('y',y0,Lm,Dm);
+  rotor=grp('Rotor');AX='y';cl('y',.07*ds+8,y0+hc*.3,steel,0,(y0-hc*.3)/2,0);cl('y',Rc*.75,hc*.3,imp);vn('y',Rc*.7,hc*.3,6);
+  L0=Math.max(ftf,Dm);W0=Math.max(Dm,2*Rc);H0=y0+Lm*1.22+hc/2+50;
+ }else if(ty=='split'){
+  const Rv=1.4*ds+80,cz=1.6*ds+240,Hm=Math.max(Hm0,Rv+60),xN=Rv+220,zm=cz/2+320,ze=zm+Lm*1.22,Wb=2*xN+120,half=s=>{const q=new THREE.CylinderGeometry(Rv,Rv,cz,40,1,false,s,Math.PI);q.rotateX(Math.PI/2);return q};
+  grp('Casing_Lower');add(half(-Math.PI/2),casM);bx(1.6*Rv,Hm-Rv,cz*.8,casM,0,-(Hm+Rv)/2,0);bx(2*Rv+60,24,cz+40,steel);
+  grp('Casing_Upper');add(half(Math.PI/2),casM2);
+  grp('Nozzles');cl('x',prS,2*xN,casM);flg('x',-xN,ds);flg('x',xN,dd);
+  grp('Bearings');for(const s of[-1,1])cl('z',Rv*.32,150,steel,0,0,s*(cz/2+75));
+  grp('Coupling');cl('z',Math.max(.22*Dm,70),140,dark,0,0,cz/2+235);
+  motor('z',zm,Lm,Dm);bx(Dm*.9,Hm-Dm/2,Lm*.6,green,0,-(Hm+Dm/2)/2,zm+Lm*.5);
+  grp('Baseplate');bx(Wb,120,ze+80+cz/2+200,grey,0,-Hm-60,(ze+80-cz/2-200)/2);
+  rotor=grp('Rotor');AX='z';cl('z',.1*ds+12,zm+cz/2+100,steel,0,0,(zm-cz/2-100)/2);for(const s of[-1,1]){cl('z',Rv*.72,cz*.3,imp,0,0,s*cz*.17);vn('z',Rv*.7,cz*.3,6,0,0,s*cz*.17)}
+  L0=Wb;W0=ze+80+cz/2+200;H0=Hm+Rv+60;
+ }else if(ty=='sub'){
+  const hs=.55*pO,Lmot=450+18*kW,dpt=dep*1000,Lp=nst*hs+350,tot=dpt+Lp+Lmot,y1=-dpt-150;
+  grp('Ground_Slab');bx(1600,200,1600,grey,0,-100,0);
+  grp('Riser_Pipe');cl('y',OD[dn]/2,dpt+300,casM,0,(300-dpt)/2,0);flg('y',300,dn);
+  grp('Borehole_Casing');cl('y',pO/2+45,tot,borM,0,-tot/2,0,48);
+  grp('Pump');cl('y',pO*.45,150,casM2,0,-dpt-75,0);for(let i=0;i<nst;i++)cl('y',pO/2,hs-6,casM,0,y1-hs*(i+.5),0);cl('y',pO*.47,200,dark,0,y1-nst*hs-100,0);
+  grp('Motor');cl('y',pO/2,Lmot,green,0,-dpt-Lp-Lmot/2,0);
+  rotor=grp('Rotor');AX='y';cl('y',.05*pO+6,nst*hs+150,steel,0,-dpt-100-(nst*hs+150)/2,0);for(let i=0;i<nst;i++)cl('y',pO*.36,.4*hs,imp,0,y1-hs*(i+.5),0);
+  L0=1600;W0=1600;H0=tot+300;
+ }else{
+  const bO=2*dn,hs=.8*dn+40,dpt=dep*1000,Rh=.75*dn+90,hh=1.1*dn+260,st=Math.max(180,.5*Dm),colR=.6*dn+25,yb=-dpt-nst*hs;
+  grp('Base_Plate');bx(Rh*3,60,Rh*3,grey,0,-30,0);
+  grp('Discharge_Head');cl('y',Rh,hh,casM,0,hh/2,0,48);cl('x',pr,Rh+200,casM,(Rh+200)/2,hh*.55,0);flg('x',Rh+200,dd,hh*.55);
+  grp('Motor_Stand');cl('y',.4*Dm,st,casM2,0,hh+st/2,0);
+  motor('y',hh+st,Lm,Dm);
+  grp('Column_Pipe');cl('y',colR,dpt,casM,0,-dpt/2,0);
+  grp('Bowls');for(let i=0;i<nst;i++)cl('y',bO/2,hs-8,casM,0,-dpt-hs*(i+.5),0);cl('y',bO*.4,.7*dn,dark,0,yb-.35*dn,0);
+  rotor=grp('Rotor');AX='y';cl('y',.05*dn+10,hh+st+dpt+nst*hs+80,steel,0,(hh+st+yb-80)/2,0);for(let i=0;i<nst;i++)cl('y',bO*.38,.4*hs,imp,0,-dpt-hs*(i+.5),0);
+  L0=Rh*3;W0=Rh*3;H0=hh+st+Lm*1.22+dpt+nst*hs+.7*dn;
+ }
+ ck.push([true,'Overall about '+Math.round(L0)+' × '+Math.round(W0)+' × '+Math.round(H0)+' mm']);
+ ck.push([true,ty=='end'?'Suction DN'+ds+' larger than delivery DN'+dd+'; fit eccentric reducer flat side up':bore?'Keep borehole straight; centralisers every 3 m of riser':'Keep 1 m free around the set for service']);
+ bad=ck.some(c=>!c[0]);$('chk').innerHTML=ck.map(c=>'<li'+(c[0]?'':' class="bad"')+'>'+c[1]+'</li>').join('');$('dl').disabled=bad;const f=x=>Q/3600/(Math.PI*(x/2000)**2),okDN=d=>f(ty=='end'?DNL[Math.max(0,DNL.indexOf(d)-1)]:d)<=3&&(bore||f(d)<=2),hint=DNL.find(okDN);$('msg').textContent=bad?'Fix the red items to enable download.'+(okDN(dn)||!hint?'':' Smallest DN for this flow: DN'+hint+'.'):'';
+ spec={name:g.name,units:'mm',type:TY[ty][0],DN:dn,PN:pn,delivery_DN:dd,duty:{flow_m3h:Q,head_m:Hd,efficiency:eta,shaft_kW:+Pk.toFixed(2),velocity_delivery_ms:+vd.toFixed(2)},motor:{kW,frame_height:Hm0,length:Lm,diameter:Dm},stages:bore?nst:1,overall_mm:[Math.round(L0),Math.round(W0),Math.round(H0)],groups:names,animations:['Run'],checks:ck.map(c=>(c[0]?'OK: ':'FAIL: ')+c[1]),standards:'EN 1092-2 flanges, IEC motor frames (indicative)'};
+ if(fit){const bb=new THREE.Box3().setFromObject(g),c=bb.getCenter(new THREE.Vector3()),z=bb.getSize(new THREE.Vector3()),d=Math.max(z.x,z.y,z.z);C.position.set(c.x+d*.9,c.y+d*.6,c.z+d*1.2);C.lookAt(c);ctl&&ctl.target.copy(c);ctl&&ctl.update()}
+}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function clips(){const v=new THREE.Vector3(AX=='x'?1:0,AX=='y'?1:0,AX=='z'?1:0),t=[],q=[];for(let i=0;i<=8;i++){t.push(i/4);q.push(...new THREE.Quaternion().setFromAxisAngle(v,i/8*2*Math.PI).toArray())}return[new THREE.AnimationClip('Run',-1,[new THREE.QuaternionKeyframeTrack('Rotor.quaternion',t,q)])]}
+function loop(){requestAnimationFrame(loop);if(run&&rotor)rotor.rotation[AX]+=.12;ctl&&ctl.update();R.render(S,C)}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const r0=rotor.rotation[AX];rotor.rotation[AX]=0;const sv=[];model.traverse(o=>{const m=o.material;if(m&&m.transparent){sv.push([m,m.opacity]);m.opacity=1;m.transparent=false}});model.updateMatrixWorld(true);const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true,animations:clips()}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ sv.forEach(([m,o])=>{m.opacity=o;m.transparent=true});rotor.rotation[AX]=r0;
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['ty','dn','pn','dp'].forEach(i=>$(i).onchange=()=>build(true));['Q','Hd'].forEach(i=>$(i).oninput=()=>build(false));$('dp').oninput=()=>build(false);$('sv').oninput=()=>build(false);
+const lab=()=>{$('tg').textContent=run?'Pump RUNNING (ON) – click to stop':'Pump STOPPED (OFF) – click to run'};$('tg').onclick=()=>{run=!run;lab()};
+addEventListener('resize',size);size();lab();build(true);loop();
+</script></body></html>

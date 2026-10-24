@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Gate Valve Chamber</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(62vh,560px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+</style></head><body>
+<header><p><a href="../../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Gate Valve Chamber (RCC) – parametric</h1><p>EVLab 3D Hub · size is adjustable, but never below the engineering minimum for the selected valve</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<div class="row"><div><label>Valve / pipe DN<select id="dn"></select></label></div><div><label>Pressure class<select id="pn"><option value="16">PN16</option><option value="10">PN10</option></select></label></div></div>
+<label>Internal length L: <b id="Lv"></b><input type="range" id="L" max="8000" step="50"></label>
+<label>Internal width W: <b id="Wv"></b><input type="range" id="W" max="5000" step="50"></label>
+<label>Internal depth H: <b id="Hv"></b><input type="range" id="H" max="5000" step="50"></label>
+<label><input type="checkbox" id="tr" checked> Transparent concrete (view only)</label><label><input type="checkbox" id="sv"> Section view: see the gate inside the valve (view only)</label>
+<ul id="chk"></ul>
+<button id="tg" style="background:var(--bg);color:var(--fg);border:1px solid var(--bd)">Valve OPEN (ON) – click to close</button><label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative dimensions per EN 558 (valve face-to-face), EN 1092-2 (flanges), DI pipe OD. Confirm with manufacturer data and structural design before construction.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+// flange [OD, bolt circle, bolts, bolt dia, thickness]
+const FL={16:{100:[220,180,8,16,19],150:[285,240,8,20,19],200:[340,295,12,20,20],250:[405,355,12,24,22],300:[460,410,12,24,24.5],400:[580,525,16,27,28],500:[715,650,20,33,31.5],600:[840,770,20,36,36]},
+10:{100:[220,180,8,16,19],150:[285,240,8,20,19],200:[340,295,8,20,20],250:[395,350,12,20,22],300:[445,400,12,20,24.5],400:[565,515,16,24,24.5],500:[670,620,20,24,26.5],600:[780,725,20,27,30]}};
+const OD={100:118,150:170,200:222,250:274,300:326,400:429,500:532,600:635},FTF={100:190,150:210,200:230,250:250,300:270,400:310,500:350,600:390};
+const $=id=>document.getElementById(id),DJ=250,G=3;
+Object.keys(OD).forEach(d=>$('dn').add(new Option('DN'+d,d)));$('dn').value=300;
+const mins=(DN,PN)=>{const f=FL[PN][DN],vh=2*DN+300,r=x=>Math.ceil(x/50)*50;return{f,vh,L:r(600+FTF[DN]+DJ+3*G),W:r(Math.max(f[0],DN+100)+900),H:r(f[0]/2+300+vh+300)}};
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.05,200);S.add(new THREE.AmbientLight(0xffffff,.65));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;let model=null,spec={},cur=1,tgt=1,gate,hwh,TRV=0,XV=0;const VT=2;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.25,roughness:.6,transparent:o<1,opacity:o});
+function build(fit){
+ const DN=+$('dn').value,PN=+$('PN'.toLowerCase()).value,m=mins(DN,PN),[D,K,n,bd,ft]=m.f,vh=m.vh,pr=OD[DN]/2,ftf=FTF[DN];
+ for(const k of['L','W','H']){const s=$(k);s.min=m[k];if(+s.value<m[k]||!s.value)s.value=m[k]+(k=='H'?100:300);$(k+'v').textContent=s.value+' mm (min '+m[k]+')'}
+ const L=+$('L').value,W=+$('W').value,H=+$('H').value,t=H<=1500?200:H<=2500?250:300,sl=200,bot=D/2+300,top=H-bot,s=(L-ftf-DJ-3*G)/2;
+ if(model){model.traverse(o=>{o.geometry&&o.geometry.dispose()});S.remove(model)}
+ const g=model=new THREE.Group();g.name='GateValveChamber_DN'+DN+'_PN'+PN;g.scale.setScalar(.001);S.add(g);
+ const conc=M(0xb4b4b0,$('tr').checked?.4:1),blue=M(0x1f5fa8),pipe=M(0x5a6068),stl=M(0xaab0b8),dark=M(0x222222),grn=M(0x2e8b57);
+ let P=g;const grp=(n,par=g)=>{const q=new THREE.Group();q.name=n;par.add(q);return P=q};const add=(geo,mat,x,y,z)=>{const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);P.add(o);return o};
+ const bx=(w,h,d,mat,x,y,z)=>add(new THREE.BoxGeometry(w,h,d),mat,x,y,z);
+ const cx=(r,len,mat,x,y=0,z=0,sg=48)=>{const q=new THREE.CylinderGeometry(r,r,len,sg);q.rotateZ(Math.PI/2);return add(q,mat,x,y,z)};
+ const cy=(r,h,mat,y,x)=>add(new THREE.CylinderGeometry(r,r,h,32),mat,x,y,0);
+ // chamber
+ grp('Chamber');
+ bx(L+2*t,sl,W+2*t,conc,0,-bot-sl/2,0);
+ for(const z of[-1,1])bx(L+2*t,H,t,conc,0,(top-bot)/2,z*(W/2+t/2));
+ const hw=(W+2*t)/2;
+ for(const x of[-L/2-t,L/2]){const sh=new THREE.Shape();sh.moveTo(-hw,-bot);sh.lineTo(hw,-bot);sh.lineTo(hw,top);sh.lineTo(-hw,top);sh.closePath();const h=new THREE.Path();h.absarc(0,0,pr+25,0,6.2832,true);sh.holes.push(h);
+  const q=new THREE.ExtrudeGeometry(sh,{depth:t,bevelEnabled:false,curveSegments:32});q.rotateY(Math.PI/2);q.translate(x,0,0);add(q,conc,0,0,0)}
+ const xa=-L/2+s+G,xv=xa+ftf/2,xb=xa+ftf+G,xc=xb+DJ+G;
+ const rs=new THREE.Shape(),rx=L/2+t;rs.moveTo(-rx,-hw);rs.lineTo(rx,-hw);rs.lineTo(rx,hw);rs.lineTo(-rx,hw);rs.closePath();
+ const ho=new THREE.Path();ho.moveTo(xv-300,-300);ho.lineTo(xv+300,-300);ho.lineTo(xv+300,300);ho.lineTo(xv-300,300);ho.closePath();rs.holes.push(ho);
+ const rq=new THREE.ExtrudeGeometry(rs,{depth:sl,bevelEnabled:false});rq.rotateX(-Math.PI/2);rq.translate(0,top,0);add(rq,conc,0,0,0);
+ bx(ftf*.8,bot-.6*DN,1.2*DN+100,conc,xv,-bot+(bot-.6*DN)/2,0);
+ // pipes + flanges
+ grp('Pipes');
+ const x0=xa-G,xe=L/2+t+500;
+ cx(pr,x0-(-L/2-t-500),pipe,(x0-L/2-t-500)/2);cx(D/2,ft,blue,x0-ft/2);
+ cx(pr,xe-xc,pipe,(xe+xc)/2);cx(D/2,ft,blue,xc+ft/2);
+ // valve (non-rising stem: handwheel turns, gate moves inside)
+ const vg=grp('GateValve'),trv=DN+30,bm_=M(0x1f5fa8,$('sv').checked?.3:1),gm=M(0x3a3f45);
+ grp('Body',vg);cx(.6*DN,ftf,bm_,xv);cx(D/2,ft,blue,xa+ft/2);cx(D/2,ft,blue,xa+ftf-ft/2);
+ cy(.55*DN,1.65*DN,bm_,.825*DN,xv);cy(.62*DN,25,blue,.6*DN,xv);
+ for(const z of[-1,1])bx(30,vh-1.65*DN-90,30,blue,xv,(1.65*DN+vh-90)/2,z*.28*DN);
+ bx(60,30,.62*DN,blue,xv,vh-90,0);
+ const gt=grp('Gate',vg);gt.position.x=xv;cx(.52*DN,30,gm,0,0,0);
+ const hws=grp('Handwheel',vg);hws.position.x=xv;cy(Math.max(12,.04*DN),vh-.4*DN,stl,(.4*DN+vh)/2,0);
+ const tor=new THREE.TorusGeometry((DN+100)/2,14,12,48);tor.rotateX(Math.PI/2);add(tor,blue,0,vh-40,0);cy(40,60,blue,vh-40,0);
+ bx(DN+100,12,24,blue,0,vh-40,0);bx(24,12,DN+100,blue,0,vh-40,0);
+ gate=gt;hwh=hws;TRV=trv;XV=xv;apply();
+ // dismantling joint
+ grp('DismantlingJoint');
+ cx(pr+30,DJ-2*ft,grn,xb+DJ/2);cx(D/2,ft,grn,xb+ft/2);cx(D/2,ft,grn,xb+DJ-ft/2);
+ // gaskets + nut/bolts
+ grp('Fasteners');
+ for(const x of[x0+G/2,xa+ftf+G/2,xb+DJ+G/2]){cx(K/2+bd,G,dark,x);const bl=2*ft+G+2*bd;
+  for(let i=0;i<n;i++){const a=i/n*6.2832,y=K/2*Math.cos(a),z=K/2*Math.sin(a);cx(bd/2,bl,stl,x,y,z,10);for(const e of[-1,1])cx(bd*.9,bd*.8,stl,x+e*(ft+G/2+bd*.4),y,z,6)}}
+ // checks + spec
+ const ck=[['Stub pipe wall→flange: '+Math.round(s)+' mm (min 300, bolt access)'],['Side clearance each side: '+Math.round((W-Math.max(D,DN+100))/2)+' mm (min 450)'],['Headroom above handwheel: '+Math.round(top-vh)+' mm (min 300)'],['Floor clearance below flange: '+Math.round(bot-D/2)+' mm (min 300)'],['Wall '+t+' mm, roof & floor slab '+sl+' mm, access opening 600×600 over valve stem']];
+ $('chk').innerHTML=ck.map(c=>'<li>'+c[0]+'</li>').join('');
+ spec={name:g.name,units:'mm',DN,PN,chamber:{internal_L:L,internal_W:W,internal_H:H,wall:t,slab:sl},valve:{type:'Flanged gate valve, non-rising stem',face_to_face:ftf,height_CL_to_handwheel_top:vh,gate_travel:trv,turns_to_open_approx:Math.round(trv/6),standards:'EN 558 / EN 1092-2'},flange:{OD:D,bolt_circle:K,bolts:n,bolt_dia:'M'+bd,thickness:ft},pipe:{type:'DI',OD:OD[DN]},groups:['Chamber','Pipes','GateValve/Body','GateValve/Gate','GateValve/Handwheel','DismantlingJoint','Fasteners'],animations:['Open','Close'],clearances:ck.map(c=>c[0])};
+ if(fit){const d=Math.max(L,W,H)/1000;C.position.set(d*1.1,d*.8,d*1.3);C.lookAt(0,0,0);ctl&&ctl.target.set(0,0,0);ctl&&ctl.update()}
+}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function apply(){if(!gate)return;gate.position.y=cur*TRV;hwh.rotation.y=cur*VT*2*Math.PI}
+function clips(){const mk=(nm,rev)=>{const t=[],q=[],v=[];for(let i=0;i<=8;i++){const p=rev?1-i/8:i/8;t.push(i/4);q.push(...new THREE.Quaternion().setFromEuler(new THREE.Euler(0,p*VT*2*Math.PI,0)).toArray());v.push(XV,p*TRV,0)}
+ return new THREE.AnimationClip(nm,-1,[new THREE.QuaternionKeyframeTrack('Handwheel.quaternion',t,q),new THREE.VectorKeyframeTrack('Gate.position',t,v)])};return[mk('Open',0),mk('Close',1)]}
+function loop(){requestAnimationFrame(loop);if(cur!==tgt){cur+=(tgt-cur)*.07;if(Math.abs(tgt-cur)<.003)cur=tgt;apply()}ctl&&ctl.update();R.render(S,C)}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');try{const c0=cur;cur=1;apply();const sv=[];model.traverse(o=>{const m=o.material;if(m&&m.transparent){sv.push([m,m.opacity]);m.opacity=1;m.transparent=false}});model.updateMatrixWorld(true);const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true,animations:clips()}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ sv.forEach(([m,o])=>{m.opacity=o;m.transparent=true});cur=c0;apply();
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['dn','pn'].forEach(i=>$(i).onchange=()=>build(true));['L','W','H','tr','sv'].forEach(i=>$(i).oninput=()=>build(false));$('tg').onclick=()=>{tgt=1-tgt;$('tg').textContent=tgt?'Valve OPEN (ON) – click to close':'Valve CLOSED (OFF) – click to open'};
+addEventListener('resize',size);size();build(true);loop();
+</script></body></html>

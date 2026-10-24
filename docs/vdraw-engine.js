@@ -1,0 +1,121 @@
+/* ===== vector drawing engine: HLR + sections + hatch + DXF (pure JS, units mm) ===== */
+const vdDot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],vdCross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],vdNorm=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]};
+function vdCollect(model){const out=[];model.updateMatrixWorld(true);
+ model.traverse(o=>{if(!o.isMesh)return;let p=o,ok=true;while(p){if(!p.visible){ok=false;break}if(p===model)break;p=p.parent}if(!ok)return;
+  const g=o.geometry,pa=g.attributes.position,e=o.matrixWorld.elements,P=new Float64Array(pa.count*3);
+  for(let i=0;i<pa.count;i++){const x=pa.getX(i),y=pa.getY(i),z=pa.getZ(i);P[3*i]=(e[0]*x+e[4]*y+e[8]*z+e[12])*1000;P[3*i+1]=(e[1]*x+e[5]*y+e[9]*z+e[13])*1000;P[3*i+2]=(e[2]*x+e[6]*y+e[10]*z+e[14])*1000}
+  const T=g.index?Array.from(g.index.array):Array.from({length:pa.count},(_,i)=>i);
+  out.push({P,T,glass:!!(o.material&&o.material.userData&&o.material.userData.glass)})});return out}
+function vdEdges(m){const{P,T}=m,nv=P.length/3,idm=new Map(),vid=new Int32Array(nv);let c=0;
+ for(let i=0;i<nv;i++){const k=Math.round(P[3*i]*100)+'_'+Math.round(P[3*i+1]*100)+'_'+Math.round(P[3*i+2]*100);let v=idm.get(k);if(v===undefined){v=c++;idm.set(k,v)}vid[i]=v}
+ const em=new Map();
+ for(let t=0;t<T.length;t+=3){const a=T[t],b=T[t+1],c2=T[t+2],ux=P[3*b]-P[3*a],uy=P[3*b+1]-P[3*a+1],uz=P[3*b+2]-P[3*a+2],vx=P[3*c2]-P[3*a],vy=P[3*c2+1]-P[3*a+1],vz=P[3*c2+2]-P[3*a+2];
+  let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;const l=Math.hypot(nx,ny,nz);if(l<1e-9)continue;nx/=l;ny/=l;nz/=l;
+  for(const [p,q] of[[a,b],[b,c2],[c2,a]]){const i1=vid[p],i2=vid[q];if(i1===i2)continue;const k=i1<i2?i1*4194304+i2:i2*4194304+i1;let r=em.get(k);if(!r){r={p,q,n:[[nx,ny,nz]]};em.set(k,r)}else r.n.push([nx,ny,nz])}}
+ const out=[];for(const r of em.values()){const n=r.n;out.push({a:[P[3*r.p],P[3*r.p+1],P[3*r.p+2]],b:[P[3*r.q],P[3*r.q+1],P[3*r.q+2]],f:n.length!=2||vdDot(n[0],n[1])<.9063,n1:n[0],n2:n[1]||null})}return out}
+function vdClip(poly,w0){const out=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],ia=a[2]<=w0,ib=b[2]<=w0;if(ia)out.push(a);if(ia!==ib){const t=(w0-a[2])/(b[2]-a[2]);out.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,w0])}}return out}
+function vdTri(zb,idb,id,W,H,a,b,c){const D=(a[0]-c[0])*(b[1]-c[1])-(b[0]-c[0])*(a[1]-c[1]);if(Math.abs(D)<1e-9)return;
+ const A=((a[2]-c[2])*(b[1]-c[1])-(b[2]-c[2])*(a[1]-c[1]))/D,B=((a[0]-c[0])*(b[2]-c[2])-(b[0]-c[0])*(a[2]-c[2]))/D,C=c[2]-A*c[0]-B*c[1];
+ const y0=Math.max(0,Math.floor(Math.min(a[1],b[1],c[1]))),y1=Math.min(H-1,Math.ceil(Math.max(a[1],b[1],c[1]))),E=[[a,b],[b,c],[c,a]];
+ for(let y=y0;y<=y1;y++){const yc=y+.5;let xl=1e18,xr=-1e18;for(const [p,q] of E){if((p[1]<=yc&&q[1]>yc)||(q[1]<=yc&&p[1]>yc)){const x=p[0]+(q[0]-p[0])*(yc-p[1])/(q[1]-p[1]);if(x<xl)xl=x;if(x>xr)xr=x}}
+  if(xl>xr)continue;const xa=Math.max(0,Math.ceil(xl-.5)),xb=Math.min(W-1,Math.floor(xr-.5));for(let x=xa;x<=xb;x++){const z=A*(x+.5)+B*yc+C,i=y*W+x;if(z>zb[i]){zb[i]=z;idb[i]=id}}}}
+function vdFill(zb,idb,id,W,H,loops,z){let y0=1e18,y1=-1e18;loops.forEach(l=>l.forEach(p=>{y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1])}));
+ for(let y=Math.max(0,Math.floor(y0));y<=Math.min(H-1,Math.ceil(y1));y++){const yc=y+.5,xs=[];
+  for(const l of loops)for(let i=0;i<l.length;i++){const p=l[i],q=l[(i+1)%l.length];if((p[1]<=yc&&q[1]>yc)||(q[1]<=yc&&p[1]>yc))xs.push(p[0]+(q[0]-p[0])*(yc-p[1])/(q[1]-p[1]))}
+  xs.sort((a,b)=>a-b);for(let k=0;k+1<xs.length;k+=2){const xa=Math.max(0,Math.ceil(xs[k]-.5)),xb=Math.min(W-1,Math.floor(xs[k+1]-.5));for(let x=xa;x<=xb;x++){const i=y*W+x;if(z>zb[i]){zb[i]=z;idb[i]=id}}}}}
+function vdCutSegs(m,d,p0){const{P,T}=m,s=i=>(P[3*i]-p0[0])*d[0]+(P[3*i+1]-p0[1])*d[1]+(P[3*i+2]-p0[2])*d[2],out=[];
+ for(let t=0;t<T.length;t+=3){const ids=[T[t],T[t+1],T[t+2]],sv=ids.map(s),pos=sv.map(x=>x>1e-6);if(pos[0]===pos[1]&&pos[1]===pos[2])continue;const pts=[];
+  for(let k=0;k<3;k++){const k2=(k+1)%3;if(pos[k]!==pos[k2]){const a=ids[k],b=ids[k2],q=sv[k]/(sv[k]-sv[k2]);pts.push([P[3*a]+(P[3*b]-P[3*a])*q,P[3*a+1]+(P[3*b+1]-P[3*a+1])*q,P[3*a+2]+(P[3*b+2]-P[3*a+2])*q])}}
+  if(pts.length==2)out.push(pts)}return out}
+function vdLoops(segs){const K=(u,v)=>Math.round(u*100)+'_'+Math.round(v*100),adj=new Map();
+ segs.forEach((s,i)=>{for(const k of[K(s[0],s[1]),K(s[2],s[3])]){let a=adj.get(k);if(!a){a=[];adj.set(k,a)}a.push(i)}});
+ const used=new Uint8Array(segs.length),loops=[];
+ for(let i=0;i<segs.length;i++){if(used[i])continue;used[i]=1;const pts=[[segs[i][0],segs[i][1]],[segs[i][2],segs[i][3]]],start=K(segs[i][0],segs[i][1]);let cur=K(segs[i][2],segs[i][3]);
+  while(cur!==start){const nx=(adj.get(cur)||[]).find(j=>!used[j]);if(nx===undefined)break;used[nx]=1;const s=segs[nx];if(K(s[0],s[1])===cur){pts.push([s[2],s[3]]);cur=K(s[2],s[3])}else{pts.push([s[0],s[1]]);cur=K(s[0],s[1])}}
+  const closed=cur===start;if(closed)pts.pop();loops.push({pts,closed})}return loops}
+function vdSimp(pts,closed){let p=pts.slice(),ch=true;while(ch&&p.length>2){ch=false;for(let i=0;i<p.length;i++){if(!closed&&(i==0||i==p.length-1))continue;const a=p[(i+p.length-1)%p.length],b=p[i],c=p[(i+1)%p.length],cr=(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0]),l=Math.hypot(c[0]-a[0],c[1]-a[1])||1;if(Math.abs(cr)/l<.05){p.splice(i,1);ch=true;break}}}return p}
+function vdHatch(loops,hs,out){let mnS=1e18,mxS=-1e18,mnT=1e18,mxT=-1e18;const R=Math.SQRT1_2,L=loops.map(l=>l.pts.map(p=>[(p[0]+p[1])*R,(p[1]-p[0])*R]));
+ L.forEach(l=>l.forEach(p=>{mnS=Math.min(mnS,p[0]);mxS=Math.max(mxS,p[0]);mnT=Math.min(mnT,p[1]);mxT=Math.max(mxT,p[1])}));if(mxS-mnS<hs*1.5&&mxT-mnT<hs*1.5)return;
+ for(let s=Math.ceil(mnS/hs)*hs;s<mxS;s+=hs){const ts=[];for(const l of L)for(let i=0;i<l.length;i++){const p=l[i],q=l[(i+1)%l.length];if((p[0]<=s&&q[0]>s)||(q[0]<=s&&p[0]>s))ts.push(p[1]+(q[1]-p[1])*(s-p[0])/(q[0]-p[0]))}
+  ts.sort((a,b)=>a-b);for(let k=0;k+1<ts.length;k+=2)out.push([(s-ts[k])*R,(s+ts[k])*R,(s-ts[k+1])*R,(s+ts[k+1])*R])}}
+function vdMerge(segs,tol){const g=new Map();
+ for(const s of segs){let dx=s[2]-s[0],dy=s[3]-s[1];const l=Math.hypot(dx,dy);if(l<1e-9)continue;dx/=l;dy/=l;let x1=s[0],y1=s[1],x2=s[2],y2=s[3];if(dx<-1e-9||(Math.abs(dx)<=1e-9&&dy<0)){dx=-dx;dy=-dy;[x1,y1,x2,y2]=[x2,y2,x1,y1]}
+  const k=Math.round(Math.atan2(dy,dx)*2000)+'|'+Math.round((-dy*x1+dx*y1)/tol);let a=g.get(k);if(!a){a=[];g.set(k,a)}a.push([x1*dx+y1*dy,x2*dx+y2*dy,dx,dy,-dy*x1+dx*y1])}
+ const out=[];for(const a of g.values()){a.sort((p,q)=>p[0]-q[0]);let cur=null;const emit=c=>{const dx=c[2],dy=c[3],off=c[4];out.push([c[0]*dx-off*dy,c[0]*dy+off*dx,c[1]*dx-off*dy,c[1]*dy+off*dx])};
+  for(const r of a){if(cur&&r[0]<=cur[1]+tol*2){if(r[1]>cur[1])cur[1]=r[1]}else{if(cur)emit(cur);cur=r.slice()}}if(cur)emit(cur)}return out}
+function vdView(meshes,EDG,v,N){
+ const px=Math.max(v.w,v.h)/1600||1,W=Math.ceil(v.w/px)+6,H=Math.ceil(v.h/px)+6,zb=new Float32Array(W*H).fill(-1e30),idb=new Int32Array(W*H).fill(-1),X=u=>(u-v.u0)/px+3,Y=w=>(v.v1-w)/px+3,cut=v.cut,w0=cut?vdDot(cut.p,v.d):1e18,vis=[],cutL=[],hatch=[];
+ const prj=(P,i)=>{const x=P[3*i],y=P[3*i+1],z=P[3*i+2];return[x*v.ax[0]+y*v.ax[1]+z*v.ax[2],x*v.ay[0]+y*v.ay[1]+z*v.ay[2],x*v.d[0]+y*v.d[1]+z*v.d[2]]};
+ meshes.forEach((m,mi)=>{if(m.glass)return;const{P,T}=m,PV=[];for(let i=0;i<P.length/3;i++)PV.push(prj(P,i));
+  for(let t=0;t<T.length;t+=3){let poly=[PV[T[t]],PV[T[t+1]],PV[T[t+2]]];if(cut){poly=vdClip(poly,w0);if(poly.length<3)continue}const q=poly.map(p=>[X(p[0]),Y(p[1]),p[2]]);for(let k=1;k<q.length-1;k++)vdTri(zb,idb,mi,W,H,q[0],q[k],q[k+1])}});
+ if(cut)meshes.forEach((m,mi)=>{const segs=vdCutSegs(m,v.d,cut.p).map(s=>{const a=[vdDot(s[0],v.ax),vdDot(s[0],v.ay)],b=[vdDot(s[1],v.ax),vdDot(s[1],v.ay)];return[a[0],a[1],b[0],b[1]]});if(!segs.length)return;
+  const loops=vdLoops(segs).map(l=>({pts:vdSimp(l.pts,l.closed),closed:l.closed}));
+  loops.forEach(l=>{const n=l.pts.length;for(let i=0;i<(l.closed?n:n-1);i++){const a=l.pts[i],b=l.pts[(i+1)%n];cutL.push([a[0],a[1],b[0],b[1]])}});
+  if(!m.glass){const cl=loops.filter(l=>l.closed&&l.pts.length>2);if(cl.length){vdFill(zb,idb,mi,W,H,cl.map(l=>l.pts.map(p=>[X(p[0]),Y(p[1])])),w0+px*.5);vdHatch(cl,2.5*N,hatch)}}});
+ const z=(ix,iy)=>{if(ix<0||iy<0||ix>=W||iy>=H)return-1e30;return zb[iy*W+ix]};
+ const visAt=(u,vv,w,mi,sil)=>{const x=X(u),y=Y(vv),ix=Math.floor(x),iy=Math.floor(y);let z0=z(ix,iy),g=0,id=(ix<0||iy<0||ix>=W||iy>=H)?-1:idb[iy*W+ix];
+  if(z0<-1e29){let lo=1e30,bi=-1;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const q=z(ix+dx,iy+dy);if(q>-1e29){if(q>z0){z0=q;bi=idb[(iy+dy)*W+ix+dx]}lo=Math.min(lo,q)}}if(z0<-1e29)return true;g=z0-lo;id=bi}
+  else for(const q of[z(ix+1,iy),z(ix-1,iy),z(ix,iy+1),z(ix,iy-1)])if(q>-1e29)g=Math.max(g,Math.abs(q-z0));
+  if(sil&&id===mi)return true;return w>=z0-(2*px+g)};
+ EDG.forEach((E,mi)=>E.forEach(e=>{const sil=!e.f&&e.n2&&vdDot(e.n1,v.d)*vdDot(e.n2,v.d)<0;if(!(e.f||sil))return;
+  let a=[vdDot(e.a,v.ax),vdDot(e.a,v.ay),vdDot(e.a,v.d)],b=[vdDot(e.b,v.ax),vdDot(e.b,v.ay),vdDot(e.b,v.d)];
+  if(cut){if(a[2]>w0&&b[2]>w0)return;const lp=(p,q)=>{const t=(w0-p[2])/(q[2]-p[2]);return[p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t,w0]};if(a[2]>w0)a=lp(b,a);else if(b[2]>w0)b=lp(a,b)}
+  const len=Math.hypot(b[0]-a[0],b[1]-a[1]);if(len<.3*px)return;
+  const at=t=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t],vt=t=>{const p=at(t);return visAt(p[0],p[1],p[2],mi,sil)},n=Math.min(3000,Math.max(2,Math.ceil(len/px)));
+  const bis=(lo,hi)=>{const hv=vt(hi);let l=lo,h=hi;for(let k=0;k<7;k++){const m2=(l+h)/2;if(vt(m2)===hv)h=m2;else l=m2}return(l+h)/2};
+  let prev=vt(0),st=prev?0:-1,pt=0;
+  for(let i=1;i<=n;i++){const t=i/n,cv=vt(t);if(cv!==prev){if(cv)st=bis(pt,t);else{const en=bis(pt,t),p1=at(st),p2=at(en);vis.push([p1[0],p1[1],p2[0],p2[1]]);st=-1}prev=cv}pt=t}
+  if(prev&&st>=0){const p1=at(st),p2=at(1);vis.push([p1[0],p1[1],p2[0],p2[1]])}}));
+ return{vis:vdMerge(vis.filter(s=>Math.hypot(s[2]-s[0],s[3]-s[1])>.3*px),.6*px),cut:vdMerge(cutL,.6*px),hatch}}
+function vdBuild(meshes,cfg){
+ const V=[['PLAN',[0,1,0],[0,0,-1]],['FRONT ELEVATION',[0,0,1],[0,1,0]],['BACK ELEVATION',[0,0,-1],[0,1,0]],['LEFT ELEVATION',[-1,0,0],[0,1,0]],['RIGHT ELEVATION',[1,0,0],[0,1,0]]].map(([n,d,u])=>({n,d,u}));
+ cfg.cuts.forEach(c=>V.push({n:c.label,d:c.d,u:c.up,cut:{n:c.n,p:c.p.map(x=>x*1000)}}));
+ const items=[],L=(l,x1,y1,x2,y2,vi)=>items.push({t:'L',l,x1,y1,x2,y2,vi}),sh={N:1,W:420,H:297,items,views:V};
+ if(!meshes.length)return sh;
+ const mn=[1e18,1e18,1e18],mx=[-1e18,-1e18,-1e18];meshes.forEach(m=>{const P=m.P;for(let i=0;i<P.length;i+=3)for(let k=0;k<3;k++){if(P[i+k]<mn[k])mn[k]=P[i+k];if(P[i+k]>mx[k])mx[k]=P[i+k]}});
+ const cs=[];for(const x of[mn[0],mx[0]])for(const y of[mn[1],mx[1]])for(const z of[mn[2],mx[2]])cs.push([x,y,z]);
+ V.forEach(v=>{v.ax=vdNorm(vdCross(v.u,v.d));v.ay=vdNorm(vdCross(v.d,v.ax));let a=1e18,b=-1e18,c=1e18,e=-1e18;cs.forEach(p=>{const u=vdDot(p,v.ax),w=vdDot(p,v.ay);a=Math.min(a,u);b=Math.max(b,u);c=Math.min(c,w);e=Math.max(e,w)});Object.assign(v,{u0:a,u1:b,v0:c,v1:e,w:b-a,h:e-c})});
+ const N=[1,2,5,10,15,20,25,30,40,50,60,75,100,150,200,250,500,1000,2000,5000].find(n=>V.every(v=>v.w/n<=60&&v.h/n<=90))||5000;Object.assign(sh,{N,W:420*N,H:297*N});
+ const T=(l,x,y,h,s,rot=0,al='l')=>{const w=.55*h*s.length,sx=al=='c'?-w/2:0;items.push({t:'T',l,x:x+sx*Math.cos(rot*Math.PI/180),y:y+sx*Math.sin(rot*Math.PI/180),h,s,rot})},EDG=meshes.map(vdEdges);
+ const rect=(l,x0,y0,x1,y1)=>{L(l,x0,y0,x1,y0);L(l,x1,y0,x1,y1);L(l,x1,y1,x0,y1);L(l,x0,y1,x0,y0)};
+ rect('A-FRAME',5*N,5*N,415*N,292*N);rect('A-FRAME',10*N,10*N,410*N,287*N);
+ const tick=(x,y)=>L('A-DIM',x-N,y-N,x+N,y+N);
+ const dimH=(x1,x2,y,txt)=>{L('A-DIM',x1,y,x2,y);tick(x1,y);tick(x2,y);T('A-DIM',(x1+x2)/2,y+1.2*N,2.5*N,txt,0,'c')},dimV=(y1,y2,x,txt)=>{L('A-DIM',x,y1,x,y2);tick(x,y1);tick(x,y2);T('A-DIM',x-1.2*N,(y1+y2)/2,2.5*N,txt,90,'c')};
+ V.forEach((v,i)=>{const col=i%4,row=Math.floor(i/4),cx0=(10+col*100)*N,cy0=(287-(row+1)*138.5)*N,tx=cx0+42*N-(v.u0+v.u1)/2,ty=cy0+(69.25+12)*N-(v.v0+v.v1)/2;
+  rect('A-FRAME',cx0,cy0,cx0+100*N,cy0+138.5*N);
+  const r=vdView(meshes,EDG,v,N);r.vis.forEach(s=>L('A-VIS',s[0]+tx,s[1]+ty,s[2]+tx,s[3]+ty,i));r.cut.forEach(s=>L('A-CUT',s[0]+tx,s[1]+ty,s[2]+tx,s[3]+ty,i));r.hatch.forEach(s=>L('A-HATCH',s[0]+tx,s[1]+ty,s[2]+tx,s[3]+ty,i));
+  const xl=v.u0+tx,xr=v.u1+tx,yb=v.v0+ty,yt=v.v1+ty;
+  L('A-DIM',xl,yb-N,xl,yb-9.5*N);L('A-DIM',xr,yb-N,xr,yb-9.5*N);L('A-DIM',xr+N,yb,xr+9.5*N,yb);L('A-DIM',xr+N,yt,xr+9.5*N,yt);
+  dimH(xl,xr,yb-8*N,String(Math.round(v.w)));dimV(yb,yt,xr+8*N,String(Math.round(v.h)));
+  if(cfg.ground&&Math.abs(v.d[1])<1e-6){const gy=cfg.ground.y*1000+ty;if(gy>cy0+16*N&&gy<cy0+138*N){L('A-GROUND',cx0+2*N,gy,cx0+98*N,gy);T('A-TEXT',cx0+3*N,gy+1.2*N,2.5*N,cfg.ground.label)}}
+  cfg.cuts.forEach(c=>{const n=c.d;if(Math.abs(vdDot(n,v.d))>1e-6)return;const dir=vdNorm(vdCross(n,v.d)),p0=c.p.map(x=>x*1000),u0=vdDot(p0,v.ax),w0=vdDot(p0,v.ay),du=vdDot(dir,v.ax),dv=vdDot(dir,v.ay),cu=(v.u0+v.u1)/2,cv=(v.v0+v.v1)/2,ext=(Math.abs(du)*v.w+Math.abs(dv)*v.h)/2+4*N+Math.hypot(u0-cu,w0-cv),ar=[-vdDot(n,v.ax),-vdDot(n,v.ay)];
+   const E=[[u0-du*ext+tx,w0-dv*ext+ty],[u0+du*ext+tx,w0+dv*ext+ty]];L('A-SECT',E[0][0],E[0][1],E[1][0],E[1][1]);
+   E.forEach(([ex,ey])=>{const tx2=ex+ar[0]*8*N,ty2=ey+ar[1]*8*N,an=Math.atan2(ty2-ey,tx2-ex);L('A-SECT',ex,ey,tx2,ty2);L('A-SECT',tx2,ty2,tx2-2.5*N*Math.cos(an-.4),ty2-2.5*N*Math.sin(an-.4));L('A-SECT',tx2,ty2,tx2-2.5*N*Math.cos(an+.4),ty2-2.5*N*Math.sin(an+.4));T('A-TEXT',ex+ar[0]*12*N-1.2*N,ey+ar[1]*12*N-1.5*N,4*N,c.n)})});
+  T('A-TEXT',cx0+3*N,cy0+12*N,4*N,v.n);T('A-TEXT',cx0+3*N,cy0+6*N,3*N,'SCALE 1:'+N)});
+ const bx=(10+300)*N,by=10*N,flat=(o,p,r)=>{for(const k in o){const q=o[k];if(q&&typeof q=='object'&&!Array.isArray(q))flat(q,p+k+'.',r);else r.push(p+k+': '+(Array.isArray(q)?q.join(', '):q))}return r};
+ T('A-TEXT',bx+3*N,by+128*N,5*N,'EVLab 3D Hub');T('A-TEXT',bx+3*N,by+120*N,4*N,cfg.title);T('A-TEXT',bx+3*N,by+114*N,2.5*N,cfg.name);
+ flat(cfg.spec||{},'',[]).filter(s=>!/^(name|units|groups|animations|note)/.test(s)).slice(0,17).forEach((s,k)=>T('A-TEXT',bx+3*N,by+107*N-k*5.5*N,2.5*N,s.slice(0,46)));
+ T('A-TEXT',bx+3*N,by+11*N,3*N,'SCALE 1:'+N+'   UNITS: mm   SHEET 1/1');T('A-TEXT',bx+3*N,by+6*N,2.2*N,new Date().toISOString().slice(0,10)+'  Indicative drawing from the 3D model.');T('A-TEXT',bx+3*N,by+2.5*N,2.2*N,'Verify all dimensions before manufacture or construction.');
+ return sh}
+const VDL={'A-VIS':[7,'CONTINUOUS','#000',1.6],'A-CUT':[1,'CONTINUOUS','#c00',3.2],'A-HATCH':[3,'CONTINUOUS','#0a7',.9],'A-DIM':[5,'CONTINUOUS','#00a',1],'A-TEXT':[7,'CONTINUOUS','#000',1],'A-SECT':[1,'DASHDOT','#c00',1.8],'A-GROUND':[8,'DASHED','#555',2],'A-FRAME':[8,'CONTINUOUS','#999',1]};
+function vdDXF(sh){const o=[],f=x=>(+x).toFixed(3),p=(c,v)=>{o.push(String(c));o.push(String(v))},N=sh.N;
+ p(0,'SECTION');p(2,'HEADER');p(9,'$ACADVER');p(1,'AC1009');p(9,'$EXTMIN');p(10,0);p(20,0);p(30,0);p(9,'$EXTMAX');p(10,f(sh.W));p(20,f(sh.H));p(30,0);p(0,'ENDSEC');
+ p(0,'SECTION');p(2,'TABLES');
+ p(0,'TABLE');p(2,'LTYPE');p(70,3);
+ p(0,'LTYPE');p(2,'CONTINUOUS');p(70,0);p(3,'Solid line');p(72,65);p(73,0);p(40,0);
+ p(0,'LTYPE');p(2,'DASHED');p(70,0);p(3,'Dashed');p(72,65);p(73,2);p(40,f(9*N));p(49,f(6*N));p(49,f(-3*N));
+ p(0,'LTYPE');p(2,'DASHDOT');p(70,0);p(3,'Dash dot');p(72,65);p(73,4);p(40,f(15*N));p(49,f(9*N));p(49,f(-3*N));p(49,0);p(49,f(-3*N));p(0,'ENDTAB');
+ const ks=Object.keys(VDL);p(0,'TABLE');p(2,'LAYER');p(70,ks.length);ks.forEach(k=>{p(0,'LAYER');p(2,k);p(70,0);p(62,VDL[k][0]);p(6,VDL[k][1])});p(0,'ENDTAB');
+ p(0,'TABLE');p(2,'STYLE');p(70,1);p(0,'STYLE');p(2,'STANDARD');p(70,0);p(40,0);p(41,1);p(50,0);p(71,0);p(42,f(2.5*N));p(3,'txt');p(4,'');p(0,'ENDTAB');p(0,'ENDSEC');
+ p(0,'SECTION');p(2,'ENTITIES');
+ sh.items.forEach(it=>{if(it.t=='L'){p(0,'LINE');p(8,it.l);p(10,f(it.x1));p(20,f(it.y1));p(30,0);p(11,f(it.x2));p(21,f(it.y2));p(31,0)}
+  else{p(0,'TEXT');p(8,it.l);p(10,f(it.x));p(20,f(it.y));p(30,0);p(40,f(it.h));p(1,it.s);if(it.rot)p(50,f(it.rot))}});
+ p(0,'ENDSEC');p(0,'EOF');return o.join('\n')+'\n'}
+function vdCanvas(sh){const k=6/sh.N,c=document.createElement('canvas');c.width=Math.round(420*6);c.height=Math.round(297*6);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.lineCap='round';
+ const X=v=>v*k,Y=v=>(sh.H-v)*k;
+ for(const it of sh.items){const st=VDL[it.l]||VDL['A-VIS'];if(it.t=='L'){x.strokeStyle=st[2];x.lineWidth=st[3];x.setLineDash(st[1]=='DASHED'?[16,6]:st[1]=='DASHDOT'?[30,8,4,8]:[]);x.beginPath();x.moveTo(X(it.x1),Y(it.y1));x.lineTo(X(it.x2),Y(it.y2));x.stroke()}
+  else{x.save();x.setLineDash([]);x.fillStyle=st[2];x.font=Math.max(6,it.h*k)+'px Arial';x.translate(X(it.x),Y(it.y));if(it.rot)x.rotate(-it.rot*Math.PI/180);x.fillText(it.s,0,0);x.restore()}}return c}
+function sheetBuild(){const c=cfg();return vdBuild(vdCollect(c.model),c)}
+function makeSheet(c0){const c=c0||cfg();return vdCanvas(vdBuild(vdCollect(c.model),c))}
+async function sheetPNG(sh){const cv=vdCanvas(sh||sheetBuild());return new Uint8Array(await new Promise(r=>cv.toBlob(b=>b.arrayBuffer().then(r))))}
+function sheetDXF(sh){return vdDXF(sh||sheetBuild())}
