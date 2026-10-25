@@ -2,8 +2,8 @@
 // Engine space is Z-up in mm. Output is Y-up in metres (glTF rule; OBJ uses the same so both files open alike).
 import { mulRV } from './math3.js';
 
-export const COLORS = { pipe: 0x3b82c4, valve: 0x2fa36b, concrete: 0x9aa0a6, masonry: 0xb5654a, wood: 0x9c6b3f, glass: 0x7fc4e8, steel: 0x5d6b7a, pump: 0x2b6f9e, rebar: 0xc0392b };
-export function colorOf(tags = []) { for (const t of tags) if (COLORS[t]) return COLORS[t]; return 0xc9a36a; }
+import { COLORS, colorOf } from './colors.js';
+export { COLORS, colorOf };
 const SEG = 32, S = 0.001;
 const yUp = p => [p[0] * S, p[2] * S, -p[1] * S];          // (x,y,z) mm Z-up -> metres Y-up
 const yUpN = n => [n[0], n[2], -n[1]];
@@ -33,19 +33,31 @@ function localMesh(sh) {
   return { p, n, i };
 }
 // world mesh in Y-up metres. Skips soft/void helper shapes.
-export function worldMeshes(items) {
-  return items.filter(it => it.role === 'solid' || it.role === 'rebar').map(it => {
-    const m = localMesh(it.shape), R = it.T.R, t = it.T.t;
-    const pos = m.p.map(v => yUp(mulRV(R, v).map((c, k) => c + t[k])));
-    const nor = m.n.map(v => yUpN(mulRV(R, v)));
-    return { name: `${it.inst}/${it.id}`, color: it.color ?? colorOf(it.role === 'rebar' ? ['rebar'] : it.tags), pos, nor, idx: m.i };
-  });
+// With `visuals` (visualItems(): the real shapes from core/engine/visual) the instances are exported from those meshes;
+// only rebar still comes from the collision items. Without it, every solid box / cylinder is exported (old behaviour).
+function legacyMesh(it) {
+  const m = localMesh(it.shape), R = it.T.R, t = it.T.t;
+  const pos = m.p.map(v => yUp(mulRV(R, v).map((c, k) => c + t[k])));
+  const nor = m.n.map(v => yUpN(mulRV(R, v)));
+  return { name: `${it.inst}/${it.id}`, color: it.color ?? colorOf(it.role === 'rebar' ? ['rebar'] : it.tags), pos, nor, idx: m.i };
+}
+function visualMesh(v) {
+  const R = v.T.R, t = v.T.t, n = v.pos.length / 3, pos = new Array(n), nor = new Array(n);
+  for (let i = 0; i < n; i++) {
+    const p = mulRV(R, [v.pos[3 * i], v.pos[3 * i + 1], v.pos[3 * i + 2]]), q = mulRV(R, [v.nor[3 * i], v.nor[3 * i + 1], v.nor[3 * i + 2]]);
+    pos[i] = yUp([p[0] + t[0], p[1] + t[1], p[2] + t[2]]); nor[i] = yUpN(q);
+  }
+  return { name: `${v.inst}/${v.name}`, color: v.color, ...(v.opacity !== undefined ? { opacity: v.opacity } : {}), pos, nor, idx: Array.from(v.idx) };
+}
+export function worldMeshes(items, visuals) {
+  if (visuals) return [...visuals.map(visualMesh), ...items.filter(it => it.role === 'rebar').map(legacyMesh)];
+  return items.filter(it => it.role === 'solid' || it.role === 'rebar').map(legacyMesh);
 }
 
-export function toOBJ(items, name = 'EVLab assembly') {
+export function toOBJ(items, name = 'EVLab assembly', visuals) {
   const L = [`# ${name}`, '# EVLab 3D Studio export. Units: metres, Y-up.'];
   let vo = 0, no = 0;
-  for (const m of worldMeshes(items)) {
+  for (const m of worldMeshes(items, visuals)) {
     L.push(`o ${m.name.replace(/\s+/g, '_')}`);
     for (const v of m.pos) L.push(`v ${v[0].toFixed(5)} ${v[1].toFixed(5)} ${v[2].toFixed(5)}`);
     for (const v of m.nor) L.push(`vn ${v[0].toFixed(4)} ${v[1].toFixed(4)} ${v[2].toFixed(4)}`);
@@ -55,8 +67,8 @@ export function toOBJ(items, name = 'EVLab assembly') {
   return L.join('\n') + '\n';
 }
 
-export function toGLB(items, name = 'EVLab assembly') {
-  const meshes = worldMeshes(items), chunks = [], bufferViews = [], accessors = [], gMeshes = [], nodes = [], materials = [], matIdx = {};
+export function toGLB(items, name = 'EVLab assembly', visuals) {
+  const meshes = worldMeshes(items, visuals), chunks = [], bufferViews = [], accessors = [], gMeshes = [], nodes = [], materials = [], matIdx = {};
   let off = 0;
   const push = (arr, target, cls) => { // arr: typed array
     const bytes = new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
@@ -71,11 +83,13 @@ export function toGLB(items, name = 'EVLab assembly') {
     accessors.push({ bufferView: push(P, 34962), componentType: 5126, count: m.pos.length, type: 'VEC3', min: lo, max: hi });
     accessors.push({ bufferView: push(N, 34962), componentType: 5126, count: m.nor.length, type: 'VEC3' });
     accessors.push({ bufferView: push(I, 34963), componentType: 5125, count: m.idx.length, type: 'SCALAR' });
-    if (!(m.color in matIdx)) {
-      matIdx[m.color] = materials.length;
-      materials.push({ name: '#' + m.color.toString(16).padStart(6, '0'), pbrMetallicRoughness: { baseColorFactor: [(m.color >> 16 & 255) / 255, (m.color >> 8 & 255) / 255, (m.color & 255) / 255, 1], metallicFactor: 0.1, roughnessFactor: 0.8 } });
+    const mk = m.color + '|' + (m.opacity ?? 1);
+    if (!(mk in matIdx)) {
+      matIdx[mk] = materials.length;
+      materials.push({ name: '#' + m.color.toString(16).padStart(6, '0'), doubleSided: true, ...((m.opacity ?? 1) < 1 ? { alphaMode: 'BLEND' } : {}),
+        pbrMetallicRoughness: { baseColorFactor: [(m.color >> 16 & 255) / 255, (m.color >> 8 & 255) / 255, (m.color & 255) / 255, m.opacity ?? 1], metallicFactor: 0.1, roughnessFactor: 0.8 } });
     }
-    gMeshes.push({ name: m.name, primitives: [{ attributes: { POSITION: a, NORMAL: a + 1 }, indices: a + 2, material: matIdx[m.color] }] });
+    gMeshes.push({ name: m.name, primitives: [{ attributes: { POSITION: a, NORMAL: a + 1 }, indices: a + 2, material: matIdx[mk] }] });
     nodes.push({ name: m.name, mesh: gMeshes.length - 1 });
   }
   const json = { asset: { version: '2.0', generator: 'EVLab 3D Studio', extras: { name, units: 'metres, Y-up' } },

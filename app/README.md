@@ -21,6 +21,7 @@ Open through a web server (browsers block JSON loading from `file://`):
 On GitHub Pages: `<site>/app/index.html`.
 
 ## What works now
+- The 3D view draws the REAL shape of each part (`core/engine/visual`: flanges with bolt holes, torus bends, valve bodies, handwheels), not the collision boxes. GLB / OBJ export uses the same mesh.
 - 3D scene: orbit (left drag), pan (right drag or Shift+drag), zoom (wheel), grid, "Frame all".
 - "3D models" tab (left): categories + search. Drag a model into the scene to place it freely.
 - Select an object, then click a model: it **auto-attaches** to a free compatible port of the selected object (size/PN adopted).

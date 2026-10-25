@@ -2,6 +2,7 @@
 
 Not tested in a real browser yet: the engine (attach, conflicts, save/load, GLB/OBJ writers, the rich door) is covered by `cd core && npm test`;
 the page itself (buttons, panel, how the door looks in 3D) needs a first run on the owner's side. The Properties panel code for the door was run headless with a fake page (no real browser).
+Round 7 (real shapes): the viewer code path was run in Node with real three.js r128 and the shapes were rendered with a software renderer, not in a browser (details in "Changes in round 7").
 The BOM button, dialog and downloads (round 6) were run in headless Chromium (details in "Changes in round 6"); that run does not replace a look on a normal desktop browser.
 
 ## What the owner wants (read this first)
@@ -15,7 +16,8 @@ The BOM button, dialog and downloads (round 6) were run in headless Chromium (de
 ## How it works (3 layers)
 | Layer | Folder | Job |
 |---|---|---|
-| Components | `core/library/components/*.json` | One json per model: parameters, shapes (box/cylinder), ports, tags |
+| Components | `core/library/components/*.json` | One json per model: parameters, collision shapes (box/cylinder), ports, tags |
+| Visual shapes | `core/engine/visual/*.js`, `core/engine/mesh.js` | The real shape you see and export (flanges with bolt holes, torus bends, valve bodies ...), built from the same parameters and ports |
 | Engine | `core/engine/*.js` | Builds geometry, snaps ports (`snap.js`), checks conflicts (`collision.js`), save/load (`io.js`), GLB/OBJ (`export.js`), rebar |
 | Interface | `app/` | The Studio page. Calls the engine, shows the scene |
 
@@ -117,9 +119,38 @@ A big model such as a pump house: civil structure (slab, plinth, column, beam, w
 How to build: select a part, optionally pick **Next part attaches at** (port A / B / C ...), click the next model in the list: it attaches and becomes the selected part, so a line grows click by click.
 For a bend or tee, set Turn / Branch (up, down, left, right) in Properties. Move, raise or turn the whole line with the buttons ("Move with attached parts" ticked).
 Load `core/examples/pump-station-line.assembly.json` to see a finished line.
-Honest limits: a bend is two straight arms (a smooth bend needs a new `torus` shape type in `core/engine/shapes.js`, not done); sizes are a generic envelope; walls attach only in a straight line (no corner part yet), so place wall corners by position;
+Honest limits: the bend is now a real torus arc in the 3D view (round 7), but its collision shape is still two straight arms; sizes are a generic envelope; walls attach only in a straight line (no corner part yet), so place wall corners by position;
 the pump has flange ports only, so it is placed by position (raise it on a plinth so flanged fittings clear the floor: the conflict checker reports it if not);
 pipe through a wall uses `rcc-wall-opening` (round opening) by position. Next steps are listed below.
+
+## Changes in round 7 (real shapes: the visual mesh layer, Stage 1 step 1)
+Problem: every Studio part was only a box or a cylinder (a bend was two straight arms, a valve a drum with a box). The owner wants the ORIGINAL shape.
+Now each component has two layers:
+- **Collision layer** (unchanged): the boxes / cylinders in the component json. Conflict check, snap, BOM and the drawing sheet still use them, so nothing that worked before changes.
+- **Visual layer** (new): `core/engine/visual/*.js` builds a real triangle mesh from the SAME parameters and ports. The Studio 3D view and GLB / OBJ export draw this mesh.
+  Components without a builder are drawn from their own solid boxes / cylinders (walls, slabs, columns, beams, door, window, gate, table, plinth), so every component always has a visual mesh.
+
+Parts with a real shape now (15 of 26): DI pipe (hollow barrel), flanged DI pipe, 90 and 45 degree bend (real torus arc), tee, reducer (smooth cone), blind flange,
+dismantling joint (tie rods and nuts), gate valve (body, bonnet, rising stem that follows `open`, handwheel), butterfly valve (gear box, extension spindle, handwheel, disc), swing check valve (cover with bolts, flap),
+ball valve (round body, lever), air valve (flange, body, hood), electromagnetic flow meter, pump set (base frame, casing, motor).
+Every flange is a real EN 1092-2 ring: bore, bolt circle with real bolt holes (count and size by DN and PN), hub. Sizes: `core/engine/visual/flange-data.js` (same numbers as `library/standards/en1092-2-flanges.json`; a test keeps them equal).
+Ports are untouched: `core/tests/visual.mjs` checks that every flange face lies exactly on its port plane, so auto-attach behaves as before.
+
+Files: `core/engine/mesh.js` (mesh builder: box, lathe, tube/sweep, cone, hex ...), `core/engine/visual/index.js` (registry, `visualOf`, `visualItems`), `flange.js`, `flange-data.js`, `pipework.js`, `valves.js`, `pump.js`, `util.js`, `core/engine/colors.js`,
+`core/engine/export.js` (GLB / OBJ take the visual mesh, materials double sided), `app/studio.js` (draws the visual mesh, geometry cached per part), `core/tests/visual.mjs` (in `npm test`).
+How to give a component a real shape: write a builder `function ({ params, ports, color }) -> [{ name, geo, color }]` in `core/engine/visual/`, register it in `BUILDERS` in `visual/index.js` under the component id (or name it in the json: `"visual": "<builder>"`), run `npm test`.
+The builder must keep every end face on its port plane (the test fails otherwise). The generators live in `visual/`, not in `gen/`, because `gen/` already holds the collision generators (door, bend, tee, reducer).
+
+Honest limits (found while doing this):
+- **Pump envelope is wrong for a real pump.** `end-suction-pump.json` puts both flange ports on one horizontal line at 0.8 DN above the floor, the motor box on top, and it is only a generic envelope. A real flange of DN100 is 220 mm wide, so its lower edge sits 30 mm BELOW the base frame.
+  The visual follows the ports (as asked) and shows this. A true end-suction pump (suction on the shaft axis, discharge pointing up, motor beside) needs different ports, so it must be a new component (see the next prompt).
+- Not done in this step: chambers, supports, gasket, bolts (Stage 2); staircase, railing, rebar models are not in the Studio yet; the library page (`models/*/parametric/*.html`) still has its own geometry (Stage 7 joins them).
+- Tee: the branch bore is not cut through the run wall (looks right from outside and through the flange bores, not from deep inside).
+- Butterfly disc is drawn 35 degrees open; a fully open disc reaches past the flange faces.
+- Size of the meshes: about 6 000 triangles per fitting (a flange alone is 2 100). Fine for a pump line; for 500+ objects the Stage 7 job (instancing, level of detail) is needed.
+- Sizes are a generic envelope (face to face, outer diameters from the component tables), not a maker's catalogue.
+- Tested: `cd core && npm test` (120 checks in `visual.mjs`: every component of the manifest has a non-empty mesh and bounding box, finite numbers, winding matches normals, all table sizes and PN10 / PN16, flange faces on ports, bolt hole count and face area, GLB / OBJ).
+  The viewer code was also run in Node with real three.js r128 (BufferGeometry, EdgesGeometry, mesh matrices) and the shapes were rendered to PNG with a software renderer. NOT tested: the Studio page in a real browser (no browser here), speed with many objects.
 
 ## Changes in round 6 (bill of materials)
 - New: `core/engine/bom.js`, `core/engine/xlsx.js`, `core/tests/bom.mjs`

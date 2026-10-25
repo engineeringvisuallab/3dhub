@@ -3,6 +3,7 @@
   "properties": {
     "id": {"type":"string"}, "name": {"type":"string"}, "category": {"type":"string"},
     "generator": {"type":"string", "description":"optional: name of a generator in core/engine/gen (e.g. door). It builds shapes + ports from the parameters, so shapes/ports in this json can stay empty"},
+    "visual": {"type":"string", "description":"optional: name of a visual mesh builder in core/engine/visual (default = the component id). Without a builder the solid shapes below are drawn as they are"},
     "kind": {"enum":["parametric","composite","imported"], "description":"composite = built from other components (children)"},
     "tags": {"type":"array","items":{"type":"string"}, "description":"pipe, concrete, host (can carry rebar), furniture, valve ... A part tagged pipe with a numeric parameter len (mm) gets a length in the bill of materials"},
     "bom": {"type":"object", "description":"optional, bill of materials: { ignore: [parameter names] } = parameters that only turn / pose the part or set its reinforcement (bend turn, door open angle ...), so they do not split a BOM line"},

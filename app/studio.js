@@ -7,6 +7,7 @@ import { serialize, parse } from '../core/engine/io.js';
 import { toGLB, toOBJ, colorOf } from '../core/engine/export.js';
 import { assemblyBounds, buildSheet, sheetSVG } from '../core/engine/drawing.js';
 import { buildBOM, bomTables, toCSV, toXLSX } from '../core/engine/bom.js';
+import { visualItems } from '../core/engine/visual/index.js';
 
 // Component ids come from core/library/components/manifest.json (loaded at start, see the end of this file).
 const $ = s => document.querySelector(s);
@@ -74,15 +75,41 @@ function pick(e) {
 }
 
 // ---------- build meshes from the assembly ----------
+const edgeMat = new THREE.LineBasicMaterial({ color: 0x0b0e12 });
+const vgeo = new WeakMap();                           // visual part -> { geometry, edges } (shared between rebuilds)
 function rebuild() {
   const st = document.getElementById('start'); if (st) st.style.display = asm.instances.length ? 'none' : 'block';
-  group.children.forEach(m => { m.geometry.dispose(); m.material.dispose(); }); group.clear();
+  group.children.forEach(m => { if (!m.userData.shared) m.geometry.dispose(); m.material.dispose(); }); group.clear();
   let items = [];
   try { items = flatten(asm, lib).items; } catch (e) { say(e.message, true); }
   report = { conflicts: [], warnings: [] };
   try { if (items.length) report = check(asm, lib, crules); } catch (e) { say('Conflict check failed: ' + e.message, true); }
   conflictIds = new Set(report.conflicts.flatMap(c => [c.a, c.b]));
+  // real shapes (core/engine/visual): flanges with bolt holes, torus bends, valve bodies, pump ... Collision shapes are no longer drawn as solids.
+  let vis = [];
+  try { vis = visualItems(asm, lib); } catch (e) { say('Shape build failed: ' + e.message, true); }
+  for (const v of vis) {
+    let gg = vgeo.get(v.part);
+    if (!gg) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(v.pos, 3)); g.setAttribute('normal', new THREE.BufferAttribute(v.nor, 3)); g.setIndex(new THREE.BufferAttribute(v.idx, 1));
+      g.computeBoundingSphere(); gg = { g, edges: new THREE.EdgesGeometry(g, 40) }; vgeo.set(v.part, gg);   // parts are cached by the engine, so geometry is built once
+    }
+    const picked = v.inst === sel, see = v.opacity ?? 1;
+    const mat = new THREE.MeshStandardMaterial({
+      color: v.color, side: THREE.DoubleSide, metalness: 0.05, roughness: 0.7,
+      transparent: picked || see < 1, opacity: picked ? Math.min(0.85, see) : see,
+      emissive: picked ? 0x2255aa : conflictIds.has(v.inst) ? 0x6b1d1d : 0x000000, depthWrite: see >= 1
+    });
+    const m = new THREE.Mesh(gg.g, mat), R = v.T.R, t = v.T.t;
+    m.matrixAutoUpdate = false;
+    m.matrix.set(R[0], R[1], R[2], t[0], R[3], R[4], R[5], t[1], R[6], R[7], R[8], t[2], 0, 0, 0, 1);
+    m.userData = { inst: v.inst, role: 'solid', shared: true };
+    m.add(new THREE.LineSegments(gg.edges, edgeMat));
+    group.add(m);
+  }
   for (const it of items) {
+    if (it.role === 'solid') continue;                // drawn above from the visual mesh
     const s = it.shape;
     let g;
     if (s.type === 'box') g = new THREE.BoxGeometry(s.h[0] * 2, s.h[1] * 2, s.h[2] * 2);
@@ -283,9 +310,9 @@ const fileBase = () => (asm.name || 'assembly').trim().replace(/[^\w.-]+/g, '_')
 function exportMesh(kind) {
   if (!asm.instances.length) { say('Nothing to export. Add a model first.', true); return; }
   try {
-    const items = flatten(asm, lib).items;
-    if (kind === 'glb') download(toGLB(items, asm.name), fileBase() + '.glb', 'model/gltf-binary');
-    else download(toOBJ(items, asm.name), fileBase() + '.obj', 'text/plain');
+    const items = flatten(asm, lib).items, vis = visualItems(asm, lib);   // real shapes, same as the 3D view
+    if (kind === 'glb') download(toGLB(items, asm.name, vis), fileBase() + '.glb', 'model/gltf-binary');
+    else download(toOBJ(items, asm.name, vis), fileBase() + '.obj', 'text/plain');
     say(`Exported ${fileBase()}.${kind} (metres, Y-up).`);
   } catch (e) { say('Export failed: ' + e.message, true); }
 }

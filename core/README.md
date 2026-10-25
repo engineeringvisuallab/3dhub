@@ -15,6 +15,9 @@ core/
     rebar.js     column-cage, beam-cage, bar schedule (kg)
     snap.js      select object + click model -> auto attach by ports; move / detach / broken links
     generate.js  generator components: json names a generator, it builds shapes + ports from the options
+    mesh.js      visual mesh builder (box, lathe, tube, cone ...): triangle meshes, no DOM
+    colors.js    colours by tag
+    visual/      the REAL shape of a component (flange rings with bolt holes, torus bends, valves, pump): index.js registry, visualOf / visualItems
     gen/door.js  the rich door (17 designs, glass, handles, side glass, fanlight, extras)
     gen/pipefit.js  flanged bend (90 / 45), tee, reducer: direction (up/down/left/right) is a design choice
     drawing.js   assembly -> drawing sheet (plan, elevations, sections): feeds docs/vdraw-engine.js, writes SVG
@@ -24,7 +27,7 @@ core/
   rules/         conflict-rules.json, port-rules.json (which ports mate, what must match)
   export/        formats.json  (what each export needs)
   examples/      sample assemblies
-  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet) + bom.mjs (bill of materials, CSV, XLSX)   -> npm test
+  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet) + bom.mjs (bill of materials, CSV, XLSX) + visual.mjs (real shapes: every component has a valid mesh, flange faces on ports)   -> npm test
 app/             interface skeleton (panels spec) - built in a later step
 ```
 
@@ -56,6 +59,11 @@ A component with `"generator": "door"` has parameters in its json (numbers with 
 Everything downstream (flatten, snap, collision, io, export) works on those plain shapes. Shapes may carry `color` and `opacity`; cylinders may carry `rot`.
 To add another one: write `gen/<name>.js` exporting `generate(params)` -> `{shapes, ports, info}` and `validate(params)`, register it in `generate.js`.
 
+## Visual mesh (real shapes)
+Collision shapes (box / cylinder in the json) are for conflicts, snap, BOM and drawings. What the user sees and exports is the visual mesh from `engine/visual`:
+`visualOf(comp, params)` -> parts `{name, color, pos, nor, idx}`; `visualItems(assembly, library)` -> the same for every instance with its transform.
+A component with no builder is drawn from its own solid shapes. A builder gets `{params, ports, color}` and must keep every end face on its port plane (tested in `tests/visual.mjs`).
+
 ## Save / load and export
 `engine/io.js`: `serialize(assembly)` and `parse(text, library)` (validates units, models, parameters, links; throws English messages).
 `engine/export.js`: `toGLB(items)` and `toOBJ(items)` from `flatten().items`. Metres, Y-up. Tests: `npm test`.
@@ -80,4 +88,4 @@ Engine changes in `snap.js`:
 - `rotateInstance(assembly, id, deg, { withAttached })`: turns an object, or the whole connected group, around the vertical axis through the object's origin.
 `rules/port-rules.json`: `bearing` (column) and `face-v` (slab, wall top, beam) now mate, so a beam sits on a column and a slab on a beam.
 Example: `examples/pump-station-line.assembly.json` (slab, plinth, pump, joint, check valve, butterfly valve, bends, pipes; Load it in the Studio).
-Limits: a bend is two straight arms (no torus shape yet), sizes are a generic envelope (not a maker's catalogue), only boxes and cylinders.
+Limits: the collision shape of a bend is still two straight arms (the visual mesh is a real torus), sizes are a generic envelope (not a maker's catalogue), only boxes and cylinders.
