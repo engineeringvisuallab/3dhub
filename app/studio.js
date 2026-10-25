@@ -5,6 +5,7 @@ import { check } from '../core/engine/collision.js';
 import { materialize } from '../core/engine/generate.js';
 import { serialize, parse } from '../core/engine/io.js';
 import { toGLB, toOBJ, colorOf } from '../core/engine/export.js';
+import { assemblyBounds, buildSheet, sheetSVG } from '../core/engine/drawing.js';
 
 // Component ids come from core/library/components/manifest.json (loaded at start, see the end of this file).
 const $ = s => document.querySelector(s);
@@ -298,11 +299,42 @@ $('#file').addEventListener('change', async e => {
 $('#btn-glb').onclick = () => exportMesh('glb');
 $('#btn-obj').onclick = () => exportMesh('obj');
 
+// ---------- drawing sheet: plan, 4 elevations, 2 sections (DXF / SVG) ----------
+// The line work comes from docs/vdraw-engine.js (a plain script loaded by index.html); core/engine/drawing.js feeds it the assembly.
+const dlg = $('#draw');
+const centreOf = axis => { const b = assemblyBounds(flatten(asm, lib).items), k = { x: 0, y: 1, z: 2 }[axis]; return Math.round((b.min[k] + b.max[k]) / 2); };
+function openDrawing() {
+  if (!asm.instances.length) { say('Nothing to draw. Add a model first.', true); return; }
+  try { for (const n of ['A', 'B']) $('#cut' + n + '-pos').value = centreOf($('#cut' + n + '-axis').value); dlg.showModal(); }
+  catch (e) { say('Drawing failed: ' + e.message, true); }
+}
+function makeSheet() {
+  const cuts = ['A', 'B'].map(n => ({ axis: $('#cut' + n + '-axis').value, pos: parseFloat($('#cut' + n + '-pos').value) }));
+  if (cuts.some(c => !Number.isFinite(c.pos))) throw new Error('Enter a number (mm) for each section position.');
+  const parts = {}; for (const i of asm.instances) parts[i.component] = (parts[i.component] || 0) + 1;
+  const engine = typeof vdBuild === 'function' ? { vdBuild } : null;
+  return buildSheet(flatten(asm, lib).items, { title: 'ASSEMBLY', name: asm.name, cuts, parts }, engine);
+}
+function exportDrawing(kind) {
+  say('Building the drawing sheet ...');
+  setTimeout(() => {
+    try {
+      const sh = makeSheet();
+      if (kind === 'dxf') download(vdDXF(sh), fileBase() + '-drawing.dxf', 'application/dxf');
+      else download(sheetSVG(sh), fileBase() + '-drawing.svg', 'image/svg+xml');
+      say(`Exported ${fileBase()}-drawing.${kind} (A3 sheet, scale 1:${sh.N}, mm).`);
+    } catch (e) { say('Drawing failed: ' + e.message, true); }
+  }, 30);
+}
+$('#btn-draw').onclick = openDrawing; $('#draw-close').onclick = () => dlg.close();
+$('#draw-dxf').onclick = () => exportDrawing('dxf'); $('#draw-svg').onclick = () => exportDrawing('svg');
+for (const n of ['A', 'B']) $('#cut' + n + '-axis').onchange = e => { try { $('#cut' + n + '-pos').value = centreOf(e.target.value); } catch (err) { say(err.message, true); } };
+
 // ---------- header + keys ----------
 $('#btn-frame').onclick = () => frameAll();
 $('#btn-clear').onclick = () => { if (!asm.instances.length || confirm('Remove all objects from the scene?')) { asm = { name: 'Untitled', units: 'mm', instances: [], links: [] }; $('#name').value = asm.name; say(''); select(null); } };
 addEventListener('keydown', e => {
-  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || $('#draw').open) return;
   if ((e.key === 'Delete' || e.key === 'Backspace') && sel) remove(sel);
   if (e.key === 'Escape') select(null);
   const k = { ArrowLeft: [-1, 0, 0], ArrowRight: [1, 0, 0], ArrowUp: [0, 1, 0], ArrowDown: [0, -1, 0], PageUp: [0, 0, 1], PageDown: [0, 0, -1] }[e.key];

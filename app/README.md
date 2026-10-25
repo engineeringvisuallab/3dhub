@@ -31,6 +31,7 @@ On GitHub Pages: `<site>/app/index.html`.
   rejects bad files with a clear message (unknown model, out-of-range parameter, broken link).
 - **Export GLB / OBJ** (header): generated from the assembly with our own writer (`core/engine/export.js`).
   Units: metres, Y-up (the glTF rule). Helper zones (clearance, openings) are not exported.
+- **Drawing** (header): plan, four elevations and two sections on one A3 sheet, download as DXF or SVG (see `docs/STUDIO.md`). Needs `docs/vdraw-engine.js`.
 - Status bar: object/link count, broken links, conflict and warning counts.
 
 ## Moving parts

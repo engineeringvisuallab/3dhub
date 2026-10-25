@@ -17,11 +17,12 @@ core/
     generate.js  generator components: json names a generator, it builds shapes + ports from the options
     gen/door.js  the rich door (17 designs, glass, handles, side glass, fanlight, extras)
     gen/pipefit.js  flanged bend (90 / 45), tee, reducer: direction (up/down/left/right) is a design choice
+    drawing.js   assembly -> drawing sheet (plan, elevations, sections): feeds docs/vdraw-engine.js, writes SVG
     collision.js conflict checker (solid/void/rebar/clearance, cover check)
   rules/         conflict-rules.json, port-rules.json (which ports mate, what must match)
   export/        formats.json  (what each export needs)
   examples/      sample assemblies
-  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json)   -> npm test
+  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet)   -> npm test
 app/             interface skeleton (panels spec) - built in a later step
 ```
 

@@ -35,6 +35,8 @@
   #start { position:absolute; left:14px; bottom:14px; z-index:3; max-width:330px; background:rgba(27,33,40,.92); border:1px solid var(--line); border-radius:6px; padding:10px 12px; pointer-events:none; }
   #start b { display:block; margin-bottom:4px; } #start ol { margin:0; padding-left:18px; color:var(--dim); }
   .actions { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+  dialog { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:16px 18px; width:440px; max-width:94vw; } dialog::backdrop { background:rgba(0,0,0,.55); }
+  dialog h3 { font-size:15px; margin-bottom:4px; } dialog .row input { max-width:96px; }
 </style>
 </head>
 <body>
@@ -46,6 +48,7 @@
     <input id="name" value="Untitled" title="Design name (used for file names)" aria-label="Design name">
     <button id="btn-save">Save</button><button id="btn-load">Load</button><input id="file" type="file" accept=".json,application/json" hidden>
     <button id="btn-glb">Export GLB</button><button id="btn-obj">Export OBJ</button>
+    <button id="btn-draw" title="Plan, elevations and sections on one sheet (DXF / SVG)">Drawing</button>
     <button id="btn-frame" title="Fit the view to all objects">Frame all</button>
     <button id="btn-clear" class="danger">Clear scene</button>
   </header>
@@ -59,7 +62,7 @@
     <div id="start"><b>Getting started</b><ol>
       <li>Drag a model from the left list into the scene.</li>
       <li>Select it, then click another model: it attaches to the free port.</li>
-      <li>Use Save, or Export GLB / OBJ, in the top bar.</li>
+      <li>Use Save, Export GLB / OBJ, or Drawing (plan, elevations, sections) in the top bar.</li>
     </ol></div>
   </div>
   <aside id="right">
@@ -70,6 +73,14 @@
   </aside>
   <div id="status"><span id="count"></span><span id="msg"></span></div>
 </div>
+<dialog id="draw">
+  <h3>Drawing sheet</h3>
+  <p class="hint">One A3 sheet: plan, four elevations and two sections, with dimensions. Positions are in mm and start at the middle of the model.</p>
+  <div class="row"><label>Section A-A</label><select id="cutA-axis"><option value="x">Plane across X</option><option value="y" selected>Plane across Y</option><option value="z">Horizontal (Z)</option></select><input id="cutA-pos" type="number" step="10" aria-label="Section A-A position in mm"></div>
+  <div class="row"><label>Section B-B</label><select id="cutB-axis"><option value="x" selected>Plane across X</option><option value="y">Plane across Y</option><option value="z">Horizontal (Z)</option></select><input id="cutB-pos" type="number" step="10" aria-label="Section B-B position in mm"></div>
+  <div class="actions"><button id="draw-dxf">Download DXF</button><button id="draw-svg">Download SVG</button><button id="draw-close">Close</button></div>
+</dialog>
+<script src="../docs/vdraw-engine.js"></script>
 <script>
   function bootError(html) { document.getElementById('boot-text').innerHTML = html; document.getElementById('boot').style.display = 'flex'; }
   if (location.protocol === 'file:') {

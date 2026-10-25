@@ -40,6 +40,12 @@ save/load (.json), export GLB and OBJ. Details: `app/README.md`.
 
 Example: select a wall, click Door, click Window, click Brick wall, click Gate = one wall line. Select the first wall, click Slab = slab on top.
 
+## Drawing sheet (plan, elevations, sections)
+Top bar > **Drawing**. Pick where the two sections cut (Section A-A and B-B: a plane across X, a plane across Y, or a horizontal cut at a height Z, positions in mm; they start at the middle of the model), then **Download DXF** or **Download SVG**.
+The sheet is A3, scale chosen automatically (1:20, 1:50, 1:100 ...), and holds the plan, front / back / left / right elevations and the two sections, with overall dimensions, section marks, cut outlines (red) and hatch.
+Line work: `docs/vdraw-engine.js` (hidden lines, section cut, hatch, DXF). Glue: `core/engine/drawing.js`. The DXF has only lines and text on layers (A-VIS, A-CUT, A-HATCH, A-DIM, A-TEXT, A-SECT, A-GROUND, A-FRAME). Indicative drawing from the 3D model: check all dimensions before manufacture or construction.
+Limits: at most 2 sections per sheet; big assemblies (hundreds of parts) can take a few seconds.
+
 ## Add a new model to the Studio
 1. Write `core/library/components/<id>.json` (copy `door.json` as a template). Origin of building parts = bottom centre.
 2. Add `<id>` to `core/library/components/manifest.json` (the Studio reads this list; no code change needed).
