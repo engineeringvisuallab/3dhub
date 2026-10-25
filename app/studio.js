@@ -6,6 +6,7 @@ import { materialize } from '../core/engine/generate.js';
 import { serialize, parse } from '../core/engine/io.js';
 import { toGLB, toOBJ, colorOf } from '../core/engine/export.js';
 import { assemblyBounds, buildSheet, sheetSVG } from '../core/engine/drawing.js';
+import { buildBOM, bomTables, toCSV, toXLSX } from '../core/engine/bom.js';
 
 // Component ids come from core/library/components/manifest.json (loaded at start, see the end of this file).
 const $ = s => document.querySelector(s);
@@ -330,11 +331,43 @@ $('#btn-draw').onclick = openDrawing; $('#draw-close').onclick = () => dlg.close
 $('#draw-dxf').onclick = () => exportDrawing('dxf'); $('#draw-svg').onclick = () => exportDrawing('svg');
 for (const n of ['A', 'B']) $('#cut' + n + '-axis').onchange = e => { try { $('#cut' + n + '-pos').value = centreOf(e.target.value); } catch (err) { say(err.message, true); } };
 
+// ---------- bill of materials (BOM): list by model and size, CSV / XLSX download ----------
+// Numbers come from core/engine/bom.js. The same tables feed this dialog, the CSV and the XLSX.
+const bomDlg = $('#bom'); let bomNow = null;
+const escH = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function bomHTML(tables) {
+  return tables.map(t => {
+    const cell = (v, i) => `<td${t.columns[i].num ? ' class="n"' : ''}>${escH(v)}</td>`;
+    const head = '<tr>' + t.columns.map(c => `<th${c.num ? ' class="n"' : ''}>${escH(c.h)}</th>`).join('') + '</tr>';
+    const body = t.rows.map(r => '<tr>' + r.map(cell).join('') + '</tr>').join('') + t.totals.map(r => '<tr class="tot">' + r.map(cell).join('') + '</tr>').join('');
+    return `<table class="bt"><caption>${escH(t.title)}</caption><thead>${head}</thead><tbody>${body}</tbody></table><ul class="bnotes">${t.notes.map(x => `<li>${escH(x)}</li>`).join('')}</ul>`;
+  }).join('');
+}
+function bomSay(text, err = false) { const m = $('#bom-msg'); m.textContent = text; m.className = 'hint' + (err ? ' err' : ''); say(text, err); }
+function openBOM() {
+  if (!asm.instances.length) { say('Nothing to list. Add a model first.', true); return; }
+  try {
+    bomNow = buildBOM(asm, lib);
+    $('#bom-body').innerHTML = bomHTML(bomTables(bomNow));
+    $('#bom-msg').textContent = ''; bomDlg.showModal();
+  } catch (e) { say('Bill of materials failed: ' + e.message, true); }
+}
+function exportBOM(kind) {
+  if (!bomNow) return;
+  try {
+    if (kind === 'csv') download(toCSV(bomNow), fileBase() + '-bom.csv', 'text/csv;charset=utf-8');
+    else download(toXLSX(bomNow), fileBase() + '-bom.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    bomSay(`Exported ${fileBase()}-bom.${kind}.`);
+  } catch (e) { bomSay('BOM export failed: ' + e.message, true); }
+}
+$('#btn-bom').onclick = openBOM; $('#bom-close').onclick = () => bomDlg.close();
+$('#bom-csv').onclick = () => exportBOM('csv'); $('#bom-xlsx').onclick = () => exportBOM('xlsx');
+
 // ---------- header + keys ----------
 $('#btn-frame').onclick = () => frameAll();
 $('#btn-clear').onclick = () => { if (!asm.instances.length || confirm('Remove all objects from the scene?')) { asm = { name: 'Untitled', units: 'mm', instances: [], links: [] }; $('#name').value = asm.name; say(''); select(null); } };
 addEventListener('keydown', e => {
-  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || $('#draw').open) return;
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || $('#draw').open || $('#bom').open) return;
   if ((e.key === 'Delete' || e.key === 'Backspace') && sel) remove(sel);
   if (e.key === 'Escape') select(null);
   const k = { ArrowLeft: [-1, 0, 0], ArrowRight: [1, 0, 0], ArrowUp: [0, 1, 0], ArrowDown: [0, -1, 0], PageUp: [0, 0, 1], PageDown: [0, 0, -1] }[e.key];

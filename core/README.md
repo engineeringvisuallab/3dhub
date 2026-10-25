@@ -18,11 +18,13 @@ core/
     gen/door.js  the rich door (17 designs, glass, handles, side glass, fanlight, extras)
     gen/pipefit.js  flanged bend (90 / 45), tee, reducer: direction (up/down/left/right) is a design choice
     drawing.js   assembly -> drawing sheet (plan, elevations, sections): feeds docs/vdraw-engine.js, writes SVG
+    bom.js       assembly -> bill of materials (lines by model + size, straight pipe length, rebar schedule) -> tables, CSV, XLSX
+    xlsx.js      small XLSX writer (stored ZIP + SpreadsheetML, no library)
     collision.js conflict checker (solid/void/rebar/clearance, cover check)
   rules/         conflict-rules.json, port-rules.json (which ports mate, what must match)
   export/        formats.json  (what each export needs)
   examples/      sample assemblies
-  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet)   -> npm test
+  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet) + bom.mjs (bill of materials, CSV, XLSX)   -> npm test
 app/             interface skeleton (panels spec) - built in a later step
 ```
 
@@ -57,6 +59,16 @@ To add another one: write `gen/<name>.js` exporting `generate(params)` -> `{shap
 ## Save / load and export
 `engine/io.js`: `serialize(assembly)` and `parse(text, library)` (validates units, models, parameters, links; throws English messages).
 `engine/export.js`: `toGLB(items)` and `toOBJ(items)` from `flatten().items`. Metres, Y-up. Tests: `npm test`.
+
+## Bill of materials (round 6)
+`engine/bom.js` (pure functions, Node and browser):
+- `buildBOM(assembly, library)` -> `{ name, instances, rows, totals, rebar }`. One row per model + size: `component` (id), `name`, `category`, `dn`, `pn`, `dims`, `options`, `qty`, `unitLength_m`, `totalLength_m`, `objects` (instance ids). Throws English errors (unknown model, bad parameter, missing rebar host).
+- `bomTables(bom)` -> the tables (`columns`, `rows`, `totals`, `notes`) that the Studio dialog, the CSV and the XLSX all show. `toCSV(bom)` (UTF-8, CRLF, text that starts with `= + - @` gets a leading apostrophe) and `toXLSX(bom)` (`Uint8Array`, one sheet per table).
+- Rules: two objects are one row when every declared parameter is equal. A component json can list parameters that only turn / pose the part or set reinforcement in `"bom": { "ignore": ["turn"] }` (used by di-bend-90, di-bend-45, di-tee, gate-valve, door, rcc-column), so they do not split a row. DN, PN and the other numeric parameters become DN / PN / Dimensions; choice parameters become Options.
+- Length: only for a component tagged `pipe` with a numeric parameter `len` (mm): unit and total length in metres, and one total of straight pipe. Bends, tees, valves, walls and slabs are counted, not measured. The library has no weight or price data, so none is given.
+- Rebar: for every rebar set `schedule()` from `rebar.js` is run on its bars: bars, centre-line length (m) and kg (`d*d/162.2` per metre) per bar type, diameter and grade. No hooks, laps or bend allowance.
+- A new library component needs no BOM code: it is listed with its parameters. Add `bom.ignore` only for orientation-type parameters.
+`engine/xlsx.js`: `makeXlsx([{ name, rows, widths, rowStyles }])` writes a valid workbook with inline strings (text is never a formula) and a fixed ZIP date, so the same input gives the same bytes.
 
 ## Pump house parts (round 5)
 New components: `di-bend-90`, `di-bend-45`, `di-tee`, `di-reducer` (generators in `gen/pipefit.js`), `dismantling-joint` (adjustable length 150-600 mm),

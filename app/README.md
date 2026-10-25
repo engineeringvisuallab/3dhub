@@ -32,6 +32,7 @@ On GitHub Pages: `<site>/app/index.html`.
 - **Export GLB / OBJ** (header): generated from the assembly with our own writer (`core/engine/export.js`).
   Units: metres, Y-up (the glTF rule). Helper zones (clearance, openings) are not exported.
 - **Drawing** (header): plan, four elevations and two sections on one A3 sheet, download as DXF or SVG (see `docs/STUDIO.md`). Needs `docs/vdraw-engine.js`.
+- **BOM** (header): bill of materials of the whole design in a dialog, grouped by model and size (name, id, DN / PN or main dimensions, quantity; length in metres for straight pipe only). **Download CSV** and **Download XLSX** give the same tables. If the design has rebar sets (they come from a loaded assembly file, there is no rebar editor yet) the bar schedule is a second table. No weights or prices are invented. Code: `../core/engine/bom.js` (numbers, CSV), `../core/engine/xlsx.js` (XLSX writer). Arrow keys and Delete are ignored while the dialog is open.
 - Status bar: object/link count, broken links, conflict and warning counts.
 
 ## Moving parts
@@ -39,4 +40,4 @@ On GitHub Pages: `<site>/app/index.html`.
 
 ## Next
 - Convert the rich parametric models in `models/` into library components (see `docs/STUDIO.md`).
-- Rebar panel, bar schedule export, drawing sheets (plan / section / elevation).
+- Rebar panel (edit rebar sets inside the Studio; the bar schedule export is done, it is the second table of the BOM).

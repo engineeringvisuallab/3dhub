@@ -2,6 +2,6 @@
   "mesh":   { "glb": "ready (viewer)", "obj": "ready", "stl": "next", "fbx": "next", "dae": "next", "usdz": "later" },
   "cad":    { "dxf": "plan/section/elevation + rebar detail (vector)", "dwg": "later (via converter)", "step": "later (solid, needs B-rep kernel)" },
   "bim":    { "ifc": "IfcColumn + IfcReinforcingBar, IfcPipeSegment (later)", "rvt-family": "plugin package", "skp": "SketchUp ruby extension" },
-  "tables": { "xlsx": "bar bending schedule, quantities", "csv": "same", "json": "assembly file (re-open in the app)" },
+  "tables": { "xlsx": "ready: bill of materials + rebar schedule (Studio, BOM button)", "csv": "ready: same two tables", "json": "assembly file (re-open in the app)" },
   "rule": "every export is generated from the assembly json, never from screenshots; rebar bars export as separate named objects/layers"
 }

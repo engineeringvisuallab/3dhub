@@ -21,4 +21,4 @@ See `core/README.md`: component library + auto rebar + conflict checker (tests p
 
 ## 3D Studio (build by attaching ready models)
 On Windows double-click `start-studio.bat` (needs Python). Or open the site home and click **Open 3D Studio**. Or run `python -m http.server` and open `http://localhost:8000/app/index.html`. Take ready models from the library, attach them to each other, make a bigger model.
-Not a drafting tool, no CAD software copied, all software text English. Drawing sheet (plan / elevations / sections, DXF + SVG) is in the top bar. Full guide: `docs/STUDIO.md`.
+Not a drafting tool, no CAD software copied, all software text English. Drawing sheet (plan / elevations / sections, DXF + SVG) and **BOM** (bill of materials: quantities by model and size, CSV + XLSX) are in the top bar. Full guide: `docs/STUDIO.md`.

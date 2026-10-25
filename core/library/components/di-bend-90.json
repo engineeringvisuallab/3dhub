@@ -7,7 +7,7 @@
  "tags": [
   "fitting"
  ],
- "units": "mm",
+ "bom": { "ignore": ["turn"] }, "units": "mm",
  "parameters": {
   "DN": {
    "min": 100,

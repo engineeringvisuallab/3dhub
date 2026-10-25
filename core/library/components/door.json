@@ -7,7 +7,7 @@
  "tags": [
   "door"
  ],
- "units": "mm",
+ "bom": { "ignore": ["openAngle"] }, "units": "mm",
  "description": "Door with frame, one or two leaves, 17 designs, glass kinds, handles, side glass, fanlight and extras. Shapes are generated from the options by core/engine/gen/door.js (rules ported from models/building/door/parametric/door.html). Origin = bottom centre of the whole unit (frame + side glass). Outside = -Y. Ports L and R (face-h) sit on the outer edges, so walls attach in a line.",
  "parameters": {
   "design": {

@@ -2,6 +2,7 @@
 
 Not tested in a real browser yet: the engine (attach, conflicts, save/load, GLB/OBJ writers, the rich door) is covered by `cd core && npm test`;
 the page itself (buttons, panel, how the door looks in 3D) needs a first run on the owner's side. The Properties panel code for the door was run headless with a fake page (no real browser).
+The BOM button, dialog and downloads (round 6) were run in headless Chromium (details in "Changes in round 6"); that run does not replace a look on a normal desktop browser.
 
 ## What the owner wants (read this first)
 1. A browser app now, a desktop software later.
@@ -46,10 +47,28 @@ The sheet is A3, scale chosen automatically (1:20, 1:50, 1:100 ...), and holds t
 Line work: `docs/vdraw-engine.js` (hidden lines, section cut, hatch, DXF). Glue: `core/engine/drawing.js`. The DXF has only lines and text on layers (A-VIS, A-CUT, A-HATCH, A-DIM, A-TEXT, A-SECT, A-GROUND, A-FRAME). Indicative drawing from the 3D model: check all dimensions before manufacture or construction.
 Limits: at most 2 sections per sheet; big assemblies (hundreds of parts) can take a few seconds.
 
+## Bill of materials (BOM)
+Top bar > **BOM**. A dialog lists every part of the design, grouped by model and size:
+
+| Column | Meaning |
+|---|---|
+| Component / Component id | library name and id |
+| DN, PN | from the parameters `DN` and `PN` (blank when the model has none) |
+| Dimensions (mm) | the other numeric parameters, e.g. `len 1500`, `L 6000, W 5000, T 200`, reducer `DN2 200` |
+| Options | choice parameters, e.g. door design, finish, handle |
+| Qty | number of objects with exactly these parameters |
+| Unit length (m), Total length (m) | **straight pipe only** (`di-pipe`, `di-pipe-fl`); blank for everything else |
+
+Under the table: total number of parts and total straight pipe length. **Download CSV** / **Download XLSX** give the same tables (XLSX is written by `core/engine/xlsx.js`, no library). If the design has rebar sets, the bar schedule (bars, total length, kg per bar type, diameter and grade) is a second table (second sheet in XLSX).
+What it does not do, on purpose: no prices, no weights of library parts (the library has none), no concrete volumes, no length for bends, tees, valves or walls. Bends and other parts that only differ by direction (bend turn, tee branch, valve open, door open angle) are one line. Column rebar settings (cover, bar sizes, ties) are not part of the column line: they appear in the rebar schedule.
+Rebar sets come from an assembly file (they are not created in the Studio yet), so the second table appears after Load of such a file, for example `core/examples/column-with-rebar.assembly.json`. Manual bars in an assembly file (`bars`) are not part of the schedule, because the engine does not build them either.
+Pump station example (`pump-station-line.assembly.json`): 12 objects in 11 lines (2 bends in one line, 3 flanged pipes of 1.2 / 1.5 / 2.0 m) and 4.7 m of straight pipe.
+
 ## Add a new model to the Studio
 1. Write `core/library/components/<id>.json` (copy `door.json` as a template). Origin of building parts = bottom centre.
 2. Add `<id>` to `core/library/components/manifest.json` (the Studio reads this list; no code change needed).
 3. Run `cd core && npm test`, then open the Studio and try attaching it.
+4. The BOM needs no change: the new model is listed with its parameters. Only if a parameter just turns or poses the part (like a bend direction), add `"bom": { "ignore": ["<parameter>"] }` to its json so it does not split a BOM line. A straight pipe model gets a length in the BOM when it has the tag `pipe` and a parameter `len` (mm).
    For a model with many options (like the door) use a generator instead of a fixed shape list: see "Door" below and `core/README.md`.
 
 ## Door (rich model, converted in round 3)
@@ -101,6 +120,14 @@ Load `core/examples/pump-station-line.assembly.json` to see a finished line.
 Honest limits: a bend is two straight arms (a smooth bend needs a new `torus` shape type in `core/engine/shapes.js`, not done); sizes are a generic envelope; walls attach only in a straight line (no corner part yet), so place wall corners by position;
 the pump has flange ports only, so it is placed by position (raise it on a plinth so flanged fittings clear the floor: the conflict checker reports it if not);
 pipe through a wall uses `rcc-wall-opening` (round opening) by position. Next steps are listed below.
+
+## Changes in round 6 (bill of materials)
+- New: `core/engine/bom.js`, `core/engine/xlsx.js`, `core/tests/bom.mjs`
+- Changed: `app/index.html` (BOM button, dialog, styles), `app/studio.js` (BOM dialog, CSV / XLSX download, arrow keys ignored while the dialog is open), `core/package.json` (npm test runs bom.mjs), `core/schema/component.schema.json` and `core/export/formats.json` (documentation only), `README.md`, `app/README.md`, `core/README.md`, `docs/STUDIO.md`
+- Changed (one added key each, ids unchanged, old assemblies open as before): `di-bend-90`, `di-bend-45`, `di-tee`, `gate-valve`, `door`, `rcc-column` got `"bom": { "ignore": [...] }`
+- Tested: `cd core && npm test` passes. `tests/bom.mjs` (114 checks): the pump station example gives exactly 12 objects, 11 lines, bend quantity 2, pipes 1.2 / 1.5 / 2 m and 4.7 m total; grouping rules; every library component gives a BOM line; rebar schedule of the column example (6 bars 17.52 m 27.65 kg, 19 stirrups 21.812 m 8.61 kg, total 36.26 kg, checked by hand); CSV (quotes, line breaks, formula-looking names); XLSX (own ZIP reader with CRC check, XML well-formedness, values, second sheet). Also run by hand, outside `npm test`: the XLSX opened in LibreOffice (converted to PDF and CSV) and read with openpyxl, values identical; the real Studio page in headless Chromium (Load example, click BOM, read the dialog, click both download buttons and read the downloaded files, key guard, Escape, empty design message, HTML in the design name).
+- Not tested: Microsoft Excel itself; Safari, Firefox and phones; the browser run used a software renderer and three.js r128 served locally instead of the CDN; very large designs (800 objects were tested in the engine only).
+- Nothing to delete.
 
 ## Changes in this update (round 5: pump house parts and easy placement)
 - New: `core/engine/gen/pipefit.js`, `core/tests/pipefit.mjs`, `core/examples/pump-station-line.assembly.json`; components `di-bend-90`, `di-bend-45`, `di-tee`, `di-reducer`, `dismantling-joint`, `check-valve`, `butterfly-valve`, `rcc-beam`, `pump-plinth`
