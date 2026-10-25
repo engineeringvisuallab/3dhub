@@ -1,0 +1,150 @@
+{
+  "id": "column",
+  "name": "RCC Column with reinforcement (rectangular, round)",
+  "category": "building/column",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "shape": [
+      "rect",
+      "round"
+    ],
+    "b": {
+      "min": 200,
+      "max": 1000,
+      "step": 25
+    },
+    "h": {
+      "min": 200,
+      "max": 1000,
+      "step": 25
+    },
+    "D": {
+      "min": 250,
+      "max": 1200,
+      "step": 50
+    },
+    "height": {
+      "min": 1500,
+      "max": 8000,
+      "step": 100
+    },
+    "cover": [
+      40,
+      50,
+      75
+    ],
+    "fc": [
+      20,
+      25,
+      30,
+      35,
+      40
+    ],
+    "mainDia": [
+      12,
+      16,
+      20,
+      22,
+      25,
+      28,
+      32
+    ],
+    "barsAlongB": {
+      "min": 2,
+      "max": 8
+    },
+    "barsAlongH": {
+      "min": 2,
+      "max": 8
+    },
+    "roundBars": {
+      "min": 6,
+      "max": 24
+    },
+    "embedIntoFooting": {
+      "min": 0,
+      "max": 900,
+      "step": 50
+    },
+    "topLap40d": [
+      true,
+      false
+    ],
+    "tieDia": [
+      8,
+      10,
+      12
+    ],
+    "tieSpacing": {
+      "min": 75,
+      "max": 300,
+      "step": 25
+    },
+    "roundTies": [
+      "spiral",
+      "hoops"
+    ],
+    "spiralPitch": {
+      "min": 25,
+      "max": 100,
+      "step": 5
+    },
+    "seismicEndZones": [
+      true,
+      false
+    ],
+    "autoCrossTies": [
+      true,
+      false
+    ],
+    "extraTieHeights": "free list of heights in mm"
+  },
+  "groups": [
+    "Concrete",
+    "Rebar",
+    "Rebar/Main_Bars",
+    "Rebar/Ties",
+    "Rebar/Crossties"
+  ],
+  "rebarSource": "core/library/rebar/rebar-library.json (bars are separate objects; user can see and change every parameter)",
+  "rules": [
+    "section min 200 (round 250)",
+    "cover >= 40",
+    "steel 1-4 %",
+    "clear bar spacing >= max(40, 1.5d)",
+    "tie dia >= max(8, d/4)",
+    "tie spacing <= min(16d, 48 dt, least dimension)",
+    "spiral pitch 25-75",
+    "kL/r <= 100",
+    "every bar within 150 mm clear of a supported bar (cross-ties added automatically)"
+  ],
+  "outputs": [
+    "glb",
+    "obj",
+    "dxf drawing (elevation + section with rebar)",
+    "bar bending schedule csv",
+    "spec.json"
+  ],
+  "ports": [
+    {
+      "id": "base",
+      "type": "bearing",
+      "dir": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "id": "top",
+      "type": "bearing",
+      "dir": [
+        0,
+        1,
+        0
+      ]
+    }
+  ],
+  "coreComponent": "core/library/components/rcc-column.json"
+}

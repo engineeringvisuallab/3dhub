@@ -1,0 +1,270 @@
+{
+ "name": "Pump station line",
+ "units": "mm",
+ "links": [
+  {
+   "a": "S1.T",
+   "b": "pump-plinth-1.B"
+  },
+  {
+   "a": "PUMP.B",
+   "b": "dismantling-joint-1.A"
+  },
+  {
+   "a": "dismantling-joint-1.B",
+   "b": "check-valve-1.A"
+  },
+  {
+   "a": "check-valve-1.B",
+   "b": "butterfly-valve-1.A"
+  },
+  {
+   "a": "butterfly-valve-1.B",
+   "b": "di-bend-90-1.A"
+  },
+  {
+   "a": "di-bend-90-1.B",
+   "b": "di-pipe-fl-1.A"
+  },
+  {
+   "a": "di-pipe-fl-1.B",
+   "b": "di-bend-90-2.A"
+  },
+  {
+   "a": "di-bend-90-2.B",
+   "b": "di-pipe-fl-2.A"
+  },
+  {
+   "a": "PUMP.A",
+   "b": "gate-valve-1.A"
+  },
+  {
+   "a": "gate-valve-1.B",
+   "b": "di-pipe-fl-3.A"
+  }
+ ],
+ "instances": [
+  {
+   "id": "S1",
+   "component": "rcc-slab",
+   "params": {
+    "L": 6000,
+    "W": 5000,
+    "T": 200
+   },
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "pump-plinth-1",
+   "component": "pump-plinth",
+   "params": {
+    "L": 720,
+    "W": 700,
+    "T": 150
+   },
+   "pos": [
+    0,
+    0,
+    200
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "PUMP",
+   "component": "end-suction-pump",
+   "params": {
+    "DN": 200
+   },
+   "pos": [
+    0,
+    0,
+    350
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "dismantling-joint-1",
+   "component": "dismantling-joint",
+   "params": {
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    510,
+    0,
+    510
+   ],
+   "rot": [
+    0,
+    0,
+    -90
+   ]
+  },
+  {
+   "id": "check-valve-1",
+   "component": "check-valve",
+   "params": {
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    806,
+    0,
+    510
+   ],
+   "rot": [
+    0,
+    0,
+    -90
+   ]
+  },
+  {
+   "id": "butterfly-valve-1",
+   "component": "butterfly-valve",
+   "params": {
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    1028,
+    0,
+    510
+   ],
+   "rot": [
+    0,
+    0,
+    -90
+   ]
+  },
+  {
+   "id": "di-bend-90-1",
+   "component": "di-bend-90",
+   "params": {
+    "turn": "up",
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    1394,
+    0,
+    510
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "di-pipe-fl-1",
+   "component": "di-pipe-fl",
+   "params": {
+    "len": 1500,
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    1394,
+    0,
+    1550
+   ],
+   "rot": [
+    90,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "di-bend-90-2",
+   "component": "di-bend-90",
+   "params": {
+    "turn": "left",
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    1394,
+    0,
+    2590
+   ],
+   "rot": [
+    0,
+    -90,
+    0
+   ]
+  },
+  {
+   "id": "di-pipe-fl-2",
+   "component": "di-pipe-fl",
+   "params": {
+    "len": 2000,
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    1394,
+    1290,
+    2590
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "gate-valve-1",
+   "component": "gate-valve",
+   "params": {
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    -475,
+    0,
+    510
+   ],
+   "rot": [
+    0,
+    0,
+    90
+   ]
+  },
+  {
+   "id": "di-pipe-fl-3",
+   "component": "di-pipe-fl",
+   "params": {
+    "len": 1200,
+    "DN": 200,
+    "PN": 16
+   },
+   "pos": [
+    -1190,
+    0,
+    510
+   ],
+   "rot": [
+    0,
+    0,
+    90
+   ]
+  }
+ ]
+}

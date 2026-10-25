@@ -1,0 +1,14 @@
+{ "id": "flow-meter", "name": "Electromagnetic flow meter, flanged", "category": "water-supply/valve", "kind": "parametric", "tags": ["meter"], "units": "mm",
+  "parameters": { "DN": {"min":100,"max":600,"default":300}, "PN": {"default":16} },
+  "derived": {
+   "FTF": {"from":"DN","table":{"100":200,"150":300,"200":350,"250":450,"300":500,"400":600,"500":625,"600":650}},
+   "FOD": {"from":"DN","table":{"100":220,"150":285,"200":340,"250":405,"300":460,"400":580,"500":715,"600":840}} },
+  "shapes": [
+    { "id": "tube", "role": "solid", "type": "cylinder", "axis": "y", "radius": "$FOD/2", "length": "$FTF", "color": 10066329 },
+    { "id": "neck", "role": "solid", "type": "box", "size": [120, 120, 120], "at": [0,0,"$FOD/2+40"], "color": 10066329 },
+    { "id": "transmitter", "role": "solid", "type": "box", "size": [260, 180, 240], "at": [0,0,"$FOD/2+220"], "color": 2831255 },
+    { "id": "display-zone", "role": "clearance", "type": "box", "size": [400, 400, 300], "at": [0,0,"$FOD/2+250"] } ],
+  "ports": [
+    { "id": "A", "at": [0,"-$FTF/2",0], "dir": [0,-1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" },
+    { "id": "B", "at": [0,"$FTF/2",0], "dir": [0,1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" } ],
+  "description": "Flanged electromagnetic meter, generic envelope (length depends on the maker). Confirm sizes before use." }

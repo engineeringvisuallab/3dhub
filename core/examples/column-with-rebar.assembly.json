@@ -1,0 +1,3 @@
+{ "name": "Column C1 with cage", "units": "mm",
+  "instances": [ { "id": "C1", "component": "rcc-column", "params": { "b": 300, "h": 450, "H": 3000 }, "pos": [0,0,1500] } ],
+  "rebarSets": [ { "id": "C1-cage", "host": "C1", "template": "column-cage", "minCover": 40 } ] }

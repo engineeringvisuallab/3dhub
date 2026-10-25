@@ -1,0 +1,72 @@
+{
+  "matchRequired": [
+    "DN",
+    "PN",
+    "flangeStandard"
+  ],
+  "rejectMixedDia": true,
+  "reducerRule": "only a reducer changes the line DN; everything after it takes the new DN",
+  "chamberTypes": {
+    "valve": {
+      "allow": [
+        "GV",
+        "SV",
+        "BV",
+        "DJ",
+        "RED"
+      ],
+      "deny": [
+        "PRV",
+        "PSV",
+        "AV"
+      ]
+    },
+    "prv": {
+      "allow": [
+        "PRV",
+        "PSV",
+        "GV",
+        "SV",
+        "BV",
+        "DJ",
+        "RED"
+      ],
+      "deny": [
+        "AV"
+      ],
+      "require": [
+        "PRV or PSV",
+        "isolating valve before and after the pressure valve"
+      ]
+    },
+    "air": {
+      "allow": [
+        "AV",
+        "GV",
+        "SV",
+        "BV",
+        "DJ"
+      ],
+      "deny": [
+        "PRV",
+        "PSV"
+      ],
+      "require": [
+        "AV"
+      ]
+    }
+  },
+  "always": [
+    "dismantling joint when the chamber has any valve"
+  ],
+  "abbreviations": {
+    "GV": "gate valve",
+    "SV": "sluice valve",
+    "BV": "butterfly valve",
+    "PRV": "pressure reducing valve",
+    "PSV": "pressure sustaining valve",
+    "AV": "air valve",
+    "RED": "reducer",
+    "DJ": "dismantling joint"
+  }
+}

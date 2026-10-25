@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EVLab 3D Hub – Engineering 3D models that work like software</title>
+<meta name="description" content="Free parametric engineering 3D models: doors, windows, staircases, valve chambers. Open and close them in 3D, check the design rules, export DXF drawings and packages for Blender, SketchUp, AutoCAD and Revit.">
+<meta name="theme-color" content="#0a1830">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a1830'/%3E%3Cpath d='M32 10 52 21v22L32 54 12 43V21z' fill='none' stroke='%2322d3ee' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M12 21l20 11 20-11M32 32v22' fill='none' stroke='%2322d3ee' stroke-width='3.5' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f3f6fb;--fg:#0f1b2d;--mut:#52637b;--card:#fff;--bd:#dbe4ef;--ac:#0ea5e9;--ac2:#f59e0b;--chip:#e8f1fb;--navbg:rgba(243,246,251,.86);--sh:0 12px 32px rgba(15,27,45,.09);--ok:#16a34a;--hero1:#0a1830;--hero2:#12305a;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#08101d;--fg:#e6edf7;--mut:#93a4bb;--card:#0f1b2f;--bd:#1d2f4c;--chip:#13233c;--navbg:rgba(8,16,29,.86);--sh:0 12px 32px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#08101d;--fg:#e6edf7;--mut:#93a4bb;--card:#0f1b2f;--bd:#1d2f4c;--chip:#13233c;--navbg:rgba(8,16,29,.86);--sh:0 12px 32px rgba(0,0,0,.4)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 "Inter","Segoe UI",system-ui,-apple-system,Roboto,"Noto Sans Bengali",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}img,svg{display:block;max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+:focus-visible{outline:3px solid var(--ac);outline-offset:3px;border-radius:6px}
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:var(--navbg);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.01em}
+.brand svg{width:34px;height:34px}.brand b{color:var(--ac)}
+.links{display:flex;align-items:center;gap:26px;font-weight:600;font-size:15px;color:var(--mut)}
+.links a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-weight:700;font-size:15px;border:1px solid transparent;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;box-shadow:0 10px 24px rgba(14,165,233,.35)}
+.btn.sec{background:rgba(255,255,255,.08);color:#e6edf7;border-color:rgba(255,255,255,.28)}
+.btn.sm{padding:8px 14px;font-size:14px;border-radius:10px;background:var(--chip);color:var(--fg);border-color:var(--bd)}
+.tg{width:40px;height:40px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--fg);cursor:pointer;font-size:18px;line-height:1}
+/* hero */
+.hero{position:relative;overflow:hidden;color:#e6edf7;background:radial-gradient(900px 500px at 78% 30%,rgba(34,211,238,.18),transparent 60%),linear-gradient(135deg,var(--hero1),var(--hero2));background-color:var(--hero1)}
+.hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(125,180,255,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(125,180,255,.09) 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+.hero .wrap{position:relative;display:flex;align-items:center;gap:40px;padding-top:70px;padding-bottom:84px}
+.hero .txt{flex:1.15;min-width:0}.hero .art{flex:.85;min-width:0;display:flex;justify-content:center}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.35);color:#67e8f9;font-weight:700;font-size:13px;letter-spacing:.02em}
+.pill i{width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 0 4px rgba(34,211,238,.25)}
+h1{font-size:clamp(2.3rem,5.2vw,3.9rem);line-height:1.08;letter-spacing:-.025em;margin:20px 0 18px;font-weight:800}
+.grad{background:linear-gradient(90deg,#22d3ee,#60a5fa 55%,#fbbf24);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.lead{font-size:clamp(1.02rem,1.6vw,1.2rem);color:#b8c8de;max-width:600px;margin:0 0 26px}
+.bn{color:#7dd3fc;font-weight:600;margin:0 0 26px;font-size:1.02rem}
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:30px}
+.ticks{display:flex;flex-wrap:wrap;gap:10px 24px;color:#cbd9ec;font-size:14.5px;font-weight:600;padding:0;margin:0;list-style:none}
+.ticks li:before{content:"✓";color:#22d3ee;font-weight:800;margin-right:8px}
+/* hero door */
+.stage{position:relative;width:360px;height:430px;perspective:1100px;flex:none}
+.glow{position:absolute;left:50%;top:60px;width:260px;height:300px;margin-left:-130px;background:radial-gradient(closest-side,rgba(251,191,36,.45),transparent);filter:blur(8px)}
+.dframe{position:absolute;left:50%;top:48px;width:210px;height:330px;margin-left:-105px;border:13px solid #5b3a1c;border-radius:4px;background:linear-gradient(180deg,#fde68a,#f59e0b 120%);box-shadow:0 30px 50px rgba(0,0,0,.45)}
+.leaf{position:absolute;left:0;top:0;right:0;bottom:0;transform-origin:0 50%;background:linear-gradient(90deg,#c08f58,#8f5f30);box-shadow:inset 0 0 0 2px rgba(0,0,0,.18);animation:swing 9s ease-in-out infinite;transform-style:preserve-3d}
+.pn{position:absolute;left:16%;width:68%;border:2px solid rgba(60,36,12,.55);background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(0,0,0,.12));border-radius:2px}
+.p1{top:6%;height:26%}.p2{top:36%;height:18%}.p3{top:58%;height:34%}
+.knob{position:absolute;right:9%;top:50%;width:11px;height:11px;margin-top:-5px;border-radius:50%;background:#e5e7eb;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+.floor{position:absolute;left:10px;right:10px;top:391px;height:2px;background:#7dd3fc}
+.dim{position:absolute;color:#22d3ee;font:600 12px/1 Arial,sans-serif}
+.dv{right:14px;top:48px;height:343px;width:1px;background:#22d3ee}.dv:before,.dv:after{content:"";position:absolute;left:-5px;width:11px;height:1px;background:#22d3ee}.dv:after{bottom:0}
+.dv span{position:absolute;left:9px;top:150px;white-space:nowrap}
+.dh{left:50%;margin-left:-105px;width:210px;top:402px;height:1px;background:#22d3ee}.dh:before,.dh:after{content:"";position:absolute;top:-5px;width:1px;height:11px;background:#22d3ee}.dh:before{left:0}.dh:after{right:0}
+.dh span{position:absolute;left:92px;top:8px}
+.bdg{position:absolute;padding:7px 13px;border-radius:10px;background:rgba(16,28,48,.8);border:1px solid rgba(125,180,255,.35);color:#e6edf7;font-weight:700;font-size:12.5px;box-shadow:0 10px 22px rgba(0,0,0,.35);animation:fl 5s ease-in-out infinite}
+.bdg b{color:#22d3ee}.b1{left:0;top:80px}.b2{right:0;top:20px;animation-delay:.8s}.b3{left:6px;top:300px;animation-delay:1.6s}.b4{right:2px;top:250px;animation-delay:2.4s}
+@keyframes swing{0%,12%{transform:rotateY(0)}42%,62%{transform:rotateY(-70deg)}92%,100%{transform:rotateY(0)}}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+/* stats */
+.stats{margin-top:-38px;position:relative;z-index:5}
+.stats .wrap>div{display:flex;flex-wrap:wrap;background:var(--card);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh);overflow:hidden}
+.st{flex:1 1 200px;padding:24px 26px;text-align:center;border-right:1px solid var(--bd)}
+.st:last-child{border-right:0}.st b{display:block;font-size:2.2rem;line-height:1.1;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#0ea5e9,#2563eb);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.st span{color:var(--mut);font-weight:600;font-size:14px}
+/* sections */
+section{padding:84px 0 0}
+.sh{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:28px}
+.eb{color:var(--ac);font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.15;letter-spacing:-.02em;margin:6px 0 0;font-weight:800}
+.sub{color:var(--mut);max-width:620px;margin:10px 0 0}
+.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search{padding:11px 16px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font-size:15px;min-width:230px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{padding:8px 16px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--mut);font-weight:700;font-size:14px;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border-color:transparent}
+.grid{display:flex;flex-wrap:wrap;margin:-11px}
+.card{flex:1 1 320px;max-width:calc(33.333% - 22px);margin:11px;background:var(--card);border:1px solid var(--bd);border-radius:20px;overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(14,165,233,.2)}
+.card .im{position:relative;background:#0a1830}.card .im svg{width:100%;height:auto}
+.fr{position:absolute;left:14px;top:14px;padding:4px 11px;border-radius:99px;background:#16a34a;color:#fff;font-weight:800;font-size:12px;letter-spacing:.04em}
+.ct{position:absolute;right:14px;top:14px;padding:4px 11px;border-radius:99px;background:rgba(10,24,48,.75);border:1px solid rgba(125,180,255,.4);color:#bfe3ff;font-weight:700;font-size:12px}
+.card .bd{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
+.card h3{margin:0 0 8px;font-size:1.22rem;line-height:1.25;letter-spacing:-.01em}
+.card p{margin:0 0 14px;color:var(--mut);font-size:15px;flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}.tags span{padding:3px 10px;border-radius:8px;background:var(--chip);color:var(--mut);font-weight:600;font-size:12.5px}
+.card .go{display:flex;align-items:center;justify-content:space-between}
+.card .fm{color:var(--mut);font-size:12.5px;font-weight:600}
+.empty{padding:40px;text-align:center;color:var(--mut);border:2px dashed var(--bd);border-radius:18px;display:none}
+@media(max-width:980px){.card{max-width:calc(50% - 22px)}}
+@media(max-width:640px){.card{max-width:100%;flex-basis:100%}}
+/* features */
+.fgrid{display:flex;flex-wrap:wrap;margin:-10px}
+.ft{flex:1 1 320px;max-width:calc(33.333% - 20px);margin:10px;padding:26px;background:var(--card);border:1px solid var(--bd);border-radius:18px}
+.ic{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,rgba(14,165,233,.16),rgba(37,99,235,.16));display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--ac)}
+.ic svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ft h3{margin:0 0 8px;font-size:1.1rem}.ft p{margin:0;color:var(--mut);font-size:15px}
+@media(max-width:980px){.ft{max-width:calc(50% - 20px)}}@media(max-width:640px){.ft{max-width:100%;flex-basis:100%}}
+/* steps */
+.steps{display:flex;flex-wrap:wrap;margin:-10px}
+.sp{flex:1 1 280px;margin:10px;padding:26px;border-radius:18px;background:var(--card);border:1px solid var(--bd);position:relative}
+.sp .n{position:absolute;right:20px;top:14px;font-size:3.4rem;font-weight:800;color:var(--chip);line-height:1}
+.sp h3{margin:0 0 8px;font-size:1.15rem;position:relative}.sp p{margin:0;color:var(--mut);position:relative}
+/* software band */
+.band{margin-top:84px;padding:78px 0;color:#e6edf7;background:linear-gradient(135deg,var(--hero1),var(--hero2));position:relative;overflow:hidden}
+.band:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(125,180,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(125,180,255,.07) 1px,transparent 1px);background-size:34px 34px}
+.band .wrap{position:relative}.band .sub{color:#b8c8de}.band h2{color:#fff}
+.sw{display:flex;flex-wrap:wrap;margin:26px -9px -9px}
+.sx{flex:1 1 250px;max-width:calc(25% - 18px);margin:9px;padding:20px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(125,180,255,.25)}
+.sx b{display:flex;align-items:center;gap:9px;font-size:1.05rem;margin-bottom:6px}.sx b i{width:11px;height:11px;border-radius:50%}
+.sx span{color:#b8c8de;font-size:14px}
+@media(max-width:980px){.sx{max-width:calc(50% - 18px)}}@media(max-width:560px){.sx{max-width:100%;flex-basis:100%}}
+.fmts{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}.fmts span{padding:6px 13px;border-radius:99px;border:1px solid rgba(125,180,255,.35);color:#bfe3ff;font-weight:700;font-size:13px}
+/* roadmap */
+.prog{height:12px;border-radius:99px;background:var(--chip);overflow:hidden;margin:6px 0 30px}.prog i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0ea5e9,#22d3ee,#fbbf24)}
+.rm{display:flex;flex-wrap:wrap;margin:-9px}
+.rc{flex:1 1 300px;max-width:calc(33.333% - 18px);margin:9px;padding:22px;background:var(--card);border:1px solid var(--bd);border-radius:18px}
+.rc h3{margin:0 0 12px;font-size:1.05rem}
+.rc ul{list-style:none;margin:0;padding:0}.rc li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--bd);font-size:14.5px;color:var(--mut);font-weight:600}
+.rc li:first-child{border-top:0}.rc li.done{color:var(--fg)}
+.tag{padding:2px 10px;border-radius:99px;font-size:11.5px;font-weight:800;letter-spacing:.03em;background:var(--chip);color:var(--mut);white-space:nowrap}
+.tag.done{background:rgba(22,163,74,.15);color:var(--ok)}.tag.next{background:rgba(245,158,11,.18);color:#d97706}
+@media(max-width:980px){.rc{max-width:calc(50% - 18px)}}@media(max-width:640px){.rc{max-width:100%;flex-basis:100%}}
+/* cta + footer */
+.big{margin-top:84px;padding:54px 28px;border-radius:26px;text-align:center;color:#fff;background:radial-gradient(600px 260px at 50% 0,rgba(34,211,238,.3),transparent),linear-gradient(135deg,#0b2a55,#1d4ed8)}
+.big h2{color:#fff;margin:0 0 10px}.big p{color:#cfe3ff;margin:0 auto 24px;max-width:560px}
+.big .btn{background:#fff;color:#0b2a55;box-shadow:0 12px 28px rgba(0,0,0,.25)}
+footer{margin-top:84px;border-top:1px solid var(--bd);padding:34px 0 46px;color:var(--mut);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}footer a{color:var(--ac);font-weight:700}
+@media(max-width:820px){.hero .wrap{flex-direction:column;padding-top:46px;padding-bottom:70px}.links a.l{display:none}.stage{transform:scale(.88);transform-origin:top center;height:390px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body id="top">
+<header class="nav"><div class="wrap">
+ <a class="brand" href="#top" aria-label="EVLab 3D Hub home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0a1830"/><path d="M32 10 52 21v22L32 54 12 43V21z" fill="none" stroke="#22d3ee" stroke-width="3.5" stroke-linejoin="round"/><path d="M12 21l20 11 20-11M32 32v22" fill="none" stroke="#22d3ee" stroke-width="3.5" stroke-linejoin="round"/></svg>EVLab <b>3D Hub</b></a>
+ <nav class="links"><a class="l" href="../app/index.html" style="color:var(--ac)">3D Studio</a><a class="l" href="#models">Models</a><a class="l" href="#features">Features</a><a class="l" href="#software">Software</a><a class="l" href="#roadmap">Roadmap</a><button class="tg" id="theme" aria-label="Switch light / dark theme" title="Light / dark">◐</button></nav>
+</div></header>
+
+<main>
+<section class="hero" style="padding:0"><div class="wrap">
+ <div class="txt">
+  <span class="pill"><i></i>FREE · OPEN · ENGINEERING GRADE</span>
+  <h1>Engineering 3D models that <span class="grad">work like software</span></h1>
+  <p class="lead">Doors that open, valves that turn, stairs that follow the rules. Set the size, watch the design check itself, then download for Blender, SketchUp, AutoCAD and Revit, with real DXF drawings.</p>
+  <p class="bn">ইঞ্জিনিয়ারিং ৩ডি মডেল · দেখো, সাজাও, ডাউনলোড করো</p>
+  <div class="cta"><a class="btn pri" href="../app/index.html">Open 3D Studio →</a><a class="btn sec" href="#models">Browse models</a><a class="btn sec" href="#software">See what you download</a></div>
+  <ul class="ticks"><li>Open / close in 3D</li><li>Rules and clearances checked live</li><li>Plan, 2 sections, 4 elevations in DXF</li></ul>
+ </div>
+ <div class="art"><div class="stage" aria-hidden="true">
+  <div class="glow"></div><div class="dframe"><div class="leaf"><span class="pn p1"></span><span class="pn p2"></span><span class="pn p3"></span><i class="knob"></i></div></div><div class="floor"></div>
+  <div class="dim dv"><span>2100</span></div><div class="dim dh"><span>900</span></div>
+  <div class="bdg b1"><b>ON</b> / OFF mode</div><div class="bdg b2">DXF drawings</div><div class="bdg b3">IFC · Revit</div><div class="bdg b4">Blender add-on</div>
+ </div></div>
+</div></section>
+
+<div class="stats"><div class="wrap"><div>
+ <div class="st"><b data-n="0" id="nModels">0</b><span>Models, free now</span></div>
+ <div class="st"><b data-n="17">0</b><span>Door designs</span></div>
+ <div class="st"><b data-n="7">0</b><span>Drawing views per model</span></div>
+ <div class="st"><b data-n="10" data-plus="1">0</b><span>Export formats</span></div>
+</div></div></div>
+
+<section id="models"><div class="wrap">
+ <div class="sh"><div><span class="eb">Library</span><h2>Pick a model, make it yours</h2><p class="sub">Every model is parametric. Change the size and the rules update. Nothing leaves the browser.</p></div>
+  <div class="tools"><input class="search" id="q" type="search" placeholder="Search door, valve, stair…" aria-label="Search models"></div></div>
+ <div class="chips" id="chips"></div>
+ <div class="grid" id="grid"></div>
+ <div class="empty" id="empty">No model matches your search yet. More are coming, see the roadmap below.</div>
+</div></section>
+
+<section id="features"><div class="wrap">
+ <div class="sh"><div><span class="eb">Why EVLab</span><h2>Built like engineering software</h2><p class="sub">Not just shapes. Each model knows its parts, its limits and how it moves.</p></div></div>
+ <div class="fgrid">
+  <div class="ft"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h9l5 5v11H5z"/><path d="M14 4v5h5M9 15l2 2 4-4"/></svg></div><h3>Rule-checked design</h3><p>Stair riser and tread rules, valve and flange clearances, safety glass, sash limits. A design that would fail cannot be downloaded.</p></div>
+  <div class="ft"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V6l8-3 8 3v14M9 20v-6h6v6"/><path d="M15 10h.01"/></svg></div><h3>ON / OFF modes</h3><p>Doors swing, gates rise, handwheels turn, blinds roll. Every moving part is its own named group and exports as an Open / Close animation.</p></div>
+  <div class="ft"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9M15 15h6"/></svg></div><h3>Real drawings, real DXF</h3><p>Plan, two sections and four elevations on one A3 sheet with hidden lines removed, hatching, dimensions and section marks. Vector, not a picture.</p></div>
+  <div class="ft"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5M3 17.5l9 5 9-5"/></svg></div><h3>Groups that make sense</h3><p>Frame, shutter, hardware, glass, wall. Pick only what you need or take the whole assembly, the same way you would build it on site.</p></div>
+  <div class="ft"><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></div><h3>Plugins for your software</h3><p>One click gives a Blender add-on, a SketchUp extension, AutoCAD LISP and 3D DXF, IFC and a Revit script. Free models stay open.</p></div>
+  <div class="ft"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Free now, premium later</h3><p>Everything here is free to use with credit to EVLab. Premium (subscription) and a group builder (valve chamber, plant, building) grow from the same data.</p></div>
+ </div>
+</div></section>
+
+<section><div class="wrap">
+ <div class="sh"><div><span class="eb">How it works</span><h2>Three steps, no installs</h2></div></div>
+ <div class="steps">
+  <div class="sp"><span class="n">1</span><h3>Choose a model</h3><p>Door, window, staircase, valve chamber, pump, boundary wall. Pick the type, design, material and finish.</p></div>
+  <div class="sp"><span class="n">2</span><h3>Set the size</h3><p>Slide the dimensions. The page recalculates, flags problems and shows the drawings live.</p></div>
+  <div class="sp"><span class="n">3</span><h3>Download what you need</h3><p>GLB, OBJ, DXF drawings or a full software package. Only the type you chose is exported.</p></div>
+ </div>
+</div></section>
+
+<div class="band" id="software"><div class="wrap">
+ <span class="eb" style="color:#67e8f9">One model, every software</span><h2>Open it where you work</h2>
+ <p class="sub">Browsers cannot write native .rfa, .skp or .blend files, so each package gives you an add-on, extension or script that builds the model inside your program, with its groups, colours and parameters.</p>
+ <div class="sw">
+  <div class="sx"><b><i style="background:#f97316"></i>Blender</b><span>Add-on with groups, materials, parameters and Open / Close actions.</span></div>
+  <div class="sx"><b><i style="background:#60a5fa"></i>SketchUp</b><span>Extension (.rbz) and COLLADA (.dae), one group per part.</span></div>
+  <div class="sx"><b><i style="background:#ef4444"></i>AutoCAD · Civil 3D</b><span>3D DXF by layer, AutoLISP commands and the drawing sheet.</span></div>
+  <div class="sx"><b><i style="background:#22d3ee"></i>Revit · BIM</b><span>IFC4 with parameters and a pyRevit script for Generic Models.</span></div>
+ </div>
+ <div class="fmts"><span>GLB</span><span>OBJ</span><span>DXF</span><span>DAE</span><span>IFC</span><span>STL</span><span>LSP</span><span>RBZ</span><span>Blender .py</span><span>Revit .py</span></div>
+</div></div>
+
+<section id="roadmap"><div class="wrap">
+ <div class="sh"><div><span class="eb">Roadmap</span><h2>More models, one by one</h2><p class="sub">Built in this order. Each new model comes with drawings, DXF and software packages from day one.</p></div><b id="rmCount" style="color:var(--ac)"></b></div>
+ <div class="prog"><i id="rmBar" style="width:0"></i></div>
+ <div class="rm" id="rm"></div>
+</div></section>
+
+<div class="wrap"><div class="big"><h2>Start with the valve chamber builder</h2><p>Add gate, butterfly and pressure valves, air valves and reducers. Clearances and rules are checked as you go.</p><a class="btn" id="cta" href="#models">Open the library →</a></div></div>
+</main>
+
+<footer><div class="wrap"><div><b>EVLab 3D Hub</b> · part of EVLab. Free to use with credit “EVLab”. All rights reserved. No re-upload or resale.</div><div>Dimensions are indicative. Verify before manufacture or construction. © <span id="yr"></span> EVLab</div></div></footer>
+
+<script>
+const ART={door:`<svg xmlns="http://www.w3.org/2000/svg" role="img" focusable="false" viewBox="0 0 320 200"><defs><linearGradient id="d_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="d_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern><linearGradient id="d_wd" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b9854f"/><stop offset="1" stop-color="#8a5a2c"/></linearGradient><linearGradient id="d_gl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fde68a" stop-opacity=".9"/><stop offset="1" stop-color="#f59e0b" stop-opacity=".25"/></linearGradient></defs><rect width="320" height="200" fill="url(#d_bg)"/><rect width="320" height="200" fill="url(#d_gr)"/><rect x="108" y="24" width="104" height="152" rx="2" fill="#5b3a1c"/><rect x="118" y="34" width="84" height="142" fill="url(#d_gl)"/><polygon points="118,34 178,46 178,166 118,176" fill="url(#d_wd)"/><polygon points="127,48 168,55 168,86 127,88" fill="#a2713d" stroke="#6b4423" stroke-width="1.2"/><polygon points="127,96 168,95 168,128 127,132" fill="#a2713d" stroke="#6b4423" stroke-width="1.2"/><polygon points="127,140 168,137 168,158 127,162" fill="#a2713d" stroke="#6b4423" stroke-width="1.2"/><circle cx="171" cy="110" r="3.2" fill="#e5e7eb"/><path d="M118 176 Q178 150 214 168" fill="none" stroke="#22d3ee" stroke-width="1.4" stroke-dasharray="4 3"/><line x1="40" y1="176" x2="280" y2="176" stroke="#7dd3fc" stroke-width="1.5"/><g stroke="#22d3ee" stroke-width="1" fill="#22d3ee" font-family="Arial" font-size="9"><line x1="232" y1="24" x2="232" y2="176"/><line x1="228" y1="24" x2="236" y2="24"/><line x1="228" y1="176" x2="236" y2="176"/><text x="240" y="104" stroke="none">2100</text><line x1="108" y1="188" x2="212" y2="188"/><text x="146" y="198" stroke="none">900</text></g></svg>`,window:`<svg xmlns="http://www.w3.org/2000/svg" role="img" focusable="false" viewBox="0 0 320 200"><defs><linearGradient id="w_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="w_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern><linearGradient id="w_sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#e0f2fe"/></linearGradient></defs><rect width="320" height="200" fill="url(#w_bg)"/><rect width="320" height="200" fill="url(#w_gr)"/><rect x="86" y="30" width="148" height="120" rx="2" fill="#e5e7eb"/><rect x="94" y="38" width="132" height="104" fill="url(#w_sk)"/><polygon points="94,38 146,46 146,134 94,142" fill="#bae6fd" fill-opacity=".75" stroke="#f8fafc" stroke-width="4"/><line x1="94" y1="90" x2="146" y2="90" stroke="#f8fafc" stroke-width="2"/><rect x="152" y="38" width="74" height="104" fill="#bae6fd" fill-opacity=".55" stroke="#f8fafc" stroke-width="4"/><line x1="189" y1="38" x2="189" y2="142" stroke="#f8fafc" stroke-width="2"/><line x1="152" y1="90" x2="226" y2="90" stroke="#f8fafc" stroke-width="2"/><rect x="78" y="150" width="164" height="8" rx="1.5" fill="#cbd5e1"/><g stroke="#334155" stroke-width="1.4"><line x1="94" y1="38" x2="94" y2="142"/></g><circle cx="142" cy="92" r="2.6" fill="#475569"/><path d="M94 142 Q132 118 146 134" fill="none" stroke="#22d3ee" stroke-width="1.3" stroke-dasharray="4 3"/><g stroke="#22d3ee" stroke-width="1" fill="#22d3ee" font-family="Arial" font-size="9"><line x1="86" y1="172" x2="234" y2="172"/><line x1="86" y1="168" x2="86" y2="176"/><line x1="234" y1="168" x2="234" y2="176"/><text x="146" y="184" stroke="none">1200</text></g></svg>`,staircase:`<svg xmlns="http://www.w3.org/2000/svg" role="img" focusable="false" viewBox="0 0 320 200"><defs><linearGradient id="s_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="s_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern><linearGradient id="s_top" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient></defs><rect width="320" height="200" fill="url(#s_bg)"/><rect width="320" height="200" fill="url(#s_gr)"/><g stroke="#64748b" stroke-width="1"><polygon points="70,160 110,140 150,140 110,160" fill="url(#s_top)"/><polygon points="70,160 110,160 110,172 70,172" fill="#94a3b8"/><polygon points="110,160 150,140 150,152 110,172" fill="#64748b"/><polygon points="100,140 140,120 180,120 140,140" fill="url(#s_top)"/><polygon points="100,140 140,140 140,152 100,152" fill="#94a3b8"/><polygon points="140,140 180,120 180,132 140,152" fill="#64748b"/><polygon points="130,120 170,100 210,100 170,120" fill="url(#s_top)"/><polygon points="130,120 170,120 170,132 130,132" fill="#94a3b8"/><polygon points="170,120 210,100 210,112 170,132" fill="#64748b"/><polygon points="160,100 200,80 240,80 200,100" fill="url(#s_top)"/><polygon points="160,100 200,100 200,112 160,112" fill="#94a3b8"/><polygon points="200,100 240,80 240,92 200,112" fill="#64748b"/><polygon points="190,80 230,60 270,60 230,80" fill="url(#s_top)"/><polygon points="190,80 230,80 230,92 190,92" fill="#94a3b8"/><polygon points="230,80 270,60 270,72 230,92" fill="#64748b"/></g><g stroke="#22d3ee" stroke-width="2" fill="none"><polyline points="70,128 110,108 150,88 190,68 230,48 270,28"/></g><g stroke="#22d3ee" stroke-width="1.2"><line x1="70" y1="128" x2="70" y2="160"/><line x1="110" y1="108" x2="110" y2="140"/><line x1="150" y1="88" x2="150" y2="120"/><line x1="190" y1="68" x2="190" y2="100"/><line x1="230" y1="48" x2="230" y2="80"/><line x1="270" y1="28" x2="270" y2="60"/></g><g fill="#22d3ee" font-family="Arial" font-size="9"><text x="22" y="150">R 167</text><text x="116" y="182">T 270</text></g></svg>`,'valve-chamber':`<svg xmlns="http://www.w3.org/2000/svg" role="img" focusable="false" viewBox="0 0 320 200"><defs><linearGradient id="c_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="c_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern><pattern id="c_ht" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#94a3b8" stroke-width="1"/></pattern><linearGradient id="c_pp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#94a3b8"/><stop offset="1" stop-color="#475569"/></linearGradient></defs><rect width="320" height="200" fill="url(#c_bg)"/><rect width="320" height="200" fill="url(#c_gr)"/><rect x="40" y="36" width="240" height="132" fill="url(#c_ht)" stroke="#cbd5e1" stroke-width="1.5"/><rect x="58" y="52" width="204" height="100" fill="#0a1830" stroke="#cbd5e1" stroke-width="1.5"/><rect x="24" y="96" width="272" height="16" fill="url(#c_pp)"/><line x1="24" y1="104" x2="296" y2="104" stroke="#e2e8f0" stroke-width=".8" stroke-dasharray="6 3"/><rect x="92" y="90" width="6" height="28" fill="#38bdf8"/><rect x="104" y="92" width="38" height="24" rx="3" fill="#2563eb"/><rect x="142" y="90" width="6" height="28" fill="#38bdf8"/><rect x="118" y="70" width="8" height="22" fill="#60a5fa"/><line x1="122" y1="56" x2="122" y2="70" stroke="#e2e8f0" stroke-width="2.5"/><ellipse cx="122" cy="56" rx="17" ry="4.5" fill="none" stroke="#22d3ee" stroke-width="2.4"/><rect x="176" y="90" width="6" height="28" fill="#38bdf8"/><rect x="182" y="92" width="26" height="24" fill="#4ade80" fill-opacity=".85"/><rect x="208" y="90" width="6" height="28" fill="#38bdf8"/><rect x="224" y="90" width="6" height="28" fill="#38bdf8"/><rect x="230" y="92" width="20" height="24" fill="#94a3b8"/><line x1="40" y1="30" x2="280" y2="30" stroke="#7dd3fc" stroke-width="1.5" stroke-dasharray="8 4"/><g fill="#22d3ee" font-family="Arial" font-size="9"><text x="46" y="26">GL</text><text x="94" y="136">GV</text><text x="188" y="136">PRV</text><text x="233" y="136">DJ</text></g></svg>`,pump:`<svg xmlns="http://www.w3.org/2000/svg" role="img" focusable="false" viewBox="0 0 320 200"><defs><linearGradient id="p_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="p_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern></defs><rect width="320" height="200" fill="url(#p_bg)"/><rect width="320" height="200" fill="url(#p_gr)"/><rect x="40" y="150" width="240" height="10" fill="#555b62"/><rect x="170" y="96" width="90" height="50" rx="4" fill="#2e8b57"/><rect x="260" y="104" width="14" height="34" fill="#222"/><rect x="140" y="104" width="30" height="34" fill="#94a3b8"/><circle cx="104" cy="121" r="34" fill="#1f5fa8" stroke="#7dd3fc" stroke-width="2"/><circle cx="104" cy="121" r="20" fill="#d9a441"/><rect x="40" y="114" width="30" height="14" fill="#38bdf8"/><rect x="92" y="52" width="24" height="40" fill="#38bdf8"/><rect x="84" y="46" width="40" height="8" fill="#7dd3fc"/><g stroke="#22d3ee" stroke-width="2" fill="none"><path d="M104 121l14-8M104 121l-6 15M104 121l-8-14"/></g><rect x="60" y="160" width="12" height="14" fill="#555b62"/><rect x="250" y="160" width="12" height="14" fill="#555b62"/></svg>`,'boundary-wall':`<svg xmlns="http://www.w3.org/2000/svg" role="img" focusable="false" viewBox="0 0 320 200"><defs><linearGradient id="b_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="b_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern></defs><rect width="320" height="200" fill="url(#b_bg)"/><rect width="320" height="200" fill="url(#b_gr)"/><rect x="20" y="164" width="280" height="12" fill="#7a5c3a" fill-opacity=".6"/><g fill="#e8dcc0" stroke="#94a3b8"><rect x="36" y="64" width="14" height="100"/><rect x="152" y="64" width="14" height="100"/><rect x="270" y="64" width="14" height="100"/></g><rect x="50" y="76" width="102" height="88" fill="#a8503a" stroke="#6b2f20"/><rect x="50" y="70" width="102" height="6" fill="#8d8d8a"/><g stroke="#6b2f20" stroke-width=".8"><line x1="50" y1="94" x2="152" y2="94"/><line x1="50" y1="112" x2="152" y2="112"/><line x1="50" y1="130" x2="152" y2="130"/><line x1="50" y1="148" x2="152" y2="148"/></g><rect x="166" y="132" width="104" height="32" fill="#e8dcc0" stroke="#94a3b8"/><g stroke="#22d3ee" stroke-width="2"><line x1="166" y1="74" x2="270" y2="74"/><line x1="166" y1="128" x2="270" y2="128"/><path d="M178 74v54M190 74v54M202 74v54M214 74v54M226 74v54M238 74v54M250 74v54M262 74v54"/></g><g stroke="#7dd3fc" stroke-width="1" fill="#7dd3fc" font-family="Arial" font-size="9"><line x1="300" y1="64" x2="300" y2="164"/><text x="288" y="58" stroke="none">H</text></g></svg>`,generic:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200"><defs><linearGradient id="g_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17386a"/><stop offset="1" stop-color="#0a1830"/></linearGradient><pattern id="g_gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b78c4" stroke-opacity=".28"/></pattern></defs><rect width="320" height="200" fill="url(#g_bg)"/><rect width="320" height="200" fill="url(#g_gr)"/><g fill="none" stroke="#22d3ee" stroke-width="2.4" stroke-linejoin="round"><path d="M160 46 214 77v62l-54 31-54-31V77z"/><path d="M106 77l54 31 54-31M160 108v62"/></g></svg>`};
+const FALL=[
+{id:"valve-chamber",name:"Valve Chamber (builder)",tier:"free",path:"models/water-supply/chambers/valve-chamber",page:"parametric/valve-chamber.html",category:"Water supply",tags:["GV","SV","BV","PRV","PSV","AV","reducer"],desc:"Choose the chamber type, add valves in flow order. Clearances, isolating valves and dismantling joints are checked live."},
+{id:"door",name:"Doors",tier:"free",path:"models/building/door",page:"parametric/door.html",category:"Building",tags:["wood","steel","aluminium","PVC","single / double"],desc:"17 designs in four materials with 11 glass types, handles, side glass and fanlight. Open and close in 3D."},
+{id:"window",name:"Windows",tier:"free",path:"models/building/window",page:"parametric/window.html",category:"Building",tags:["casement","sliding","awning","louvre","grill"],desc:"Casement, sliding, awning, double hung, louvre and fixed windows with nets, blinds, shutters and safety glass rules."},
+{id:"railing",name:"Railing / handrail",tier:"free",path:"models/building/railing",page:"parametric/railing.html",category:"Building",tags:["balusters","glass","cable","gate","stair","balcony"],desc:"Straight, L-corner or sloped rails. Post section, span and baluster gap come from the use and the load. Optional self-closing gate."},
+{id:"staircase",name:"Staircase",tier:"free",path:"models/building/staircase",page:"parametric/staircase.html",category:"Building",tags:["straight","L","U","RCC","steel"],desc:"Riser, tread, landing, slab depth and floor opening come from the floor height and the stair rules."},
+{id:"pump",name:"Pumps",tier:"free",path:"models/water-supply/pumps",page:"parametric/pump.html",category:"Water supply",tags:["end-suction","inline","split-case","submersible","turbine"],desc:"Five pump types. Enter flow and head: motor size, stages and pipe size follow, and designs that fail velocity or power rules are blocked."},
+{id:"room-interior",name:"Room Interior (Bedroom)",tier:"free",path:"models/building/room-interior",page:"parametric/room-interior.html",category:"Building",tags:["wardrobe","bed","desk","dresser","false ceiling"],desc:"Full bedroom interior: wardrobe with loft (sliding or hinged), bed, bedside cabinets, study desk, bookshelf, dresser, curtain and cove light. Circulation and window rules are checked."},
+{id:"rebar",name:"Reinforcement Bar + Cage Capacity",tier:"free",path:"models/building/rebar",page:"parametric/rebar.html",category:"Building",tags:["plain","Gr 420","TMT 500","epoxy","stirrup","beam","column"],desc:"Plain, Gr 420, TMT 500 and epoxy-coated bars. Eight bar shapes with ld, lap and hook lengths, plus RC beam and column cages with moment, shear and axial capacity."},
+{id:"boundary-wall",name:"Boundary Wall",tier:"free",path:"models/building/boundary-wall",page:"parametric/boundary-wall.html",category:"Building",tags:["brick","precast","grille","chain-link","security"],desc:"Five boundary wall and fence types. Column size, footing depth and quantities follow the height, and designs that fail the rules are blocked."}];
+const ROAD=[["Already built",[["Valve chamber builder","done"],["Doors","done"],["Windows","done"],["Room interior (bedroom)","done"],["Reinforcement bar + cage capacity","done"]]],["Building",[["Staircase","done"],["Railing / handrail","done"],["Column (RCC, steel)","next"],["Beam"],["Slab (flat, ribbed)"],["Wall (brick, RCC)"],["Roof truss"],["Gate"],["Boundary wall + fence","done"],["Lift shaft + car"],["Ramp"],["Parapet + roof drain"]]],
+["Water supply",[["Pipe fittings set"],["Fire hydrant"],["Water meter + chamber"],["Pump set","done"],["Overhead tank"],["Underground reservoir"],["Deep tube well head"],["Water manhole"],["Washout chamber"],["Thrust block + support"]]],
+["Treatment plant",[["Intake structure"],["Aerator"],["Flocculator / clarifier"],["Rapid sand filter"],["Clear water tank"],["Chemical dosing house"]]],
+["Sanitary",[["Sewer manhole"],["Septic tank"],["Soak well"],["Inspection chamber"],["Gully trap"],["Fixtures (WC, basin, shower)"]]],
+["Electrical",[["Distribution board"],["Switch + socket"],["Street light pole"]]],
+["Road & structure",[["Box culvert"],["Footbridge"],["Road section + kerb"]]]
+];
+const CATN={"building":"Building","water-supply":"Water supply","treatment-plant":"Treatment plant","sanitary":"Sanitary","electrical":"Electrical","roads":"Road & structure"};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let ITEMS=FALL,cat="All";
+function art(it){return ART[it.id]||ART.generic}
+function card(it){const href='../'+it.path+'/'+it.page;return '<article class="card" data-c="'+esc(it.category)+'" data-s="'+esc((it.name+' '+it.category+' '+(it.tags||[]).join(' ')+' '+(it.desc||'')).toLowerCase())+'"><a class="im" href="'+href+'" aria-label="Open '+esc(it.name)+'">'+art(it)+'<span class="fr">'+(it.tier==='premium'?'PREMIUM':'FREE')+'</span><span class="ct">'+esc(it.category)+'</span></a><div class="bd"><h3>'+esc(it.name)+'</h3><p>'+esc(it.desc||'')+'</p><div class="tags">'+(it.tags||[]).slice(0,6).map(t=>'<span>'+esc(t)+'</span>').join('')+'</div><div class="go"><a class="btn sm" href="'+href+'">Open model →</a><span class="fm">3D · DXF · Software</span></div></div></article>'}
+function render(){const cats=['All',...new Set(ITEMS.map(i=>i.category))];$('chips').innerHTML=cats.map(c=>'<button class="chip'+(c===cat?' on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>').join('');$('grid').innerHTML=ITEMS.map(card).join('');filter();$('nModels').dataset.n=ITEMS.length}
+function filter(){const q=$('q').value.trim().toLowerCase();let n=0;document.querySelectorAll('#grid .card').forEach(c=>{const ok=(cat==='All'||c.dataset.c===cat)&&(!q||c.dataset.s.indexOf(q)>-1);c.style.display=ok?'':'none';if(ok)n++});$('empty').style.display=n?'none':'block'}
+$('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;cat=b.dataset.c;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));filter()});
+$('q').addEventListener('input',filter);
+function roadmap(){let done=0,all=0;const html=ROAD.map(([t,l])=>{return '<div class="rc"><h3>'+t+'</h3><ul>'+l.map(([n,s])=>{all++;if(s==='done')done++;return '<li class="'+(s||'')+'"><span>'+n+'</span><span class="tag '+(s||'')+'">'+(s==='done'?'DONE':s==='next'?'NEXT':'PLANNED')+'</span></li>'}).join('')+'</ul></div>'}).join('');$('rm').innerHTML=html;$('rmCount').textContent=done+' of '+all+' done';$('rmBar').style.width=Math.round(done/all*100)+'%'}
+function counters(){const els=document.querySelectorAll('.st b');const run=e=>{const to=+e.dataset.n,pl=e.dataset.plus?'+':'';if(matchMedia('(prefers-reduced-motion: reduce)').matches){e.textContent=to+pl;return}let t0=null;const step=t=>{t0=t0||t;const p=Math.min(1,(t-t0)/1100);e.textContent=Math.round(to*(1-Math.pow(1-p,3)))+(p===1?pl:'');if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)};
+ if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){run(x.target);io.unobserve(x.target)}}),{threshold:.4});els.forEach(e=>io.observe(e))}else els.forEach(run)}
+$('theme').addEventListener('click',()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('evlab-theme',r.dataset.theme)}catch(e){}});
+try{const t=localStorage.getItem('evlab-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
+$('yr').textContent=new Date().getFullYear();
+async function init(){try{const r=await fetch('../commerce/catalog/catalog.json');const j=await r.json();if(j.items&&j.items.length)ITEMS=j.items.map(x=>({...x,category:x.category||CATN[(x.path||'').split('/')[1]]||'Models',desc:x.desc||(FALL.find(f=>f.id===x.id)||{}).desc||''}))}catch(e){}
+ render();roadmap();counters()}
+init();
+</script>
+</body>
+</html>

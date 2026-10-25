@@ -1,0 +1,14 @@
+{ "id": "ball-valve", "name": "Ball valve, flanged (lever)", "category": "water-supply/valve", "kind": "parametric", "tags": ["valve"], "units": "mm",
+  "parameters": { "DN": {"min":100,"max":600,"default":300}, "PN": {"default":16} },
+  "derived": {
+   "FTF": {"from":"DN","table":{"100":190,"150":210,"200":230,"250":250,"300":270,"400":310,"500":350,"600":390}},
+   "FOD": {"from":"DN","table":{"100":220,"150":285,"200":340,"250":405,"300":460,"400":580,"500":715,"600":840}} },
+  "shapes": [
+    { "id": "body", "role": "solid", "type": "cylinder", "axis": "y", "radius": "$FOD/2", "length": "$FTF", "color": 3368601 },
+    { "id": "neck", "role": "solid", "type": "box", "size": [90, "$FTF*0.4", 160], "at": [0,0,"$FOD/2+40"], "color": 3368601 },
+    { "id": "lever", "role": "solid", "type": "box", "size": ["$DN*1.0", 40, 30], "at": ["$DN*0.45",0,"$FOD/2+140"], "color": 13395456 },
+    { "id": "lever-swing", "role": "clearance", "type": "box", "size": ["$DN*1.2", "$DN*1.2", 120], "at": [0,0,"$FOD/2+140"] } ],
+  "ports": [
+    { "id": "A", "at": [0,"-$FTF/2",0], "dir": [0,-1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" },
+    { "id": "B", "at": [0,"$FTF/2",0], "dir": [0,1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" } ],
+  "description": "Flanged ball valve, generic envelope (face to face as gate valve EN 558 series 14). Confirm sizes with the maker." }

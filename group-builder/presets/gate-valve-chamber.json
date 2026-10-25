@@ -1,0 +1,19 @@
+{
+  "id": "gate-valve-chamber-assembly",
+  "params": [
+    "DN",
+    "PN",
+    "L",
+    "W",
+    "H"
+  ],
+  "parts": [
+    "gate-valve-chamber",
+    "di-pipe-stub x2",
+    "gate-valve",
+    "dismantling-joint",
+    "flange gasket x3",
+    "nut-bolt set x3"
+  ],
+  "rule": "all parts take the same DN and PN"
+}

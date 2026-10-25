@@ -1,0 +1,26 @@
+{
+  "unit": "mm",
+  "wallToFlange": 300,
+  "sideAccess": 450,
+  "aboveHandwheel": 300,
+  "belowFlange": 300,
+  "accessOpening": [
+    600,
+    600
+  ],
+  "wallThickness": [
+    {
+      "maxH": 1500,
+      "t": 200
+    },
+    {
+      "maxH": 2500,
+      "t": 250
+    },
+    {
+      "maxH": 99999,
+      "t": 300
+    }
+  ],
+  "slab": 200
+}

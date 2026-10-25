@@ -1,0 +1,134 @@
+{
+  "id": "door",
+  "name": "Door (wood, steel, aluminium, PVC; single / double)",
+  "category": "building/door",
+  "tier": "free",
+  "units": "mm",
+  "types": {
+    "wood": [
+      "p4",
+      "p6",
+      "p2",
+      "shaker",
+      "glass",
+      "louvre",
+      "groove",
+      "flush",
+      "zbrace"
+    ],
+    "steel": [
+      "stpanel",
+      "stflush",
+      "stfire",
+      "stgrill"
+    ],
+    "alu": [
+      "alfull",
+      "almid"
+    ],
+    "pvc": [
+      "pvcrib",
+      "pvcpanel"
+    ]
+  },
+  "parameters": {
+    "design": [
+      "p2",
+      "p4",
+      "p6",
+      "flush"
+    ],
+    "wood": [
+      "teak",
+      "mahogany",
+      "oak",
+      "walnut"
+    ],
+    "shutterW": {
+      "min": 600,
+      "max": 1200,
+      "step": 25
+    },
+    "shutterH": {
+      "min": 1800,
+      "max": 2700,
+      "step": 50
+    },
+    "thickness": {
+      "options": [
+        32,
+        38,
+        45,
+        50
+      ],
+      "minByWidth": {
+        "<=900": 32,
+        "<=1050": 38,
+        ">1050": 45
+      }
+    },
+    "hinges": "3, 4 when H>2200 or W>1000",
+    "hingeSide": [
+      "L",
+      "R"
+    ],
+    "swing": [
+      "in",
+      "out"
+    ],
+    "hardware": [
+      "brass",
+      "steel",
+      "black"
+    ],
+    "leaves": [
+      1,
+      2
+    ],
+    "glass": [
+      "clear",
+      "frost",
+      "grey",
+      "bronze",
+      "blue",
+      "lowe",
+      "reeded",
+      "pebble",
+      "wired",
+      "stained",
+      "mirror"
+    ],
+    "glassType": [
+      "tempered",
+      "laminated"
+    ],
+    "handles": [
+      "lever",
+      "knob",
+      "bar",
+      "digital"
+    ],
+    "sideGlass": [
+      0,
+      1,
+      2
+    ],
+    "fanlight": true,
+    "extras": [
+      "peephole",
+      "closer",
+      "kickplate",
+      "letterbox",
+      "numberplate"
+    ]
+  },
+  "ports": [],
+  "compat": {
+    "allowedIn": [
+      "wall"
+    ]
+  },
+  "files": {
+    "parametric": "parametric/door.html"
+  }
+}

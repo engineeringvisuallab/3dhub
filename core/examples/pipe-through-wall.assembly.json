@@ -1,0 +1,3 @@
+{ "name": "DN300 DI pipe through chamber wall", "units": "mm",
+  "instances": [ { "id": "W1", "component": "rcc-wall-opening", "params": { "openDia": 400, "openZ": 1200 }, "pos": [0,0,1250] },
+                 { "id": "P1", "component": "di-pipe", "params": { "OD": 324, "len": 1500 }, "pos": [0,0,1200] } ] }

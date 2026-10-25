@@ -1,0 +1,6 @@
+{ "id": "di-pipe-fl", "name": "DI pipe, flanged both ends", "category": "water-supply/pipe", "kind": "parametric", "tags": ["pipe"], "units": "mm",
+  "parameters": { "DN": {"min":100,"max":600,"default":300}, "PN": {"default":16}, "len": {"min":300,"max":6000,"default":1500} },
+  "derived": { "OD": { "from": "DN", "table": {"100":118,"150":170,"200":222,"250":274,"300":326,"400":429,"500":532,"600":635} } },
+  "shapes": [ { "id": "barrel", "role": "solid", "type": "cylinder", "axis": "y", "radius": "$OD/2", "length": "$len" } ],
+  "ports": [ { "id": "A", "at": [0,"-$len/2",0], "dir": [0,-1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" },
+             { "id": "B", "at": [0,"$len/2",0], "dir": [0,1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" } ] }

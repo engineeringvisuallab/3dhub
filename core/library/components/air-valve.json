@@ -1,0 +1,11 @@
+{ "id": "air-valve", "name": "Air valve, flanged (double orifice)", "category": "water-supply/valve", "kind": "parametric", "tags": ["valve"], "units": "mm",
+  "parameters": { "DN": {"min":100,"max":600,"default":300}, "PN": {"default":16} },
+  "derived": {
+ "FOD": {"from":"DN","table":{"100":220,"150":285,"200":340,"250":405,"300":460,"400":580,"500":715,"600":840}},
+ "T": {"from":"DN","table":{"100":19,"150":19,"200":20,"250":22,"300":24.5,"400":28,"500":31.5,"600":36}} },
+  "shapes": [
+    { "id": "base", "role": "solid", "type": "cylinder", "axis": "z", "radius": "$FOD/2", "length": "$T", "at": [0,0,"$T/2"], "color": 3368601 },
+    { "id": "body", "role": "solid", "type": "cylinder", "axis": "z", "radius": "$DN*0.45", "length": "$DN*1.6", "at": [0,0,"$T+$DN*0.8"], "color": 3368601 },
+    { "id": "dome", "role": "solid", "type": "cylinder", "axis": "z", "radius": "$DN*0.3", "length": "$DN*0.4", "at": [0,0,"$T+$DN*1.8"], "color": 13395456 } ],
+  "ports": [ { "id": "A", "at": [0,0,0], "dir": [0,0,-1], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" } ],
+  "description": "One flange port facing down: attach to a tee branch that points up. Same DN as the tee (equal tee). Heights are a generic envelope." }

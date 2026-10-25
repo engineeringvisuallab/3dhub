@@ -1,0 +1,15 @@
+{ "$schema": "https://json-schema.org/draft/2020-12/schema", "title": "EVLab component",
+  "required": ["id","name","category","units","shapes"],
+  "properties": {
+    "id": {"type":"string"}, "name": {"type":"string"}, "category": {"type":"string"},
+    "generator": {"type":"string", "description":"optional: name of a generator in core/engine/gen (e.g. door). It builds shapes + ports from the parameters, so shapes/ports in this json can stay empty"},
+    "kind": {"enum":["parametric","composite","imported"], "description":"composite = built from other components (children)"},
+    "tags": {"type":"array","items":{"type":"string"}, "description":"pipe, concrete, host (can carry rebar), furniture, valve ..."},
+    "units": {"const":"mm"},
+    "parameters": {"type":"object","description":"{min,max,step,default,label,short,unit} for numbers; {options:[value | {v,label}],default} for choices (design, glass, handle ...). values in shapes can use $param expressions"},
+    "shapes": {"type":"array","description":"collision/visual primitives: {id,role:solid|void|clearance,type:box|cylinder,size|radius+length,axis,at,rot (box: euler deg; cylinder: turns it after axis),accepts[], color (0xRRGGBB, optional), opacity (0-1, optional)}"},
+    "children": {"type":"array","description":"composite only: [{component, id, params, pos, rot}]"},
+    "ports": {"type":"array","description":"connection points {id,at,dir,type,DN/OD,PN} - mate two ports to snap + check compatibility"},
+    "reinforcement": {"type":"object","description":"which rebar templates this host accepts"},
+    "geometry": {"type":"object","description":"how the 3D mesh is generated (generator js / parametric html), separate from collision shapes"},
+    "exports": {"type":"array"} } }

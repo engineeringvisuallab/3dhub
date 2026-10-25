@@ -1,0 +1,184 @@
+{
+ "id": "dismantling-joint",
+ "name": "Dismantling joint, flanged (adjustable length)",
+ "category": "water-supply/fitting",
+ "kind": "parametric",
+ "tags": [
+  "fitting"
+ ],
+ "units": "mm",
+ "parameters": {
+  "DN": {
+   "min": 100,
+   "max": 600,
+   "default": 300
+  },
+  "PN": {
+   "default": 16
+  },
+  "FTF": {
+   "min": 150,
+   "max": 600,
+   "default": 300
+  }
+ },
+ "derived": {
+  "OD": {
+   "from": "DN",
+   "table": {
+    "100": 118,
+    "150": 170,
+    "200": 222,
+    "250": 274,
+    "300": 326,
+    "400": 429,
+    "500": 532,
+    "600": 635
+   }
+  },
+  "FOD": {
+   "from": "DN",
+   "table": {
+    "100": 220,
+    "150": 285,
+    "200": 340,
+    "250": 405,
+    "300": 460,
+    "400": 580,
+    "500": 715,
+    "600": 840
+   }
+  }
+ },
+ "shapes": [
+  {
+   "id": "body",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": "$OD/2",
+   "length": "$FTF",
+   "color": 9145227
+  },
+  {
+   "id": "flange-A",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": "$FOD/2",
+   "length": 30,
+   "at": [
+    0,
+    "-$FTF/2+15",
+    0
+   ],
+   "color": 9145227
+  },
+  {
+   "id": "flange-B",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": "$FOD/2",
+   "length": 30,
+   "at": [
+    0,
+    "$FTF/2-15",
+    0
+   ],
+   "color": 9145227
+  },
+  {
+   "id": "tie-0",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": 12,
+   "length": "$FTF",
+   "at": [
+    "$OD/2+25",
+    0,
+    0
+   ],
+   "color": 6710886
+  },
+  {
+   "id": "tie-1",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": 12,
+   "length": "$FTF",
+   "at": [
+    "-$OD/2-25",
+    0,
+    0
+   ],
+   "color": 6710886
+  },
+  {
+   "id": "tie-2",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": 12,
+   "length": "$FTF",
+   "at": [
+    0,
+    0,
+    "$OD/2+25"
+   ],
+   "color": 6710886
+  },
+  {
+   "id": "tie-3",
+   "role": "solid",
+   "type": "cylinder",
+   "axis": "y",
+   "radius": 12,
+   "length": "$FTF",
+   "at": [
+    0,
+    0,
+    "-$OD/2-25"
+   ],
+   "color": 6710886
+  }
+ ],
+ "ports": [
+  {
+   "id": "A",
+   "at": [
+    0,
+    "-$FTF/2",
+    0
+   ],
+   "dir": [
+    0,
+    -1,
+    0
+   ],
+   "type": "flange",
+   "DN": "$DN",
+   "PN": "$PN",
+   "std": "EN1092-2"
+  },
+  {
+   "id": "B",
+   "at": [
+    0,
+    "$FTF/2",
+    0
+   ],
+   "dir": [
+    0,
+    1,
+    0
+   ],
+   "type": "flange",
+   "DN": "$DN",
+   "PN": "$PN",
+   "std": "EN1092-2"
+  }
+ ]
+}

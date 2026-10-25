@@ -1,0 +1,196 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Room Interior (Bedroom)</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 350px;gap:14px;padding:12px 20px 24px;max-width:1280px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(72vh,680px);min-height:340px;padding:0;overflow:hidden;position:relative}#view canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}#hud button{width:auto;margin:0;padding:6px 10px;font-size:12px;background:var(--card);color:var(--fg);border:1px solid var(--bd)}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}h2{font-size:13px;margin:16px 0 0;color:var(--fg);text-transform:uppercase;letter-spacing:.04em;border-top:1px solid var(--bd);padding-top:10px}h2:first-child{border:0;padding:0;margin-top:0}
+.ck{display:flex;gap:6px;align-items:center;margin-top:6px}.ck input{margin:0}
+button{width:100%;margin-top:12px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Room Interior (Bedroom) – parametric</h1><p>EVLab 3D Hub · full room: wardrobe with loft, bed, bedside cabinets, study desk, bookshelf, dresser, false ceiling with cove light · designs that fail the rules cannot be downloaded</p></header>
+<main><div class="card" id="view"><div id="hud"><button data-v="se">SE</button><button data-v="sw">SW</button><button data-v="ne">NE</button><button data-v="nw">NW</button><button data-v="top">Top</button></div></div>
+<div class="card">
+<h2>Room</h2>
+<label>Width (east–west) W: <b id="Wv"></b><input type="range" id="W" min="3000" max="5200" step="100" value="3600"></label>
+<label>Length (north–south) L: <b id="Lv"></b><input type="range" id="L" min="3200" max="6000" step="100" value="4500"></label>
+<label>Ceiling height H: <b id="Hv"></b><input type="range" id="H" min="2700" max="3400" step="50" value="3000"></label>
+<label>Window width: <b id="wwv"></b><input type="range" id="ww" min="900" max="1800" step="100" value="1500"></label>
+<h2>Wardrobe</h2>
+<label>Wardrobe length: <b id="wlv"></b><input type="range" id="wl" min="1800" max="4000" step="100" value="2400"></label>
+<div class="row"><div><label>Doors<select id="dt"><option value="slide">Sliding</option><option value="hinge">Hinged</option></select></label></div><div><label>Bed<select id="bed"><option value="1.0">Single 1.0 m</option><option value="1.5" selected>Double 1.5 m</option><option value="1.8">King 1.8 m</option></select></label></div></div>
+<div class="ck"><input type="checkbox" id="mir" checked><span>Full-height mirror on the last door</span></div>
+<h2>Finish</h2>
+<div class="row"><div><label>Cabinets<select id="fin"></select></label></div><div><label>Walls<select id="wc"></select></label></div></div>
+<label>Floor<select id="fl"></select></label>
+<h2>Furniture and extras</h2>
+<div class="ck"><input type="checkbox" id="desk" checked><span>Study desk + chair + bookshelf</span></div>
+<div class="ck"><input type="checkbox" id="dres" checked><span>Dresser + mirror</span></div>
+<div class="ck"><input type="checkbox" id="cur" checked><span>Curtain</span></div>
+<div class="ck"><input type="checkbox" id="rug" checked><span>Rug</span></div>
+<div class="ck"><input type="checkbox" id="cove" checked><span>False ceiling with cove light</span></div>
+<h2>View</h2>
+<label>Walls<select id="wv"><option value="auto">Auto cut-away (walls facing you hide)</option><option value="all">Show all walls</option><option value="none">Hide all walls</option></select></label>
+<button id="tg">Doors CLOSED (OFF) – click to open</button>
+<h2>Rules and quantities</h2>
+<ul id="chk"></ul><ul id="qty"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender, Open / Close animation)</option><option value="obj">OBJ only (Blender / SketchUp)</option><option value="json">spec.json only</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative sizes: BNBC / NBC style room rules, standard 18 mm board carcass, 8×4 ft sheet = 2.98 m² with 12% waste. Positions are fixed to a sensible layout (wardrobe west, bed head east, desk under the window, dresser south). Confirm with the interior designer before manufacture.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const FIN={walnut:[0x7a5236,0x5a3a26,'Walnut'],oak:[0xc8a370,0xa6824d,'Oak'],white:[0xf0eee8,0xc9b79a,'White laminate'],grey:[0x7b8086,0x4f5358,'Slate grey'],navy:[0x2d3b55,0xc8a370,'Navy blue']};
+const WALL={ivory:[0xf2ece0,'Ivory'],sage:[0xc5d2bd,'Sage'],blush:[0xefd3cc,'Blush'],greige:[0xd6cfc4,'Greige']};
+const FLOOR={wood:[0xb18b5e,'Wood plank'],tile:[0xd9d7d1,'Light tile'],dark:[0x5d4b3d,'Dark wood']};
+for(const k in FIN)$('fin').add(new Option(FIN[k][2],k));for(const k in WALL)$('wc').add(new Option(WALL[k][1],k));for(const k in FLOOR)$('fl').add(new Option(FLOOR[k][1],k));
+$('fin').value='walnut';$('wc').value='ivory';$('fl').value='wood';
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(38,1,.05,200);
+S.add(new THREE.HemisphereLight(0xffffff,0x9a8f80,.75));const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(5,9,6);S.add(dl);
+const pl=new THREE.PointLight(0xffe2b8,.5,12);S.add(pl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;if(ctl){ctl.enableDamping=true;ctl.maxPolarAngle=Math.PI/2+.1}
+let model=null,room=null,ANIM=[],WALLS=[],ceilG=null,spec={},bad=false,cur=0,tgt=0,area=0,cnt={},dim={W:3.6,L:4.5,H:3};
+const WT=.115,MC={};
+function mm(c,o){const k=c+'|'+JSON.stringify(o||{});return MC[k]||(MC[k]=new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.65,metalness:.05,side:THREE.DoubleSide},o||{})))}
+const GLASS={transparent:true,opacity:.28,roughness:.05,metalness:.1},MIRROR={roughness:.05,metalness:.92},GLOW={emissive:0xffe0a8,emissiveIntensity:1.2,roughness:.4};
+function bx(w,h,d,x,y,z,m,p,n,ply){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x+w/2,y+h/2,z+d/2);if(n)o.name=n;p.add(o);if(ply){const s=[w,h,d].sort((a,b)=>b-a);area+=s[0]*s[1]}return o}
+function gp(n,p,x,y,z){const g=new THREE.Group();g.name=n;g.position.set(x||0,y||0,z||0);p.add(g);return g}
+function cyl(r,len,ax,x,y,z,m,p,n,r2){const g=new THREE.CylinderGeometry(r2==null?r:r2,r,len,18);if(ax==='z')g.rotateX(Math.PI/2);else if(ax==='x')g.rotateZ(Math.PI/2);const o=new THREE.Mesh(g,m);o.position.set(x,y,z);if(n)o.name=n;p.add(o);return o}
+const CL=[0xd9d4cc,0x3b4a63,0x9b5b4f,0x6f7f66,0xc9a86a,0x2b2b2b,0xe8e0d0];
+function clothes(g,x,iw,z0,yTop,h,wid){const n=Math.floor(iw/.055);for(let k=0;k<n;k++)bx(wid,h,.035,x,yTop-h,z0+.02+k*(iw-.05)/n,mm(CL[(k*5+2)%CL.length]),g,'')}
+function wall(name,len,H,op,rot,px,pz,mat,par){const g=gp(name,par,px,0,pz);g.rotation.y=rot;const add=(a,b,y0,y1)=>{if(b-a>1e-4&&y1-y0>1e-4)bx(b-a,y1-y0,WT,a,y0,-WT,mat,g)};
+ if(!op)add(-WT,len+WT,0,H);else{add(-WT,op.a,0,H);add(op.b,len+WT,0,H);add(op.a,op.b,0,op.y0);add(op.a,op.b,op.y1,H)}return g}
+const dist=(a,b)=>Math.hypot(Math.max(a.x0-b.x1,b.x0-a.x1,0),Math.max(a.z0-b.z1,b.z0-a.z1,0));
+function build(fit){
+ if(model)S.remove(model);ANIM=[];WALLS=[];area=0;cnt={drawers:0,leaves:0,panels:0,hinges:0};
+ const W=+$('W').value/1000,L=+$('L').value/1000,H=+$('H').value/1000,ww=+$('ww').value/1000,wL=+$('wl').value/1000,bw=+$('bed').value,hinge=$('dt').value==='hinge',F=FIN[$('fin').value];dim={W,L,H};
+ $('Wv').textContent=W.toFixed(1)+' m';$('Lv').textContent=L.toFixed(1)+' m';$('Hv').textContent=H.toFixed(2)+' m';$('wwv').textContent=ww.toFixed(1)+' m';$('wlv').textContent=wL.toFixed(1)+' m';
+ const mC=mm(F[0]),mA=mm(F[1]),mW=mm(WALL[$('wc').value][0]),mF=mm(FLOOR[$('fl').value][0],{roughness:.45}),mFr=mm(0xf4f2ee),mDk=mm(0x2a2a2c),mAl=mm(0xb8bcc2,{metalness:.7,roughness:.35}),mFab=mm(0xeeeae2,{roughness:.95}),mG=mm(0xcfe3ee,GLASS);
+ model=new THREE.Group();model.name='Room_Interior';model.position.set(-W/2,0,-L/2);S.add(model);room=model;
+ // ---- shell
+ const sh=gp('Shell',room),wls=gp('Walls',sh);
+ bx(W+2*WT,.1,L+2*WT,-WT,-.1,-WT,mF,gp('Floor',sh),'FloorSlab');
+ const wxc=1.6,wx0=wxc-ww/2,sill=.9,head=2.1;
+ WALLS.push({g:wall('Wall_North',W,H,{a:wx0,b:wx0+ww,y0:sill,y1:head},0,0,0,mW,wls),n:new THREE.Vector3(0,0,-1),p:new THREE.Vector3(W/2,0,0)});
+ WALLS.push({g:wall('Wall_South',W,H,{a:W-1.65,b:W-.85,y0:0,y1:2.05},Math.PI,W,L,mW,wls),n:new THREE.Vector3(0,0,1),p:new THREE.Vector3(W/2,0,L)});
+ WALLS.push({g:wall('Wall_East',L,H,null,-Math.PI/2,W,0,mW,wls),n:new THREE.Vector3(1,0,0),p:new THREE.Vector3(W,0,L/2)});
+ WALLS.push({g:wall('Wall_West',L,H,null,Math.PI/2,0,L,mW,wls),n:new THREE.Vector3(-1,0,0),p:new THREE.Vector3(0,0,L/2)});
+ const sk=gp('Skirting',sh);bx(W,.1,.012,0,0,0,mFr,sk);bx(.85,.1,.012,0,0,L-.012,mFr,sk);bx(W-1.65,.1,.012,1.65,0,L-.012,mFr,sk);bx(.012,.1,L,0,0,0,mFr,sk);bx(.012,.1,L,W-.012,0,0,mFr,sk);
+ // ceiling
+ ceilG=gp('Ceiling',sh);bx(W+2*WT,.1,L+2*WT,-WT,H,-WT,mW,ceilG,'Slab');bx(.6,.02,.6,W/2-.3,H-.02,L/2-.3,mm(0xfff4dc,GLOW),ceilG,'LightPanel');
+ let cove=0;if($('cove').checked){const c=.3,d=.1,mCv=mm(0xf7f5f0);bx(W,d,c,0,H-d,0,mCv,ceilG,'Cove_N');bx(W,d,c,0,H-d,L-c,mCv,ceilG,'Cove_S');bx(c,d,L-2*c,0,H-d,c,mCv,ceilG,'Cove_W');bx(c,d,L-2*c,W-c,H-d,c,mCv,ceilG,'Cove_E');const g=mm(0xffd9a0,GLOW);
+  bx(W-2*c,.008,.02,c,H-d-.008,c-.02,g,ceilG,'LED_N');bx(W-2*c,.008,.02,c,H-d-.008,L-c,g,ceilG,'LED_S');bx(.02,.008,L-2*c,c-.02,H-d-.008,c,g,ceilG,'LED_W');bx(.02,.008,L-2*c,W-c,H-d-.008,c,g,ceilG,'LED_E');cove=2*(W-2*c)+2*(L-2*c)}
+ pl.position.set(-0,H-.5,0);
+ // ---- window
+ const win=gp('Window',room),mWf=mm(0xf0efec);
+ bx(ww+.08,.05,.08,wx0-.04,sill-.05,-.1,mWf,win,'Sill');bx(ww+.08,.05,.08,wx0-.04,head,-.1,mWf,win,'Head');bx(.04,head-sill,.08,wx0-.04,sill,-.1,mWf,win,'Jamb_L');bx(.04,head-sill,.08,wx0+ww,sill,-.1,mWf,win,'Jamb_R');
+ bx(ww/2,head-sill,.01,wx0,sill,-.055,mG,win,'Glass_1');bx(ww/2,head-sill,.01,wx0+ww/2,sill,-.075,mG,win,'Glass_2');bx(.04,head-sill,.04,wx0+ww/2-.02,sill,-.07,mWf,win,'Mullion');
+ if($('cur').checked){const cu=gp('Curtain',room),mCu=mm(0xe4ddd0,{roughness:1}),xl=Math.max(.64,wx0-.25);bx(ww+.5-(xl-(wx0-.25)),.02,.02,xl,head+.14,.03,mAl,cu,'Rod');bx(wx0+.1-xl,head+.1-.06,.03,xl,.06,.02,mCu,cu,'Curtain_L');bx(.35,head+.1-.06,.03,wx0+ww-.1,.06,.02,mCu,cu,'Curtain_R')}
+ // ---- room door
+ const dr=gp('Door',room),mDo=mm(0xc9ab82);bx(.05,2.05,.1,.8,0,L-.1,mFr,dr,'Jamb_L');bx(.05,2.05,.1,1.65,0,L-.1,mFr,dr,'Jamb_R');bx(.9,.05,.1,.8,2.05,L-.1,mFr,dr,'Head');
+ const lf=gp('RoomDoorLeaf',dr,.85,0,L-.045);bx(.8,2.03,.04,0,0,-.02,mDo,lf,'Leaf');bx(.12,.02,.05,.65,1.0,-.055,mAl,lf,'Lever');ANIM.push({o:lf,k:'ry',a0:0,a1:Math.PI/2});
+ // ---- wardrobe
+ const D=.6,t=.018,Hw=H-.1,Hd=Math.min(2.1,Hw-.5),pb=.1,wd=gp('Wardrobe',room),car=gp('Carcass',wd);
+ bx(.012,Hw,wL,0,0,0,mC,car,'Back',1);bx(D-.05,pb,wL,0,0,0,mDk,car,'Plinth');bx(D,t,wL,0,pb,0,mC,car,'Bottom',1);bx(D,t,wL,0,Hw-t,0,mC,car,'Top',1);bx(D,t,wL,0,Hd,0,mC,car,'LoftShelf',1);
+ bx(D,Hw-pb,t,0,pb,0,mC,car,'Side_L',1);bx(D,Hw-pb,t,0,pb,wL-t,mC,car,'Side_R',1);
+ const ns=Math.max(2,Math.round(wL/.8)),sw=wL/ns,inn=gp('Interior',wd);
+ for(let i=1;i<ns;i++)bx(D,Hw-pb,t,0,pb,i*sw-t/2,mC,car,'Divider_'+i,1);
+ for(let i=0;i<ns;i++){const z0=i*sw+t/2,iw=sw-t,kd=i%3,g=gp('Section_'+(i+1),inn);
+  if(kd===0){cyl(.012,iw,'z',D/2,Hd-.15,z0+iw/2,mAl,g,'Rail');clothes(g,D/2-.2,iw,z0,Hd-.15,.95,.4)}
+  else if(kd===1){for(let k=0;k<5;k++){const y=pb+t+k*.36;bx(D-.04,t,iw,0,y,z0,mC,g,'Shelf_'+k,1);if(k<4)bx(.34,.14,iw-.06,.05,y+t,z0+.03,mm(CL[(k*3+i)%CL.length],{roughness:1}),g,'')}}
+  else{for(let k=0;k<3;k++){bx(D-.06,.17,iw-.02,0,pb+t+.01+k*.2,z0+.01,mA,g,'Drawer_'+(k+1),1);cnt.drawers++}cyl(.012,iw,'z',D/2,Hd-.15,z0+iw/2,mAl,g,'Rail');clothes(g,D/2-.2,iw,z0,Hd-.15,.65,.4)}}
+ const lo=gp('LoftDoors',wd);for(let i=0;i<ns;i++){bx(.018,Hw-Hd-t-.004,sw-.004,D-.018,Hd+t+.002,i*sw+.002,mC,lo,'LoftDoor_'+(i+1),1);bx(.01,.012,.15,D,Hd+t+.04,i*sw+sw/2-.075,mDk,lo)}
+ const dd=gp('Doors',wd),hD=Hd-pb-.02;let nd,lw,pw;
+ if(!hinge){nd=Math.max(2,Math.ceil(wL/.9));const ov=.04;pw=(wL+(nd-1)*ov)/nd;lw=pw;
+  for(let i=0;i<nd;i++){const front=i%2===0,xi=front?D-.028:D-.056,z0=i*(pw-ov),g=gp('SlidingPanel_'+(i+1),dd,0,0,z0),last=i===nd-1&&$('mir').checked;
+   bx(.022,hD,pw,xi,pb+.01,0,last?mm(0xdfe7ea,MIRROR):mC,g,'Panel',!last);bx(.014,.4,.016,xi+.022,.8,pw-.06,mAl,g,'Handle');bx(.016,hD,.012,xi,pb+.01,0,mAl,g,'Frame');bx(.016,hD,.012,xi,pb+.01,pw-.012,mAl,g,'Frame');cnt.panels++;
+   const zo=front?Math.floor(i/2)*.03:wL-pw-Math.floor((nd-1-i)/2)*.03;ANIM.push({o:g,k:'pz',a0:z0,a1:zo})}
+  bx(D*.0+.02,.03,wL,D-.065,Hd-.03,0,mAl,dd,'Track_top');bx(.02,.02,wL,D-.065,pb,0,mAl,dd,'Track_bottom')}
+ else{nd=2*Math.ceil(wL/1.1);lw=wL/nd;pw=lw;
+  for(let i=0;i<nd;i++){const ev=i%2===0,hz=ev?i*lw:(i+1)*lw,g=gp('WardrobeLeaf_'+(i+1),dd,D-.01,0,hz),last=i===nd-1&&$('mir').checked;
+   bx(.02,hD,lw-.004,-.01,pb+.01,ev?.002:-lw+.002,last?mm(0xdfe7ea,MIRROR):mC,g,'Leaf',!last);bx(.014,.012,.14,.01,1.0,ev?lw-.07-.15:-lw+.07+.01,mAl,g,'Handle');cnt.leaves++;cnt.hinges+=4;ANIM.push({o:g,k:'ry',a0:0,a1:ev?1.75:-1.75})}}
+ // ---- bed
+ const zc=L/2,bed=gp('Bed',room),bx0=W-2.1;
+ bx(2.04,.22,bw,bx0,.06,zc-bw/2,mA,bed,'Base',1);bx(1.96,.05,bw-.12,bx0+.04,.01,zc-bw/2+.06,mDk,bed,'Shadow');bx(1.96,.2,bw-.06,W-2.06,.28,zc-bw/2+.03,mFab,bed,'Mattress');
+ bx(1.3,.07,bw+.0,W-2.04,.48,zc-bw/2,mm(F[1]===0xc8a370?0xe9d8bd:0xd8cfc0,{roughness:1}),bed,'Duvet');bx(.5,.03,bw+.01,W-2.04,.48,zc-bw/2-.005,mA,bed,'Bed_runner');
+ const np=bw>=1.5?2:1,pc=np===1?[zc]:[zc-bw*.23,zc+bw*.23];pc.forEach((c,k)=>bx(.38,.14,.6,W-.58,.48,c-.3,mFab,bed,'Pillow_'+(k+1)));
+ bx(.08,1.15,bw+.14,W-.1,.1,zc-bw/2-.07,mA,bed,'Headboard',1);
+ const hw=gp('HeadboardWall',room),sy=.2,sH=Math.min(2.5,H-.35)-sy,sz0=Math.max(.1,zc-bw/2-1),sz1=Math.min(L-.1,zc+bw/2+1);for(let z=sz0;z<sz1;z+=.07)bx(.02,sH,.035,W-.02,sy,z,mA,hw,'');
+ const tb=[zc-bw/2-.025-.45,zc+bw/2+.025];tb.forEach((z0,k)=>{const g=gp('BedsideTable_'+(k+1),room);bx(.4,.38,.45,W-.4,.22,z0,mC,g,'Body',1);bx(.012,.17,.43,W-.412,.23,z0+.01,mA,g,'Drawer_1');bx(.012,.17,.43,W-.412,.42,z0+.01,mA,g,'Drawer_2');bx(.01,.012,.15,W-.422,.35,z0+.15,mDk,g);bx(.01,.012,.15,W-.422,.54,z0+.15,mDk,g);cnt.drawers+=2;
+  const zl=z0+.225,pg=gp('PendantLamp_'+(k+1),room);cyl(.004,H-.05-1.5,'y',W-.3,(H-.05+1.5)/2,zl,mDk,pg,'Cord');cyl(.12,.2,'y',W-.3,1.4,zl,mm(0xffe9c4,GLOW),pg,'Shade',.05)});
+ if($('rug').checked){const rz=Math.min(bw+1.2,L-.6);bx(2.4,.012,rz,W-2.6,0,zc-rz/2,mm(0xb8a58b,{roughness:1}),room,'Rug')}
+ // ---- desk
+ const AB={ward:{x0:0,x1:D,z0:0,z1:wL},bed:{x0:bx0,x1:W,z0:zc-bw/2,z1:zc+bw/2},bedz:{x0:bx0,x1:W,z0:tb[0],z1:tb[1]+.45},swing:{x0:.85,x1:1.65,z0:L-.8,z1:L}};
+ if($('desk').checked){const g=gp('Desk',room),dx=.9,dw=1.4;bx(dw,.03,.6,dx,.72,0,mA,g,'Top',1);bx(.4,.69,.58,dx,.03,.01,mC,g,'DrawerUnit',1);for(let k=0;k<3;k++)bx(.38,.2,.012,dx+.01,.06+k*.22,.592,mm(F[1]),g,'Drawer_'+(k+1));cnt.drawers+=3;bx(.02,.69,.58,dx+dw-.02,.03,.01,mC,g,'Leg_R',1);bx(dw-.42,.3,.012,dx+.4,.42,.04,mC,g,'Modesty',1);bx(.32,.015,.22,1.65,.75,.2,mAl,g,'Laptop_base');bx(.32,.22,.01,1.65,.765,.18,mDk,g,'Laptop_screen');
+  const ch=gp('Chair',room),cx=1.55,cz=.78;bx(.44,.04,.42,cx,.45,cz,mDk,ch,'Seat');bx(.44,.42,.04,cx,.49,cz+.4,mDk,ch,'Back');[[0,0],[.4,0],[0,.38],[.4,.38]].forEach(p=>bx(.03,.45,.03,cx+p[0],0,cz+p[1],mAl,ch,'Leg'));
+  AB.desk={x0:dx,x1:dx+dw,z0:0,z1:.6};const bs0=Math.max(2.6,wx0+ww+.1),bsw=Math.min(.7,W-bs0-.05);
+  if(bsw>=.3){const b=gp('Bookshelf',room),bh=1.8,bd=.3;bx(.02,bh,bd,bs0,0,0,mC,b,'Side_L',1);bx(.02,bh,bd,bs0+bsw-.02,0,0,mC,b,'Side_R',1);bx(bsw,bh,.01,bs0,0,0,mC,b,'Back');for(let k=0;k<6;k++){const y=k*(bh-.02)/5;bx(bsw-.04,.02,bd,bs0+.02,y,0,mC,b,'Shelf_'+k,1);if(k<5){let x=bs0+.04;for(let j=0;j<7&&x<bs0+bsw-.08;j++){const w=.025+((j*3+k)%3)*.012;bx(w,.18+((j+k)%3)*.03,.2,x,y+.02,.05,mm(CL[(j+k)%CL.length],{roughness:.9}),b,'');x+=w+.004}}}AB.book={x0:bs0,x1:bs0+bsw,z0:0,z1:bd}}}
+ if($('dres').checked){const g=gp('Dresser',room),dx=W-1.4,dw=1.3,z0=L-.4;bx(dw,.7,.4,dx,.08,z0,mC,g,'Body',1);bx(dw-.1,.08,.35,dx+.05,0,z0+.03,mDk,g,'Plinth');for(let k=0;k<3;k++){bx(dw-.03,.2,.012,dx+.015,.1+k*.22,z0-.012,mA,g,'Drawer_'+(k+1));bx(.15,.012,.01,dx+dw/2-.075,.24+k*.22,z0-.02,mDk,g)}cnt.drawers+=3;bx(dw+.02,.03,.42,dx-.01,.78,z0-.01,mA,g,'Top',1);
+  const mr=gp('Mirror',room);bx(.94,1.04,.02,dx+.18,.98,L-.03,mA,mr,'Frame');bx(.9,1.0,.01,dx+.2,1.0,L-.04,mm(0xdfe7ea,MIRROR),mr,'Glass');AB.dres={x0:dx,x1:dx+dw,z0:z0,z1:L}}
+ // ---- checks
+ const fa=W*L,wa=ww*(head-sill),ch=[],ok=(s,v)=>ch.push([s,v]),inf=s=>ch.push([s,null]);
+ ok('Floor area '+fa.toFixed(1)+' m² (min 9.5 m²), narrow side '+Math.min(W,L).toFixed(1)+' m (min 2.4 m)',fa>=9.5&&Math.min(W,L)>=2.4);
+ ok('Ceiling height '+H.toFixed(2)+' m (min 2.75 m, habitable room)',H>=2.75);
+ ok('Window '+wa.toFixed(2)+' m² = '+(100*wa/fa).toFixed(0)+'% of floor (min 10%: light and ventilation)',wa/fa>=.1);
+ ok('Wardrobe length '+wL.toFixed(1)+' m fits the '+L.toFixed(1)+' m wall (max L − 0.1 m)',wL<=L-.1);
+ const gW=dist(AB.ward,AB.bed),need=hinge?lw+.5:.9;ok('Wardrobe to bed '+gW.toFixed(2)+' m (need ≥ '+need.toFixed(2)+' m'+(hinge?': leaf '+lw.toFixed(2)+' + 0.5 passage':'')+')',gW>=need-1e-6);
+ if(AB.desk){const g=dist(AB.desk,AB.bed)+.0;ok('Desk to bed '+g.toFixed(2)+' m (chair pull-out ≥ 0.75 m)',g>=.75-1e-6)}
+ if(AB.dres){const g=dist(AB.dres,AB.bedz);ok('Dresser to bedside table '+g.toFixed(2)+' m (walkway ≥ 0.6 m)',g>=.6-1e-6)}
+ const hit=['ward','bedz','desk','dres','book'].filter(k=>AB[k]&&dist(AB.swing,AB[k])<=0);ok('Room door swing (0.8 m) clear of furniture'+(hit.length?': blocked by '+hit.join(', '):''),!hit.length);
+ inf('Long hanging rail at '+(Hd-.15).toFixed(2)+' m, clear hanging height '+(Hd-.15-.05).toFixed(2)+' m; loft above '+Hd.toFixed(1)+' m is for seasonal storage (use a step stool)');
+ const plS=Math.ceil(area*1.12/2.98),wallA=2*(W+L)*H-wa-1.64*2.05-0;
+ const q=[['Board area (18 mm ply / MDF, cabinets and doors)',area.toFixed(1)+' m² → '+plS+' sheets (8×4 ft, +12% waste)'],['Drawers',cnt.drawers+' nos'],hinge?['Hinged wardrobe leaves',cnt.leaves+' nos, '+cnt.hinges+' hinges']:['Sliding panels',cnt.panels+' nos, track '+wL.toFixed(1)+' m ×2'],['Wall paint (approx.)',wallA.toFixed(0)+' m²'],['Floor',fa.toFixed(1)+' m²'],['Cove LED strip',cove?cove.toFixed(1)+' m':'none']];
+ $('chk').innerHTML=ch.map(c=>'<li class="'+(c[1]===null?'info':c[1]?'':'bad')+'">'+c[0]+'</li>').join('');$('qty').innerHTML=q.map(c=>'<li class="info"><b>'+c[0]+':</b> '+c[1]+'</li>').join('');
+ bad=ch.some(c=>c[1]===false);$('dl').disabled=bad;$('msg').textContent=bad?'Fix the failing rules to enable download.':'';
+ spec={name:'Room_Interior',units:'mm',type:'Bedroom interior',room:{W:W*1e3,L:L*1e3,H:H*1e3,floor_area_m2:+fa.toFixed(2),window:{W:ww*1e3,sill:900,head:2100,x_centre:1600},door:{W:800,H:2050,swing:'in'}},finish:{cabinets:F[2],walls:WALL[$('wc').value][1],floor:FLOOR[$('fl').value][1]},
+  wardrobe:{L:wL*1e3,D:600,H:Hw*1e3,doors:hinge?'hinged':'sliding',door_count:nd,door_width:+(lw*1e3).toFixed(0),loft_from:Hd*1e3,sections:ns},bed:{width:bw*1e3,length:2040,headboard_H:1150},
+  extras:{desk:$('desk').checked,dresser:$('dres').checked,curtain:$('cur').checked,rug:$('rug').checked,cove_light:$('cove').checked},
+  quantities:{board_m2:+area.toFixed(2),sheets_8x4:plS,drawers:cnt.drawers,wall_paint_m2:+wallA.toFixed(1)},checks:ch.map(c=>({rule:c[0],pass:c[1]})),groups:[],animations:['Open','Close']};
+ spec.groups=room.children.map(g=>g.name);apply(cur);if(fit)view('se');
+}
+function apply(t){ANIM.forEach(a=>{const v=a.a0+(a.a1-a.a0)*t;if(a.k==='ry')a.o.rotation.y=v;else a.o.position.z=v})}
+function clips(){const out=[],tr=[];ANIM.forEach(a=>{const n=a.o.name;const mk=(f)=>{if(a.k==='ry'){const q=v=>new THREE.Quaternion().setFromEuler(new THREE.Euler(0,v,0)).toArray();return new THREE.QuaternionKeyframeTrack(n+'.quaternion',[0,1],[...q(f?a.a1:a.a0),...q(f?a.a0:a.a1)])}const p=a.o.position,v=z=>[p.x,p.y,z];return new THREE.VectorKeyframeTrack(n+'.position',[0,1],[...v(f?a.a1:a.a0),...v(f?a.a0:a.a1)])};tr.push([mk(0),mk(1)])});
+ return[new THREE.AnimationClip('Open',1,tr.map(x=>x[0])),new THREE.AnimationClip('Close',1,tr.map(x=>x[1]))]}
+function view(k){const{W,L,H}=dim,d=Math.max(W,L)*1.45+2.2,h=d*.62,t=new THREE.Vector3(0,H*.38,0),P={se:[.62,.62,.62],sw:[-.62,.62,.62],ne:[.62,.62,-.62],nw:[-.62,.62,-.62],top:[0,1,.001]}[k]||[.62,.62,.62];
+ if(k==='top'){C.position.set(0,d*1.25,.01)}else C.position.set(P[0]*d*1.15,h,P[2]*d*1.15);if(ctl){ctl.target.copy(t);ctl.update()}else C.lookAt(t)}
+document.querySelectorAll('#hud button').forEach(b=>b.onclick=()=>view(b.dataset.v));
+function walls(){const m=$('wv').value,off=model.position,c=C.position;WALLS.forEach(w=>{w.g.visible=m==='all'||(m==='auto'&&c.clone().sub(w.p).sub(off).dot(w.n)<=.05)});ceilG.visible=m==='all'||(m==='auto'&&c.y<dim.H+.05)}
+function fitSize(){const w=box.clientWidth,h=box.clientHeight;R.setPixelRatio(Math.min(devicePixelRatio||1,2));R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}
+addEventListener('resize',fitSize);
+(function loop(){requestAnimationFrame(loop);if(Math.abs(tgt-cur)>.001){cur+=(tgt-cur)*.1;apply(cur)}else if(cur!==tgt){cur=tgt;apply(cur)}if(model)walls();if(ctl)ctl.update();R.render(S,C)})();
+$('tg').onclick=()=>{tgt=1-tgt;$('tg').textContent=tgt?'Doors OPEN (ON) – click to close':'Doors CLOSED (OFF) – click to open'};
+['W','L','H','ww','wl'].forEach(i=>$(i).oninput=()=>{build(false)});['bed','dt','fin','wc','fl','mir','desk','dres','cur','rug','cove'].forEach(i=>$(i).onchange=()=>build(false));
+// zip (store)
+const CT=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=CT[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+function save(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[],c0=cur;
+ try{apply(0);WALLS.forEach(w=>w.g.visible=true);ceilG.visible=true;model.updateMatrixWorld(true);
+  fs.push({n:'spec.json',d:e.encode(JSON.stringify(spec,null,1))});
+  if((fm==='zip'||fm==='glb')&&THREE.GLTFExporter){const b=await new Promise((r,j)=>new THREE.GLTFExporter().parse(model,r,{binary:true,animations:clips(),onlyVisible:false}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+  if((fm==='zip'||fm==='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+  if(fm==='zip')save(zip(fs),base+'.zip');else if(fm==='json')save(new Blob([fs[0].d],{type:'application/json'}),base+'_spec.json');else{const f=fs.find(x=>x.n!=='spec.json');save(new Blob([f.d]),base+'.'+f.n.split('.').pop())}
+  msg.textContent='Downloaded.'}catch(x){msg.textContent='Export failed: '+(x&&x.message||x)}finally{apply(c0)}};
+fitSize();build(true);
+</script></body></html>

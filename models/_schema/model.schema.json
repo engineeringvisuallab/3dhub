@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "required": [
+    "id",
+    "name",
+    "category",
+    "tier",
+    "units",
+    "parameters",
+    "ports",
+    "clearance",
+    "files"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "tier": {
+      "enum": [
+        "free",
+        "premium"
+      ]
+    },
+    "units": {
+      "const": "mm"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "each: {min|minFrom,max,step,default}. dynamic min must come from library/clearance-rules"
+    },
+    "ports": {
+      "type": "array",
+      "description": "{id,position[x,y,z],dir[x,y,z],DN,PN,standard,type:flange|spigot|socket}"
+    },
+    "clearance": {
+      "type": "array",
+      "description": "{id,box,purpose:handwheel|bolt|access}"
+    },
+    "compat": {
+      "type": "object",
+      "description": "allowedIn, deniedIn, requires"
+    },
+    "files": {
+      "type": "object"
+    }
+  }
+}

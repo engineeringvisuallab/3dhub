@@ -1,0 +1,8 @@
+{ "$schema": "https://json-schema.org/draft/2020-12/schema", "title": "EVLab assembly (a user design)",
+  "required": ["units","instances"],
+  "properties": {
+    "name": {"type":"string"}, "units": {"const":"mm"},
+    "instances": {"type":"array","description":"[{id, component, params{}, pos[x,y,z], rot[rx,ry,rz deg]}]"},
+    "rebarSets": {"type":"array","description":"[{id, host:<instance id>, template, params{}, minCover}] - bars are generated from the shared rebar library"},
+    "bars": {"type":"array","description":"optional manual bars added/edited by the user {id, host, dia, grade, kind, path[[x,y,z]..]}"},
+    "links": {"type":"array","description":"[{a:'inst.port', b:'inst.port'}] port-to-port connections (DN/PN/standard must match)"} } }

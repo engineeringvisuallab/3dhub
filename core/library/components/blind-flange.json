@@ -1,0 +1,8 @@
+{ "id": "blind-flange", "name": "Blind flange (end cap)", "category": "water-supply/fitting", "kind": "parametric", "tags": ["fitting"], "units": "mm",
+  "parameters": { "DN": {"min":100,"max":600,"default":300}, "PN": {"default":16} },
+  "derived": {
+ "FOD": {"from":"DN","table":{"100":220,"150":285,"200":340,"250":405,"300":460,"400":580,"500":715,"600":840}},
+ "T": {"from":"DN","table":{"100":19,"150":19,"200":20,"250":22,"300":24.5,"400":28,"500":31.5,"600":36}} },
+  "shapes": [ { "id": "disc", "role": "solid", "type": "cylinder", "axis": "y", "radius": "$FOD/2", "length": "$T", "color": 2831255 } ],
+  "ports": [ { "id": "A", "at": [0,"-$T/2",0], "dir": [0,-1,0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" } ],
+  "description": "Closes an open flange (end of a line, spare tee branch). One port. Thickness from the EN 1092-2 PN16 table." }

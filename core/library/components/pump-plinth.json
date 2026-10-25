@@ -1,0 +1,85 @@
+{
+ "id": "pump-plinth",
+ "name": "Pump plinth (RCC block)",
+ "category": "structure/foundation",
+ "kind": "parametric",
+ "tags": [
+  "concrete",
+  "plinth"
+ ],
+ "units": "mm",
+ "description": "Concrete block a pump or equipment stands on. Origin = bottom centre. B sits on a slab or footing, T carries a slab or equipment. Raise the pump by the plinth height so its flanged fittings clear the floor.",
+ "parameters": {
+  "L": {
+   "min": 300,
+   "max": 6000,
+   "step": 50,
+   "default": 1500,
+   "label": "Length (X)",
+   "short": "L"
+  },
+  "W": {
+   "min": 300,
+   "max": 4000,
+   "step": 50,
+   "default": 800,
+   "label": "Width (Y)",
+   "short": "W"
+  },
+  "T": {
+   "min": 50,
+   "max": 600,
+   "step": 25,
+   "default": 150,
+   "label": "Height",
+   "short": "T"
+  }
+ },
+ "shapes": [
+  {
+   "id": "block",
+   "role": "solid",
+   "type": "box",
+   "size": [
+    "$L",
+    "$W",
+    "$T"
+   ],
+   "at": [
+    0,
+    0,
+    "$T/2"
+   ]
+  }
+ ],
+ "ports": [
+  {
+   "id": "B",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "dir": [
+    0,
+    0,
+    -1
+   ],
+   "type": "face-v"
+  },
+  {
+   "id": "T",
+   "at": [
+    0,
+    0,
+    "$T"
+   ],
+   "dir": [
+    0,
+    0,
+    1
+   ],
+   "type": "face-v"
+  }
+ ]
+}

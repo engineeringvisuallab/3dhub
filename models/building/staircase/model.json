@@ -1,0 +1,80 @@
+{
+  "id": "staircase",
+  "name": "Staircase (straight, L, U)",
+  "category": "building/staircase",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "type": [
+      "straight",
+      "L",
+      "U"
+    ],
+    "turn": [
+      "R",
+      "L"
+    ],
+    "structure": [
+      "rcc",
+      "steel"
+    ],
+    "floorToFloor": {
+      "min": 2400,
+      "max": 4800,
+      "step": 50
+    },
+    "width": {
+      "min": 900,
+      "max": 2000,
+      "step": 50
+    },
+    "maxRiser": {
+      "min": 140,
+      "max": 190
+    },
+    "tread": "auto range from 2R+T 550-700",
+    "finish": [
+      "marble",
+      "granite",
+      "tile",
+      "teak",
+      "oak"
+    ],
+    "rail": [
+      "ss",
+      "ms",
+      "wood",
+      "glass",
+      "none"
+    ]
+  },
+  "rules": {
+    "riserMax": 190,
+    "treadMin": 250,
+    "twoRPlusT": [
+      550,
+      700
+    ],
+    "widthMin": 900,
+    "risersPerFlightMax": 16,
+    "handrail": [
+      900,
+      1000
+    ],
+    "balusterGapMax": 100,
+    "headroom": 2100,
+    "waistSlabDepth": "span/22 (rcc), span/18 (steel)"
+  },
+  "groups": [
+    "Flight_1",
+    "Landing",
+    "Flight_2",
+    "Columns",
+    "Railing",
+    "Floor_Lower",
+    "Floor_Upper"
+  ],
+  "files": {
+    "parametric": "parametric/staircase.html"
+  }
+}

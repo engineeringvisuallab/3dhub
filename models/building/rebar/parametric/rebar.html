@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Reinforcement Bar</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 350px;gap:14px;padding:12px 20px 24px;max-width:1280px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(72vh,680px);min-height:340px;padding:0;overflow:hidden;position:relative}#view canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}#hud button{width:auto;margin:0;padding:6px 10px;font-size:12px;background:var(--card);color:var(--fg);border:1px solid var(--bd)}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}h2{font-size:13px;margin:16px 0 0;color:var(--fg);text-transform:uppercase;letter-spacing:.04em;border-top:1px solid var(--bd);padding-top:10px}h2:first-child{border:0;padding:0;margin-top:0}
+.ck{display:flex;gap:6px;align-items:center;margin-top:6px}.ck input{margin:0}
+button{width:100%;margin-top:12px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+</style>
+</head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Reinforcement Bar – types, shapes and capacity</h1><p>EVLab 3D Hub · plain, Gr 420, TMT 500 and epoxy-coated bars · single bar shapes, RC beam cage and RC column cage · capacity from ACI 318 / BNBC style rules · failing designs cannot be downloaded</p></header>
+<main><div class="card" id="view"><div id="hud"><button data-v="a">Angle</button><button data-v="f">Front</button><button data-v="t">Top</button><button data-v="s">End</button></div></div>
+<div class="card">
+<h2>Material</h2>
+<label>Bar type<select id="bt"></select></label>
+<div class="row"><div><label>Main bar dia<select id="db"></select></label></div><div><label>Concrete f'c<select id="fc"><option>20</option><option>25</option><option selected>30</option><option>35</option><option>40</option></select></label></div></div>
+<h2>What to design</h2>
+<label>Mode<select id="md"><option value="bar">Single bar shape</option><option value="beam">RC beam cage</option><option value="col">RC column cage</option></select></label>
+<div id="p_bar">
+<label>Shape<select id="sh"></select></label>
+<label><span id="Al">Length</span>: <b id="Av"></b><input type="range" id="A" min="200" max="6000" step="50" value="2000"></label>
+<label id="Brow"><span id="Bl">B</span>: <b id="Bv"></b><input type="range" id="B" min="50" max="600" step="10" value="300"></label>
+<label>Number of bars (for totals): <b id="Nv"></b><input type="range" id="N" min="1" max="40" step="1" value="4"></label>
+</div>
+<div id="p_beam" style="display:none">
+<div class="row"><div><label>Width b: <b id="bbv"></b><input type="range" id="bb" min="200" max="500" step="25" value="300"></label></div><div><label>Depth h: <b id="bhv"></b><input type="range" id="bh" min="300" max="900" step="25" value="500"></label></div></div>
+<div class="row"><div><label>Bottom bars<select id="bn"></select></label></div><div><label>Top bars<select id="tn"></select></label></div></div>
+<div class="row"><div><label>Stirrup dia<select id="sd"><option>8</option><option selected>10</option><option>12</option></select></label></div><div><label>Stirrup spacing: <b id="ssv"></b><input type="range" id="ss" min="75" max="300" step="25" value="150"></label></div></div>
+<label>Clear cover: <b id="cvv"></b><input type="range" id="cv" min="25" max="60" step="5" value="40"></label>
+<label>Span (simply supported): <b id="spv"></b><input type="range" id="sp" min="2" max="9" step="0.5" value="5"></label>
+</div>
+<div id="p_col" style="display:none">
+<div class="row"><div><label>Section<select id="cs"><option value="rect">Rectangular</option><option value="circ">Circular</option></select></label></div><div><label>Ties<select id="ct"><option value="tied">Separate ties</option><option value="spiral">Spiral</option></select></label></div></div>
+<div class="row"><div><label><span id="cbl">Width b</span>: <b id="cbv"></b><input type="range" id="cb" min="250" max="700" step="25" value="400"></label></div><div id="chr"><label>Depth h: <b id="chv"></b><input type="range" id="ch" min="250" max="900" step="25" value="400"></label></div></div>
+<div class="row"><div><label>Vertical bars<select id="cn"></select></label></div><div><label>Tie dia<select id="td"><option>8</option><option selected>10</option><option>12</option></select></label></div></div>
+<label>Tie / spiral pitch: <b id="tsv"></b><input type="range" id="ts" min="50" max="350" step="10" value="150"></label>
+<label>Clear cover: <b id="ccv"></b><input type="range" id="cc" min="25" max="75" step="5" value="40"></label>
+</div>
+<div class="ck"><input type="checkbox" id="cn_on" checked><span>Show concrete outline (beam / column)</span></div>
+<h2>Capacity and rules</h2>
+<ul id="res"></ul><ul id="chk"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option><option value="json">spec.json only</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Strength design to ACI 318 (φ = 0.9 tension-controlled, 0.65 tied / 0.75 spiral columns, 0.75 shear, λ = 1). Development, lap and hook lengths use the simplified ACI equations. Short column, axial load only: no slenderness or moment interaction. Confirm with a structural engineer before detailing.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+// type: fy MPa, color, deformed, epoxy, standard
+const BT={plain:{n:'Plain mild steel, Gr 250 (fy 250)',fy:250,c:0x9a9da0,def:0,ep:0,std:'BDS 1313 / ASTM A615 Gr 40 plain'},
+ g420:{n:'Deformed bar, Gr 420 (fy 420, Gr 60)',fy:420,c:0x6b6f73,def:1,ep:0,std:'ASTM A615 Gr 60 / BDS ISO 6935-2 Gr 420'},
+ tmt500:{n:'TMT bar, Gr 500 (fy 500)',fy:500,c:0x3d4247,def:1,ep:0,std:'BDS ISO 6935-2 Gr 500 / BS 4449 B500B'},
+ epoxy:{n:'Epoxy-coated deformed, Gr 420',fy:420,c:0x2f9a55,def:1,ep:1,std:'ASTM A775 over A615 Gr 60'}};
+const SH={straight:'Straight bar',L:'L-bend (90° hook)',J:'Standard hook (180°)',U:'U-bar',crank:'Cranked / bent-up bar',stirrup:'Rectangular stirrup / tie',spiral:'Spiral / circular tie',lap:'Lap splice'};
+const DIA=[8,10,12,16,20,22,25,28,32,36];
+for(const k in BT)$('bt').add(new Option(BT[k].n,k));for(const k in SH)$('sh').add(new Option(SH[k],k));DIA.forEach(d=>$('db').add(new Option(d+' mm',d)));$('db').value=16;$('bt').value='g420';
+for(let i=2;i<=8;i++)$('bn').add(new Option(i+' bars',i));for(let i=0;i<=4;i++)$('tn').add(new Option(i?i+' bars':'none',i));$('bn').value=3;$('tn').value=2;
+[4,6,8,10,12,16].forEach(i=>$('cn').add(new Option(i+' bars',i)));$('cn').value=8;
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(36,1,.01,100);
+S.add(new THREE.HemisphereLight(0xffffff,0x8a8f95,.85));const dl=new THREE.DirectionalLight(0xffffff,.8);dl.position.set(3,6,4);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;if(ctl)ctl.enableDamping=true;
+let model=null,spec={},bad=false,info={size:1,c:[0,0,0]};
+// ribbed texture
+let TEX=null;function ribTex(){if(TEX)return TEX;const c=document.createElement('canvas');c.width=128;c.height=64;const x=c.getContext('2d');x.fillStyle='#808080';x.fillRect(0,0,128,64);x.fillStyle='#ffffff';x.fillRect(46,0,22,64);x.fillStyle='#d8d8d8';x.fillRect(0,10,128,5);x.fillRect(0,49,128,5);
+ TEX=new THREE.CanvasTexture(c);TEX.wrapS=TEX.wrapT=THREE.RepeatWrapping;return TEX}
+function bmat(t){const o={color:BT[t].c,roughness:t==='epoxy'?.5:.55,metalness:t==='epoxy'?.1:.65};if(BT[t].def){o.bumpMap=ribTex();o.bumpScale=2}return new THREE.MeshStandardMaterial(o)}
+// turtle: cmds [['L',len],['A',deg,R]] in 2D (m); returns {pts,len}
+function turtle(x,y,h,cmds){const P=[[x,y]];let len=0;h=h*Math.PI/180;
+ for(const c of cmds){if(c[0]==='L'){x+=c[1]*Math.cos(h);y+=c[1]*Math.sin(h);len+=Math.abs(c[1]);P.push([x,y])}else{const dth=c[1]*Math.PI/180,r=c[2],n=Math.max(4,Math.ceil(Math.abs(c[1])/10));for(let k=0;k<n;k++){const d=dth/n,ch=2*r*Math.sin(Math.abs(d)/2);x+=ch*Math.cos(h+d/2);y+=ch*Math.sin(h+d/2);h+=d;P.push([x,y])}len+=Math.abs(dth)*r}}return{pts:P,len}}
+function tube(pts3,d,mat,name,par){const path=new THREE.CurvePath();for(let i=1;i<pts3.length;i++)path.add(new THREE.LineCurve3(pts3[i-1],pts3[i]));
+ let len=0;for(let i=1;i<pts3.length;i++)len+=pts3[i].distanceTo(pts3[i-1]);
+ const g=new THREE.TubeGeometry(path,Math.max(2,(pts3.length-1)*2),d/2000,10,false);if(BT[mat.__t].def){const uv=g.attributes.uv,pitch=d*.0006;for(let i=0;i<uv.count;i++)uv.setX(i,uv.getX(i)*len/pitch)}
+ const m=new THREE.Mesh(g,mat);m.name=name;par.add(m);return m}
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+function gp(n,p){const g=new THREE.Group();g.name=n;p.add(g);return g}
+function seg(a,b){return[a,b]}
+const abox=(w,h,d,x,y,z,mat,par,n)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x+w/2,y+h/2,z+d/2);m.name=n;par.add(m);return m};
+function outline(w,h,d,x,y,z,par,n){const g=gp(n,par);const m=abox(w,h,d,x,y,z,new THREE.MeshStandardMaterial({color:0xbfc3c7,transparent:true,opacity:.14,roughness:1,depthWrite:false}),g,'Concrete');const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:0x8a9096}));e.position.copy(m.position);g.add(e);return g}
+// design numbers
+function lens(t,db,fc){const T=BT[t],fy=T.fy,psie=T.ep?1.5:1,sq=Math.sqrt(fc);let ld=(db<=19?fy*psie/(2.1*sq):fy*psie/(1.7*sq))*db;let ldh=Math.max(.24*psie*fy/sq*db,8*db,150);if(!T.def){ld*=2;ldh*=1.5}ld=Math.max(ld,300);
+ return{ld,ldh,lapB:Math.max(1.3*ld,300),lapA:Math.max(ld,300),bend:(db<=25?6:8)*db}}
+const Ab=d=>Math.PI*d*d/4,kgm=d=>d*d/162.2;
+const f1=(v,n)=>v.toFixed(n==null?1:n);
+let tgt=null;
+function build(fit){
+ if(model)S.remove(model);model=new THREE.Group();S.add(model);
+ const t=$('bt').value,T=BT[t],db=+$('db').value,fc=+$('fc').value,md=$('md').value,mat=bmat(t);mat.__t=t;const L=lens(t,db,fc),ck=[],ok=(s,v)=>ck.push([s,v]),res=[],rs=(a,b)=>res.push([a,b]);
+ ['p_bar','p_beam','p_col'].forEach(i=>$(i).style.display='none');$('p_'+md).style.display='block';$('cn_on').parentElement.style.display=md==='bar'?'none':'flex';
+ const mp=(...a)=>a;let sz=1,ctr=[0,0,0];
+ if(md==='bar'){model.name='Rebar_'+$('sh').value;const sh=$('sh').value,A=+$('A').value,B=+$('B').value,N=+$('N').value,g=gp('Bar',model),rb=L.bend/2/1000+db/2000,r=db/1000;
+  const lab={straight:['Length',0],L:['Straight leg',0],J:['Straight length',0],U:['Leg length','Inside gap'],crank:['Total length','Crank rise'],stirrup:['Width','Height'],spiral:['Diameter','Pitch'],lap:['Lap length provided',0]}[sh];
+  $('Al').textContent=lab[0];$('Brow').style.display=lab[1]?'block':'none';if(lab[1])$('Bl').textContent=lab[1];
+  const a=$('A'),bs=$('B');bs.min=50;bs.max=600;bs.step=10;const rg={straight:[200,6000,50],L:[200,3000,50],J:[200,3000,50],U:[200,3000,50],crank:[1000,6000,50],stirrup:[100,700,10],spiral:[200,800,10],lap:[200,2000,50]}[sh];a.min=rg[0];a.max=rg[1];a.step=rg[2];if(+a.value<rg[0])a.value=rg[0];if(+a.value>rg[1])a.value=rg[1];
+  if(sh==='crank'){bs.min=100;bs.max=600;bs.step=10}if(sh==='spiral'){bs.min=40;bs.max=150;bs.step=5}if(sh==='U'){bs.min=50;bs.max=400;bs.step=10}
+  if($('sh').dataset.nw){const D={straight:[2000,300],L:[800,300],J:[800,300],U:[800,100],crank:[3000,300],stirrup:[300,500],spiral:[300,75],lap:[600,300]}[sh];a.value=D[0];bs.value=D[1];delete $('sh').dataset.nw}
+  const Av=+a.value,Bv=+bs.value;$('Av').textContent=Av+' mm';$('Bv').textContent=Bv+' mm';$('Nv').textContent=N;
+  const m=Av/1000,hk=(db<=16?4:5)*db/1000;let cut=0,pm=[];const d3=(P,z)=>P.map(p=>V(p[0],p[1],z||0));
+  if(sh==='straight'){cut=m;tube([V(0,0,0),V(m,0,0)],db,mat,'Bar',g)}
+  else if(sh==='L'){const q=turtle(0,0,0,[['L',m],['A',90,rb],['L',12*db/1000]]);cut=q.len;tube(d3(q.pts),db,mat,'Bar',g)}
+  else if(sh==='J'){const q=turtle(0,0,0,[['L',m],['A',180,rb],['L',Math.max(4*db,65)/1000]]);cut=q.len;tube(d3(q.pts),db,mat,'Bar',g)}
+  else if(sh==='U'){const gap=Math.max(Bv/1000,2*rb);const q=turtle(0,0,0,[['L',m],['A',180,gap/2],['L',m]]);cut=q.len;tube(d3(q.pts),db,mat,'Bar',g)}
+  else if(sh==='crank'){const rise=Bv/1000,rr=rb*1.5,diag=rise/Math.SQRT1_2-2*rr*Math.tan(Math.PI/8)*2;const rest=Math.max(.05,(m-diag*Math.SQRT1_2-rr*2)/2);const q=turtle(0,0,0,[['L',rest],['A',45,rr],['L',Math.max(.01,diag)],['A',-45,rr],['L',rest]]);cut=q.len;tube(d3(q.pts),db,mat,'Bar',g)}
+  else if(sh==='stirrup'){const w=Av/1000-db/1000,h=Math.max(.1,Av/1000*1.5)-db/1000,hh=Bv>=100?Bv/1000-db/1000:h,R2=(db<=16?2:3)*db/1000;const q=turtle(R2,0,0,[['L',w-2*R2],['A',90,R2],['L',hh-2*R2],['A',90,R2],['L',w-2*R2],['A',90,R2],['L',hh-2*R2],['A',90,R2],['A',135,R2*.01+.0001],['L',Math.max(6*db,75)/1000]]);cut=q.len;
+   const P=q.pts;tube(d3(P),db,mat,'Stirrup',g);ctr=[w/2,hh/2,0];sz=Math.max(w,hh)}
+  else if(sh==='spiral'){const D=Av/1000-db/1000,p=Bv/1000,turns=6,P=[];for(let i=0;i<=turns*36;i++){const a=i/36*2*Math.PI;P.push(V(D/2*Math.cos(a),D/2*Math.sin(a),i/36*p))}cut=turns*Math.hypot(Math.PI*D,p);tube(P,db,mat,'Spiral',g);ctr=[0,0,turns*p/2];sz=Math.max(D,turns*p)}
+  else if(sh==='lap'){const lp=Av/1000,len=Math.max(1.0,lp+.5);cut=2*len;tube([V(0,0,0),V(len,0,0)],db,mat,'Bar_1',g);tube([V(len-lp,2.2*db/1000,0),V(2*len-lp,2.2*db/1000,0)],db,mat,'Bar_2',g);sz=2*len-lp;ctr=[sz/2,0,0]}
+  if(['straight','L','J','U','crank'].includes(sh)){sz=m;ctr=sh==='straight'||sh==='crank'||sh==='L'||sh==='J'||sh==='U'?[m/2,0,0]:ctr}
+  const As=Ab(db),Ty=As*T.fy/1000,phiT=.9*Ty,wt=cut*kgm(db);
+  rs('Bar area / weight per m',f1(As,0)+' mm² · '+f1(kgm(db),3)+' kg/m');rs('Yield force As·fy',f1(Ty)+' kN ('+T.fy+' MPa)');rs('Design tension capacity φ·As·fy',f1(phiT)+' kN per bar');rs('Group of '+N+' bars',f1(N*phiT)+' kN · '+f1(N*wt)+' kg');
+  rs('Cut length of one bar',f1(cut*1000,0)+' mm · '+f1(wt,2)+' kg');rs('Development length ld',f1(L.ld,0)+' mm'+(T.def?'':' (plain bar: ×2 bond factor)'));rs('Hook development ldh',f1(L.ldh,0)+' mm');rs('Lap splice class B / class A',f1(L.lapB,0)+' / '+f1(L.lapA,0)+' mm');rs('Minimum bend diameter',f1(L.bend,0)+' mm');rs('Standard',T.std);
+  ok('Bend diameter used '+f1(L.bend,0)+' mm ≥ minimum '+(db<=25?6:8)+'db',true);
+  if(!T.def&&['straight','crank','lap'].includes(sh))ok('Plain bars need end hooks for anchorage: add hooks or use deformed bar',false);
+  if(sh==='straight'&&T.def)ok('Straight length '+Av+' mm vs development length '+f1(L.ld,0)+' mm (embedment)',Av>=L.ld);
+  if(['L','J','U'].includes(sh))ok('Straight length before hook '+Av+' mm ≥ hook development ldh '+f1(L.ldh,0)+' mm',Av>=L.ldh);
+  if(sh==='lap')ok('Lap provided '+Av+' mm ≥ class B '+f1(L.lapB,0)+' mm',Av>=L.lapB);
+  if(sh==='spiral'){const cl=Bv-db;ok('Spiral clear spacing '+cl+' mm (25 to 75 mm)',cl>=25&&cl<=75)}
+  if(sh==='stirrup')ok('Closed tie/stirrup with 135° hook, leg ≥ 6db (≥ 75 mm)',true);
+  if(sh==='crank')ok('Crank angle 45° (1:1 rise to run)',true);
+  spec={name:model.name,units:'mm',mode:'bar',bar_type:T.n,standard:T.std,dia:db,shape:sh,dimension_A:Av,dimension_B:Bv,fy:T.fy,fc:fc,area_mm2:+As.toFixed(1),weight_kg_per_m:+kgm(db).toFixed(3),yield_kN:+Ty.toFixed(1),design_tension_kN:+phiT.toFixed(1),ld:+L.ld.toFixed(0),ldh:+L.ldh.toFixed(0),lap_B:+L.lapB.toFixed(0),min_bend_dia:L.bend,cut_length_mm:+(cut*1000).toFixed(0),count:N,total_weight_kg:+(N*wt).toFixed(2)}}
+ else if(md==='beam'){model.name='RC_Beam_Cage';const b=+$('bb').value,h=+$('bh').value,nb=+$('bn').value,nt=+$('tn').value,ds=+$('sd').value,s=+$('ss').value,cv=+$('cv').value,sp=+$('sp').value;
+  $('bbv').textContent=b+' mm';$('bhv').textContent=h+' mm';$('ssv').textContent=s+' mm';$('cvv').textContent=cv+' mm';$('spv').textContent=sp+' m';
+  const sdb=Math.min(db,25),cs=Math.max(25,db),fit=Math.max(2,Math.floor((b-2*cv-2*ds+cs)/(db+cs))),n1=Math.min(nb,fit),n2=nb-n1,y1=cv+ds+db/2,ybar=(n1*y1+n2*(y1+db+cs))/nb,d=h-ybar;
+  const As=nb*Ab(db),beta=fc<=28?.85:Math.max(.65,.85-.05*(fc-28)/7),a=As*T.fy/(.85*fc*b),c=a/beta,et=.003*(d/c-1),ey=T.fy/200000,phi=et>=.005?.9:et<=ey?.65:.65+.25*(et-ey)/(.005-ey),Mn=As*T.fy*(d-a/2)/1e6,pM=phi*Mn;
+  const asmin=Math.max(.25*Math.sqrt(fc)/T.fy,1.4/T.fy)*b*d,fyt=Math.min(T.fy,500),Avs=2*Ab(ds),Vc=.17*Math.sqrt(fc)*b*d/1000,Vs=Avs*fyt*d/s/1000,pV=.75*(Vc+Vs),Vsmax=.66*Math.sqrt(fc)*b*d/1000,smax=Vs<=.33*Math.sqrt(fc)*b*d/1000?Math.min(d/2,600):Math.min(d/4,300),avmin=Math.max(.062*Math.sqrt(fc)*b/fyt,.35*b/fyt);
+  const wM=8*pM/(sp*sp),wV=2*pV/Math.max(.5,sp-2*d/1000),wu=Math.min(wM,wV);
+  const Lb=2.4,x0=.0,cL=Lb-2*cv/1000,cover=cv/1000,inner=(ds)/1000;
+  const mT=bmat(t);mT.__t=t;const mS=bmat(t);mS.__t=t;const gB=gp('Bars_Bottom',model),gT=gp('Bars_Top',model),gS=gp('Stirrups',model);
+  const zs=(n,zmin,zmax)=>n===1?[(zmin+zmax)/2]:Array.from({length:n},(_,i)=>zmin+i*(zmax-zmin)/(n-1));
+  const zlo=(cv+ds+db/2)/1000,zhi=(b-cv-ds-db/2)/1000;
+  const layer=(n,yv,grp,pref)=>zs(n,zlo,zhi).forEach((z,i)=>tube([V(cover,yv,z),V(Lb-cover,yv,z)],db,mat,pref+(i+1),grp));
+  let k=0;if(n1)layer(n1,y1/1000,gB,'Bottom1_');if(n2)layer(n2,(y1+db+cs)/1000,gB,'Bottom2_');
+  if(nt)layer(nt,(h-cv-ds-db/2)/1000,gT,'Top_');
+  const w=(b-2*cv-ds)/1000,hh=(h-2*cv-ds)/1000,R2=(ds<=16?2:3)*ds/1000,ns=Math.floor((Lb-2*cover)/(s/1000))+1;
+  for(let i=0;i<ns;i++){const x=cover+i*s/1000;const q=turtle(R2,0,0,[['L',w-2*R2],['A',90,R2],['L',hh-2*R2],['A',90,R2],['L',w-2*R2],['A',90,R2],['L',hh-2*R2],['A',90,R2],['A',135,R2*.01+.0001],['L',Math.max(6*ds,75)/1000]]);
+   const P=q.pts.map(p=>V(x,cover+ds/2000+p[1],cover+ds/2000+p[0]));tube(P,ds,mS,'Stirrup_'+(i+1),gS)}
+  if($('cn_on').checked)outline(Lb,h/1000,b/1000,0,0,0,model,'Concrete_Beam');
+  const stirLen=2*(w+hh)+.2,wtm=(nb+nt)*kgm(db)+stirLen*kgm(ds)*1000/s,vol=b*h/1e6;sz=Lb;ctr=[Lb/2,h/2000,b/2000];
+  rs('Effective depth d / layers',f1(d,0)+' mm / '+(n2?2:1)+(n2?' (second layer '+n2+' bars)':''));rs('Tension steel As ('+nb+'Ø'+db+')',f1(As,0)+' mm² · ρ = '+f1(100*As/(b*d),2)+'%');
+  rs('Nominal / design moment',f1(Mn)+' / '+f1(pM)+' kN·m (φ = '+f1(phi,2)+', εt = '+f1(et*1000,1)+'‰)');rs('Shear Vc / Vs / design φVn',f1(Vc)+' / '+f1(Vs)+' / '+f1(pV)+' kN');
+  rs('Safe factored UDL on '+sp+' m span',f1(wu)+' kN/m  (moment '+f1(wM)+', shear '+f1(wV)+')');rs('Steel in beam',f1(wtm,1)+' kg/m · '+f1(wtm/vol,0)+' kg/m³ concrete');rs('Bar type',T.n);
+  ok('Tension-controlled: εt = '+f1(et*1000,1)+'‰ ≥ 4‰ (ACI minimum for beams)',et>=.004);
+  ok('As = '+f1(As,0)+' mm² ≥ As,min '+f1(asmin,0)+' mm²',As>=asmin);
+  ok('Bars fit width: '+n1+' per layer, clear spacing ≥ '+cs+' mm',n1>=2||nb===1);
+  ok('Stirrup spacing '+s+' mm ≤ max '+f1(smax,0)+' mm',s<=smax);
+  ok('Stirrup Av/s = '+f1(Avs/s,2)+' ≥ minimum '+f1(avmin,2)+' mm²/mm',Avs/s>=avmin);
+  ok('Vs '+f1(Vs)+' kN ≤ 0.66√f\'c·b·d = '+f1(Vsmax)+' kN (section big enough)',Vs<=Vsmax);
+  ok('Depth h = '+h+' mm ≥ span/16 = '+f1(sp*1000/16,0)+' mm (deflection, simply supported)',h>=sp*1000/16);
+  ok('Stirrup dia '+ds+' mm ≥ ¼ of main bar dia ('+f1(db/4,1)+') and ≥ 8 mm',ds>=Math.max(8,db/4));
+  spec={name:model.name,units:'mm',mode:'beam',bar_type:T.n,fc:fc,fy:T.fy,section:{b,h,cover:cv},bottom:{n:nb,dia:db,layers:n2?2:1},top:{n:nt,dia:db},stirrup:{dia:ds,spacing:s,legs:2},d:+d.toFixed(1),As:+As.toFixed(0),phiMn_kNm:+pM.toFixed(1),phiVn_kN:+pV.toFixed(1),span_m:sp,safe_udl_kN_per_m:+wu.toFixed(1),steel_kg_per_m:+wtm.toFixed(2),steel_kg_per_m3:+(wtm/vol).toFixed(0)}}
+ else{model.name='RC_Column_Cage';const circ=$('cs').value==='circ',sp=$('ct').value==='spiral',b=+$('cb').value,h=circ?b:+$('ch').value,n=+$('cn').value,dt=+$('td').value,s=+$('ts').value,cv=+$('cc').value;
+  if(!circ&&sp){$('ct').value='tied'}const spiral=circ&&$('ct').value==='spiral';$('ct').querySelector('option[value=spiral]').disabled=!circ;
+  $('chr').style.display=circ?'none':'block';$('cbl').textContent=circ?'Diameter D':'Width b';$('cbv').textContent=b+' mm';$('chv').textContent=h+' mm';$('tsv').textContent=s+' mm';$('ccv').textContent=cv+' mm';
+  const Ag=circ?Math.PI*b*b/4:b*h,Ast=n*Ab(db),rho=Ast/Ag,Po=.85*fc*(Ag-Ast)+T.fy*Ast,phiP=(spiral?.75*.85:.65*.8)*Po/1000;
+  const Hc=1.8,gB=gp('Vertical_Bars',model),gS=gp('Ties',model),mS=bmat(t);mS.__t=t;const off=(cv+dt+db/2)/1000;let P=[],minsp=1e9;
+  if(circ){const r=b/2000-off;for(let i=0;i<n;i++){const a=i/n*2*Math.PI;P.push([b/2000+r*Math.cos(a),b/2000+r*Math.sin(a)])}minsp=2*r*Math.sin(Math.PI/n)*1000-db}
+  else{const ex={4:[0,0],6:[1,0],8:[1,1],10:[2,1],12:[2,2],16:[3,3]}[n],longH=h>=b,eb=longH?ex[1]:ex[0],eh=longH?ex[0]:ex[1];const x0=off,x1=b/1000-off,y0=off,y1=h/1000-off;
+   const line=(ax,ay,bx,by,m)=>{for(let i=0;i<=m;i++){}};
+   P.push([x0,y0],[x1,y0],[x1,y1],[x0,y1]);for(let i=1;i<=eb;i++){const x=x0+(x1-x0)*i/(eb+1);P.push([x,y0],[x,y1])}for(let i=1;i<=eh;i++){const y=y0+(y1-y0)*i/(eh+1);P.push([x0,y],[x1,y])}
+   const sb=(x1-x0)*1000/(eb+1)-db,sh2=(y1-y0)*1000/(eh+1)-db;minsp=Math.min(sb,sh2)}
+  P.forEach((p,i)=>tube([V(p[0],0,p[1]),V(p[0],Hc,p[1])],db,mat,'Bar_'+(i+1),gB));
+  let tieLen,nties;
+  if(spiral){const r=b/2000-(cv+dt/2)/1000,turns=Hc/(s/1000),pts=[];for(let i=0;i<=Math.ceil(turns*36);i++){const a=i/36*2*Math.PI;pts.push(V(b/2000+r*Math.cos(a),Math.min(Hc,i/36*s/1000),b/2000+r*Math.sin(a)))}tube(pts,dt,mS,'Spiral',gS);tieLen=turns*Math.hypot(2*Math.PI*r,s/1000);nties=1}
+  else{nties=Math.floor(Hc/(s/1000))+1;const tr=(cv+dt/2)/1000;for(let i=0;i<nties;i++){const y=.03+i*s/1000;if(y>Hc)break;let pts=[];if(circ){const r=b/2000-tr;for(let k=0;k<=48;k++){const a=k/48*2*Math.PI;pts.push(V(b/2000+r*Math.cos(a),y,b/2000+r*Math.sin(a)))}}
+    else{const R2=2*dt/1000,w=b/1000-2*tr,hh=h/1000-2*tr,q=turtle(R2,0,0,[['L',w-2*R2],['A',90,R2],['L',hh-2*R2],['A',90,R2],['L',w-2*R2],['A',90,R2],['L',hh-2*R2],['A',90,R2]]);pts=q.pts.map(p=>V(tr+p[0],y,tr+p[1]))}
+    tube(pts,dt,mS,'Tie_'+(i+1),gS)}tieLen=circ?Math.PI*(b/1000-2*tr):2*((b/1000-2*tr)+(h/1000-2*tr))+.2}
+  if($('cn_on').checked)outline(b/1000,Hc,h/1000,0,0,0,model,'Concrete_Column');
+  const wtm=n*kgm(db)+(spiral?tieLen/Hc:tieLen*1000/s)*kgm(dt),vol=Ag/1e6;sz=Math.max(Hc,b/1000);ctr=[b/2000,Hc/2,h/2000];
+  rs('Gross area Ag / steel Ast',f1(Ag,0)+' mm² / '+f1(Ast,0)+' mm² ('+n+'Ø'+db+')');rs('Steel ratio ρ',f1(100*rho,2)+'%');
+  rs('Axial capacity φPn,max ('+(spiral?'spiral 0.75':'tied 0.65')+')',f1(phiP,0)+' kN');rs('Steel share of Po',f1(100*T.fy*Ast/Po,0)+'%');rs('Steel in column',f1(wtm,1)+' kg/m · '+f1(wtm/vol,0)+' kg/m³ concrete');rs('Bar type',T.n);
+  ok('Steel ratio '+f1(100*rho,2)+'% within 1–4% (8% code max, congested above 4%)',rho>=.01&&rho<=.04);
+  ok('Vertical bars '+n+' ≥ '+(circ?6:4)+' (min for '+(circ?'circular':'rectangular')+' section)',n>=(circ?6:4));
+  ok('Clear spacing between bars '+f1(minsp,0)+' mm ≥ max(40 mm, 1.5db = '+f1(1.5*db,0)+' mm)',minsp>=Math.max(40,1.5*db));
+  ok('Tie dia '+dt+' mm ≥ max(8 mm, ¼db = '+f1(db/4,1)+' mm)',dt>=Math.max(8,db/4));
+  const lim=Math.min(16*db,48*dt,Math.min(b,h));ok((spiral?'Spiral pitch ':'Tie spacing ')+s+' mm ≤ '+(spiral?'75 mm and ≥ 25+dt clear':'min(16db, 48dt, least dimension) = '+f1(lim,0)+' mm'),spiral?(s<=75+dt&&s-dt>=25):s<=lim);
+  ok('Section '+(circ?'D ':'b ')+Math.min(b,h)+' mm ≥ 250 mm minimum column size',Math.min(b,h)>=250);
+  ok('Cover '+cv+' mm ≥ 40 mm for columns (BNBC / ACI)',cv>=40);
+  spec={name:model.name,units:'mm',mode:'column',bar_type:T.n,fc:fc,fy:T.fy,section:circ?{D:b}:{b,h},cover:cv,vertical:{n,dia:db},ties:{type:spiral?'spiral':'tied',dia:dt,spacing:s},Ag:+Ag.toFixed(0),Ast:+Ast.toFixed(0),rho_pct:+(100*rho).toFixed(2),phiPn_max_kN:+phiP.toFixed(0),steel_kg_per_m:+wtm.toFixed(2),steel_kg_per_m3:+(wtm/vol).toFixed(0)}}
+ spec.checks=ck.map(c=>({rule:c[0],pass:c[1]}));spec.groups=model.children.map(g=>g.name);
+ $('res').innerHTML=res.map(r=>'<li class="info"><b>'+r[0]+':</b> '+r[1]+'</li>').join('');$('chk').innerHTML=ck.map(c=>'<li class="'+(c[1]?'':'bad')+'">'+c[0]+'</li>').join('');
+ bad=ck.some(c=>!c[1]);$('dl').disabled=bad;$('msg').textContent=bad?'Fix the failing rules to enable download.':'';
+ model.position.set(-ctr[0],-ctr[1],-ctr[2]);info={size:sz,c:ctr};if(fit)view('a')}
+function view(k){const d=Math.max(.3,info.size)*1.9+.2,P={a:[.8,.55,.9],f:[0,0,1],t:[0,1,.001],s:[1,0,0]}[k]||[.8,.55,.9];C.position.set(P[0]*d,P[1]*d,P[2]*d);if(ctl){ctl.target.set(0,0,0);ctl.update()}else C.lookAt(0,0,0)}
+document.querySelectorAll('#hud button').forEach(b=>b.onclick=()=>view(b.dataset.v));
+function fitSize(){const w=box.clientWidth,h=box.clientHeight;R.setPixelRatio(Math.min(devicePixelRatio||1,2));R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}
+addEventListener('resize',fitSize);(function loop(){requestAnimationFrame(loop);if(ctl)ctl.update();R.render(S,C)})();
+['bt','db','fc','cn','td','cs','ct','bn','tn','sd','cn_on'].forEach(i=>$(i).onchange=()=>build(false));$('md').onchange=()=>{$('sh').dataset.nw=1;build(true)};$('sh').onchange=()=>{$('sh').dataset.nw=1;build(true)};
+['A','B','N','bb','bh','ss','cv','sp','cb','ch','ts','cc'].forEach(i=>$(i).oninput=()=>build(false));
+// zip (store)
+const CT=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=CT[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+
+function save(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];
+ try{model.updateMatrixWorld(true);fs.push({n:'spec.json',d:e.encode(JSON.stringify(spec,null,1))});
+  if((fm==='zip'||fm==='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+  if((fm==='zip'||fm==='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+  if(fm==='zip')save(zip(fs),base+'.zip');else if(fm==='json')save(new Blob([fs[0].d],{type:'application/json'}),base+'_spec.json');else{const f=fs.find(x=>x.n!=='spec.json');save(new Blob([f.d]),base+'.'+f.n.split('.').pop())}
+  msg.textContent='Downloaded.'}catch(x){msg.textContent='Export failed: '+(x&&x.message||x)}};
+fitSize();build(true);
+</script></body></html>

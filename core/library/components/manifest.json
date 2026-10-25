@@ -1,0 +1,30 @@
+{
+ "components": [
+  "di-pipe",
+  "di-pipe-fl",
+  "gate-valve",
+  "end-suction-pump",
+  "rcc-column",
+  "rcc-wall-opening",
+  "rcc-slab",
+  "brick-wall",
+  "boundary-wall",
+  "door",
+  "window",
+  "gate",
+  "table",
+  "di-bend-90",
+  "di-bend-45",
+  "di-tee",
+  "di-reducer",
+  "dismantling-joint",
+  "check-valve",
+  "butterfly-valve",
+  "rcc-beam",
+  "pump-plinth",
+  "blind-flange",
+  "ball-valve",
+  "air-valve",
+  "flow-meter"
+ ]
+}

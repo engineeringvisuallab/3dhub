@@ -1,0 +1,4 @@
+{ "id": "di-pipe", "name": "DI pipe (straight)", "category": "water-supply/pipe", "kind": "parametric", "tags": ["pipe"], "units": "mm",
+  "parameters": { "OD": {"min":60,"max":1500,"default":324}, "len": {"min":300,"max":12000,"default":1500} },
+  "shapes": [ { "id": "barrel", "role": "solid", "type": "cylinder", "axis": "y", "radius": "$OD/2", "length": "$len" } ],
+  "ports": [ { "id": "A", "at": [0,"-$len/2",0], "dir": [0,-1,0], "type": "spigot", "OD": "$OD" }, { "id": "B", "at": [0,"$len/2",0], "dir": [0,1,0], "type": "spigot", "OD": "$OD" } ] }
