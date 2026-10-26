@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Library Building (2 storey, 2 shatak)</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1280px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(74vh,700px);min-height:340px;padding:0;overflow:hidden;position:relative}#view canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}#hud button,.b2{width:auto;margin:0;padding:6px 10px;font-size:12px;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;cursor:pointer}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg)}input[type=range]{width:100%}
+h2{font-size:13px;margin:16px 0 0;text-transform:uppercase;letter-spacing:.04em;border-top:1px solid var(--bd);padding-top:10px}h2:first-child{border:0;padding:0;margin-top:0}
+.ck{display:inline-flex;gap:5px;align-items:center;margin:6px 12px 0 0;font-size:13px;color:var(--fg)}.ck input{margin:0}
+.dl{width:100%;margin-top:12px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}
+</style></head><body>
+<header><h1>Library Building – 2 storey on 2 shatak (parametric)</h1><p>EVLab 3D Hub · foundation, columns, beams, slabs, walls, doors, windows, staircase, exterior and interior · all layers can be switched ON/OFF</p></header>
+<main><div class="card" id="view"><div id="hud"><button data-v="corner">Corner</button><button data-v="front">Front</button><button data-v="rear">Rear</button><button data-v="top">Top</button></div></div>
+<div class="card">
+<h2>Size</h2>
+<label>Storey height: <b id="Hv"></b><input type="range" id="H" min="3.2" max="3.8" step="0.1" value="3.4"></label>
+<label>Column size: <b id="cv"></b><input type="range" id="c" min="0.25" max="0.4" step="0.025" value="0.3"></label>
+<label>Footing size: <b id="fv"></b><input type="range" id="f" min="1.2" max="1.7" step="0.1" value="1.5"></label>
+<h2>Layers</h2><div id="lay"></div>
+<h2>Cutaway</h2>
+<label>Cut height: <b id="cutv"></b><input type="range" id="cut" min="0.5" max="10" step="0.05" value="10"></label>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="b2" id="pgf">Plan: ground floor</button><button class="b2" id="p1f">Plan: first floor</button><button class="b2" id="pno">No cut</button></div>
+<h2>Checks</h2><ul id="rules"></ul>
+<button class="dl" id="glb">Download GLB</button><button class="dl" id="spec" style="background:var(--card);color:var(--fg);border:1px solid var(--bd)">Download spec.json</button>
+<small>Concept / architectural model. Structural design, soil test and local approval (setbacks, coverage, fire, accessibility) are still required.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),V=$('view');
+if(!window.THREE||!THREE.OrbitControls){V.insertAdjacentHTML('beforeend','<p style="padding:60px 20px">three.js could not load. Check the internet connection.</p>');return}
+const T=THREE,names=['Foundation','Columns','Beams','Slabs','Walls','Openings','Stair','Interior','Exterior','Site'],P={H:3.4,c:.3,f:1.5},FULL=10;
+$('lay').innerHTML=names.map(n=>`<label class="ck"><input type="checkbox" id="l_${n}" checked>${n}</label>`).join('');
+const M=(c,o)=>new T.MeshStandardMaterial(Object.assign({color:c,roughness:.85,side:T.DoubleSide},o));
+const bk=document.createElement('canvas');bk.width=256;bk.height=8;{const g=bk.getContext('2d'),pal=['#a33','#36a','#385','#c93','#639','#d77','#468','#a62','#244','#bb4'];let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;for(let x=0;x<256;){const w=3+(rnd()*5|0);g.fillStyle=pal[rnd()*10|0];g.fillRect(x,0,w,8);x+=w}}
+const m={conc:M(0xb9b6ae),col:M(0xd0cbbf),found:M(0x9c988f),pcc:M(0x8a867f),wall:M(0xeadfc8),frame:M(0x2f353c),metal:M(0x555b63),glass:M(0x9fd0e6,{transparent:true,opacity:.32,roughness:.1}),door:M(0x8b5a2f),gdoor:M(0x7ab8d4,{transparent:true,opacity:.4,roughness:.1}),tile:M(0xd9d4c9),wf:M(0xb88f5f),shelf:M(0x6b4a2f),books:M(0xffffff,{map:new T.CanvasTexture(bk)}),tab:M(0xa0713f),chair:M(0x2f5d8a),desk:M(0xc4a373),step:M(0xc3c0b8),sand:M(0xd8c898),roof:M(0xa7a5a0),path:M(0xc9c6bf),leaf:M(0x4f8a4a),trunk:M(0x6b4a2f),road:M(0x55585c),tank:M(0x2d6f9e),wc:M(0xf2f2f2)};
+const sc=new T.Scene();sc.background=new T.Color(0xdbe7f1);
+const cam=new T.PerspectiveCamera(40,1,.1,200),rd=new T.WebGLRenderer({antialias:true});rd.shadowMap.enabled=true;rd.setPixelRatio(Math.min(devicePixelRatio,2));V.appendChild(rd.domElement);
+const ctl=new T.OrbitControls(cam,rd.domElement);ctl.maxPolarAngle=Math.PI/2;
+sc.add(new T.HemisphereLight(0xffffff,0x8a8f7a,.8));const sun=new T.DirectionalLight(0xffffff,.8);sun.position.set(10,18,12);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.bias=-.0005;sun.shadow.normalBias=.02;Object.assign(sun.shadow.camera,{left:-13,right:13,top:13,bottom:-13,near:1,far:60});sc.add(sun);
+const root=new T.Group();sc.add(root);const L={},clip=new T.Plane(new T.Vector3(0,-1,0),FULL);rd.clippingPlanes=[clip];
+const win=[0,0];let FL={};
+function B(mt,x0,x1,y0,y1,z0,z1,l){const g=new T.Mesh(new T.BoxGeometry(Math.max(.002,x1-x0),Math.max(.002,y1-y0),Math.max(.002,z1-z0)),mt);g.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);g.castShadow=!mt.transparent;g.receiveShadow=true;L[l].add(g);return g}
+function wall(ax,u0,u1,a,b,y0,y1,ops,out,fl){
+ const D=(mt,p,q,r,s,d0,d1,l)=>ax=='x'?B(mt,p,q,r,s,d0,d1,l):B(mt,d0,d1,r,s,p,q,l),Wl=(p,q,r,s)=>D(m.wall,p,q,r,s,a,b,'Walls'),md=(a+b)/2,t=.05;let cur=u0;
+ ops.sort((p,q)=>p.c-q.c).forEach(o=>{
+  const o0=o.c-o.w/2,o1=o.c+o.w/2,sy=y0+o.s,hy=sy+o.h,F=(mt,p,q,r,s)=>D(mt,p,q,r,s,md-.07,md+.07,'Openings');
+  if(o0>cur)Wl(cur,o0,y0,y1);if(o.s>0)Wl(o0,o1,y0,sy);if(hy<y1)Wl(o0,o1,hy,y1);cur=o1;
+  F(m.frame,o0,o0+t,sy,hy);F(m.frame,o1-t,o1,sy,hy);F(m.frame,o0,o1,hy-t,hy);
+  if(o.t=='w'){win[fl]+=o.w*o.h;F(m.frame,o0,o1,sy,sy+t);D(m.glass,o0+t,o1-t,sy+t,hy-t,md-.01,md+.01,'Openings');if(o.w>1.5)F(m.frame,o.c-.02,o.c+.02,sy,hy)}
+  else if(o.t=='d1'){D(m.door,o0+t,o1-t,sy,hy-t,md-.025,md+.025,'Openings');D(m.metal,o1-t-.12,o1-t-.07,sy+1,sy+1.1,md-.05,md+.05,'Openings')}
+  else{D(m.gdoor,o0+t,o.c-.01,sy,hy-t,md-.025,md+.025,'Openings');D(m.gdoor,o.c+.01,o1-t,sy,hy-t,md-.025,md+.025,'Openings');[-.25,.2].forEach(k=>D(m.metal,o.c+k,o.c+k+.05,sy+.9,sy+1.3,md-.05,md+.05,'Openings'))}
+  if(out&&o.t=='w'){const of=out>0?b:a,e0=out>0?of:of-.5,e1=out>0?of+.5:of;D(m.conc,o0-.15,o1+.15,hy+.02,hy+.09,e0,e1,'Exterior');D(m.conc,o0-.05,o1+.05,sy-.04,sy,out>0?of:of-.07,out>0?of+.07:of,'Exterior')}
+ });if(u1>cur)Wl(cur,u1,y0,y1)}
+const OP={front:[[[[0,1.6,0,2.4,'d2']],[[0,2.4,.9,1.5,'w']]],[[[0,2.4,.9,1.5,'w']],[[0,2.4,.9,1.5,'w']]]],
+ back:[[[[.9,1,0,2.1,'d1']],[[0,1.2,1,1.6,'w']]],[[[0,2.4,.9,1.5,'w']],[[0,1.2,1,1.6,'w']]]],
+ west:[[[[-.4,.6,1.5,.6,'w']],[[0,1.8,1.1,1.3,'w']]],[[[0,1.8,.9,1.5,'w']],[[0,1.8,.9,1.5,'w']]]],
+ east:[[[[0,1.2,1,1.6,'w']],[[0,1.8,1.1,1.3,'w']]],[[[0,1.2,1,1.6,'w']],[[0,1.8,.9,1.5,'w']]]]};
+function build(){
+ root.traverse(o=>o.geometry&&o.geometry.dispose());root.clear();names.forEach(n=>{L[n]=new T.Group();L[n].name=n;L[n].visible=$('l_'+n).checked;root.add(L[n])});win[0]=win[1]=0;
+ const {H,c,f}=P,h=c/2,F0=.45,F1=F0+H,R=F1+H,bm=.45,X0=-3.75,X1=3.75,Z0=-3.75,Z1=3,WT=.25,gx=[X0+h,0,X1-h],gz=[Z0+h,(Z0+Z1)/2,Z1-h];FL={F0,F1,R};
+ const bays=fn=>{for(let i=0;i<2;i++)for(let j=0;j<2;j++)fn(gx[i]+h,gx[i+1]-h,gz[j]+h,gz[j+1]-h,i,j)};
+ // foundation + columns
+ gx.forEach(x=>gz.forEach(z=>{B(m.pcc,x-f/2-.05,x+f/2+.05,-1.575,-1.5,z-f/2-.05,z+f/2+.05,'Foundation');B(m.found,x-f/2,x+f/2,-1.5,-1.05,z-f/2,z+f/2,'Foundation');B(m.found,x-h,x+h,-1.05,0,z-h,z+h,'Foundation');B(m.col,x-h,x+h,0,F1,z-h,z+h,'Columns');B(m.col,x-h,x+h,F1,R,z-h,z+h,'Columns')}));
+ // beams (plinth tie beams + floor + roof beams)
+ for(let i=0;i<2;i++)gz.forEach(z=>{const a=gx[i]+h,b=gx[i+1]-h;B(m.conc,a,b,F0-.4,F0,z-h,z+h,'Foundation');[F1,R].forEach(y=>B(m.conc,a,b,y-bm,y,z-h,z+h,'Beams'))});
+ for(let j=0;j<2;j++)gx.forEach(x=>{const a=gz[j]+h,b=gz[j+1]-h;B(m.conc,x-h,x+h,F0-.4,F0,a,b,'Foundation');[F1,R].forEach(y=>B(m.conc,x-h,x+h,y-bm,y,a,b,'Beams'))});
+ // slabs + floor finish (first-floor slab has the stair void in the back-right bay)
+ bays((x0,x1,z0,z1,i,j)=>{B(m.sand,x0,x1,0,F0-.15,z0,z1,'Foundation');B(m.conc,x0,x1,F0-.15,F0,z0,z1,'Slabs');B(m.tile,x0,x1,F0,F0+.012,z0,z1,'Interior');
+  if(!(i==1&&j==0)){B(m.conc,x0,x1,F1-.15,F1,z0,z1,'Slabs');B(m.wf,x0,x1,F1,F1+.012,z0,z1,'Interior')}
+  B(m.conc,x0,x1,R-.15,R,z0,z1,'Slabs');B(m.roof,x0,x1,R,R+.02,z0,z1,'Exterior')});
+ // external walls with doors / windows
+ [['front','x',Z1-WT,Z1,1],['back','x',Z0,Z0+WT,-1],['west','z',X0,X0+WT,-1],['east','z',X1-WT,X1,1]].forEach(([s,ax,a,b,out])=>[0,1].forEach(fl=>[0,1].forEach(k=>{
+  const u0=ax=='x'?gx[k]+h:gz[k]+h,u1=ax=='x'?gx[k+1]-h:gz[k+1]-h,ct=(u0+u1)/2;
+  wall(ax,u0,u1,a,b,fl?F1:F0,(fl?R:F1)-bm,OP[s][fl][k].map(([o,w,sl,hh,t])=>({c:ct+o,w,s:sl,h:hh,t})),out,fl)})));
+ // toilet partitions
+ wall('z',Z0+WT,-1.7,-1.75,-1.625,F0,F1-bm,[],0,0);wall('x',X0+WT,-1.75,-1.825,-1.7,F0,F1-bm,[{c:-2.6,w:.9,s:0,h:2.1,t:'d1'}],0,0);
+ // entrance: canopy, posts, steps
+ const cx=(gx[0]+gx[1])/2;B(m.conc,cx-1.55,cx+1.55,F0+2.55,F0+2.7,Z1,Z1+1.25,'Slabs');[-1.35,1.35].forEach(o=>B(m.col,cx+o-.1,cx+o+.1,0,F0+2.55,Z1+1,Z1+1.2,'Exterior'));
+ B(m.step,cx-1.2,cx+1.2,0,F0,Z1,Z1+.6,'Exterior');B(m.step,cx-1.2,cx+1.2,0,.3,Z1+.6,Z1+.9,'Exterior');B(m.step,cx-1.2,cx+1.2,0,.15,Z1+.9,Z1+1.2,'Exterior');
+ // parapet, coping, sign, roof tank
+ const pt=.15,PH=1;B(m.wall,X0,X1,R,R+PH,Z1-pt,Z1,'Exterior');B(m.wall,X0,X1,R,R+PH,Z0,Z0+pt,'Exterior');B(m.wall,X0,X0+pt,R,R+PH,Z0+pt,Z1-pt,'Exterior');B(m.wall,X1-pt,X1,R,R+PH,Z0+pt,Z1-pt,'Exterior');
+ B(m.conc,X0-.04,X1+.04,R+PH,R+PH+.06,Z1-pt-.04,Z1+.04,'Exterior');B(m.conc,X0-.04,X1+.04,R+PH,R+PH+.06,Z0-.04,Z0+pt+.04,'Exterior');B(m.conc,X0-.04,X0+pt+.04,R+PH,R+PH+.06,Z0+pt+.04,Z1-pt-.04,'Exterior');B(m.conc,X1-pt-.04,X1+.04,R+PH,R+PH+.06,Z0+pt+.04,Z1-pt-.04,'Exterior');
+ const cv=document.createElement('canvas');cv.width=1024;cv.height=166;{const g=cv.getContext('2d');g.fillStyle='#1f3b57';g.fillRect(0,0,1024,166);g.fillStyle='#fff';g.font='700 104px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('LIBRARY',512,88)}
+ const sg=new T.Mesh(new T.PlaneGeometry(4,.65),new T.MeshBasicMaterial({map:new T.CanvasTexture(cv)}));sg.position.set(0,R+.55,Z1+.01);L.Exterior.add(sg);
+ B(m.conc,-3,-2.2,R,R+.3,-2.8,-2,'Exterior');const tk=new T.Mesh(new T.CylinderGeometry(.55,.55,1,24),m.tank);tk.position.set(-2.6,R+.8,-2.4);tk.castShadow=true;L.Exterior.add(tk);
+ // dog-leg staircase in the back-right bay (20 risers, 250 mm treads) + void railing
+ const r=H/20,Tr=.25,xs=h,xe=gx[2]-h,zA=gz[0]+h+.1,sw=1.05,zB=zA+sw+.1;
+ for(let k=1;k<=9;k++){B(m.step,xs+Tr*(k-1),xs+Tr*k,F0,F0+r*k,zA,zA+sw,'Stair');B(m.step,xs+9*Tr-Tr*k,xs+9*Tr-Tr*(k-1),F0,F0+r*(10+k),zB,zB+sw,'Stair')}
+ B(m.step,xs+9*Tr,xe,F0,F0+r*10,zA,zB+sw,'Stair');B(m.glass,xs,xe,F1,F1+1,-.42,-.4,'Stair');B(m.metal,xs,xe,F1+1,F1+1.04,-.45,-.37,'Stair');
+ // interior
+ const IN=(mt,x0,x1,y0,y1,z0,z1)=>B(mt,x0,x1,y0,y1,z0,z1,'Interior'),g0=F0+.012,f1=F1+.012;
+ function shelf(x0,x1,z0,z1,y,hh,n){const k=n||5,st=hh/k,e=.03,ax=(x1-x0)>(z1-z0);
+  for(let i=0;i<=k;i++){const y0=y+i*st-(i==k?.03:0);IN(m.shelf,ax?x0+e:x0,ax?x1-e:x1,y0,y0+.03,ax?z0:z0+e,ax?z1:z1-e)}
+  for(let i=0;i<k;i++)IN(m.books,ax?x0+e:x0+.02,ax?x1-e:x1-.02,y+i*st+.03,y+(i+1)*st-.06,ax?z0+.02:z0+e,ax?z1-.02:z1-e);
+  if(ax){IN(m.shelf,x0,x0+e,y,y+hh,z0,z1);IN(m.shelf,x1-e,x1,y,y+hh,z0,z1)}else{IN(m.shelf,x0,x1,y,y+hh,z0,z0+e);IN(m.shelf,x0,x1,y,y+hh,z1-e,z1)}}
+ function table(cx,cz,w,d,y){IN(m.tab,cx-w/2,cx+w/2,y+.72,y+.76,cz-d/2,cz+d/2);[[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([a,b])=>IN(m.frame,cx+a*(w/2-.06)-.025,cx+a*(w/2-.06)+.025,y,y+.72,cz+b*(d/2-.06)-.025,cz+b*(d/2-.06)+.025))}
+ function chair(cx,cz,y,dx,dz){IN(m.chair,cx-.2,cx+.2,y+.43,y+.47,cz-.2,cz+.2);IN(m.frame,cx-.02,cx+.02,y,y+.43,cz-.02,cz+.02);const bx=cx+dx*.19,bz=cz+dz*.19;IN(m.chair,bx-(dx?.015:.2),bx+(dx?.015:.2),y+.47,y+.9,bz-(dz?.015:.2),bz+(dz?.015:.2))}
+ // ground floor: stacks, wall shelves, issue desk, reading tables, toilet fittings
+ shelf(-2.9,-.9,-.7,-.35,g0,1.9);shelf(-2.9,-.9,.3,.65,g0,1.9);shelf(-3.5,-3.2,.2,2.5,g0,1,3);shelf(3.2,3.5,.2,2.5,g0,1,3);
+ IN(m.desk,-.6,.7,g0,g0+1,2.2,2.75);IN(m.tab,-.65,.75,g0+1,g0+1.04,2.15,2.75);IN(m.frame,-.1,.3,g0+1.04,g0+1.3,2.45,2.5);
+ table(2,.9,1.6,.9,g0);chair(1,.9,g0,-1,0);chair(3,.9,g0,1,0);chair(1.6,.2,g0,0,-1);chair(2.4,.2,g0,0,-1);table(2,1.95,1.6,.9,g0);chair(1,1.95,g0,-1,0);chair(3,1.95,g0,1,0);
+ IN(m.wc,-3.35,-2.95,g0,g0+.4,-3.4,-2.8);IN(m.wc,-2.2,-1.8,g0+.8,g0+.9,-3.5,-3.15);
+ // first floor: carrels under the front windows, big table, stacks
+ [-2.4,-1.2,1.2,2.4].forEach(x=>{table(x,2.42,1.1,.55,f1);chair(x,1.95,f1,0,-1)});table(1.8,.6,2.2,1,f1);[1.1,1.8,2.5].forEach(x=>chair(x,1.35,f1,0,1));
+ [-3.1,-2.2,-1.3].forEach(z=>shelf(-2.9,-.9,z,z+.35,f1,1.9));
+ // site: ground, road, paving, boundary wall + gate, tree
+ const gr=new T.Mesh(new T.PlaneGeometry(26,26),M(0x9ab87c,{transparent:true,opacity:.4,depthWrite:false}));gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;L.Site.add(gr);
+ const rdm=new T.Mesh(new T.PlaneGeometry(26,3.2),m.road);rdm.rotation.x=-Math.PI/2;rdm.position.set(0,.005,6.1);L.Site.add(rdm);
+ const BX=4.5,BT=.23,BH=1.8,S=(mt,x0,x1,y0,y1,z0,z1)=>B(mt,x0,x1,y0,y1,z0,z1,'Site');
+ B(m.path,-BX+BT,BX-BT,0,.02,Z1,BX-BT,'Site');S(m.wall,-BX,BX,0,BH,-BX,-BX+BT);S(m.wall,-BX,-BX+BT,0,BH,-BX+BT,BX-BT);S(m.wall,BX-BT,BX,0,BH,-BX+BT,BX-BT);S(m.wall,-BX,cx-1.2,0,BH,BX-BT,BX);S(m.wall,cx+1.2,BX,0,BH,BX-BT,BX);
+ [-1.3,1.3].forEach(o=>{S(m.col,cx+o-.2,cx+o+.2,0,2.2,BX-.3,BX+.07);S(m.conc,cx+o-.25,cx+o+.25,2.2,2.26,BX-.35,BX+.12)});
+ [[cx-1.2,cx],[cx,cx+1.2]].forEach(([a,b])=>{S(m.frame,a+.02,b-.02,.15,.2,BX-.1,BX-.06);S(m.frame,a+.02,b-.02,1.45,1.5,BX-.1,BX-.06);for(let k=0;k<=6;k++){const x=a+.04+k*(b-a-.1)/6;S(m.frame,x,x+.03,.15,1.5,BX-.1,BX-.06)}});
+ const tr=new T.Mesh(new T.CylinderGeometry(.08,.1,1.3,10),m.trunk);tr.position.set(3.3,.65,3.8);const cr=new T.Mesh(new T.SphereGeometry(.65,16,12),m.leaf);cr.position.set(3.3,1.8,3.8);[tr,cr].forEach(o=>{o.castShadow=true;L.Site.add(o)});
+ report(gx,gz);
+}
+function report(gx,gz){const {H,f}=P,span=Math.max(gx[1]-gx[0],gx[2]-gx[1],gz[1]-gz[0],gz[2]-gz[1]),fa=7.5*6.75,r=H/20*1000,gp=win[0]/fa*100,fp=win[1]/fa*100,ed=gx[2]+f/2+.05;
+ const it=[[2,'Plot: 2 shatak = 871.2 sq ft (80.9 m²), modelled 9.0 × 9.0 m'],[2,'Setbacks: front 1.5 m, sides and rear 0.75 m. Confirm with local rules'],
+ [1,`Building 7.5 × 6.75 m = ${fa.toFixed(1)} m² per floor, ${(2*fa).toFixed(1)} m² total, ground coverage ${(fa/81*100).toFixed(0)}%`],
+ [span<=4.5,`Largest column span ${span.toFixed(2)} m (limit 4.5 m)`],[ed<=4.5,`Corner footing edge ${ed.toFixed(2)} m from plot centre (plot edge 4.5 m)`],
+ [H-.45>=2.75,`Clear height under beam ${(H-.45).toFixed(2)} m (min 2.75 m)`],[r<=190,`Stair riser ${r.toFixed(0)} mm (max 190), tread 250 mm, width 1.05 m`],
+ [gp>=10,`Ground floor window area ${gp.toFixed(0)}% of floor (min 10%)`],[fp>=10,`First floor window area ${fp.toFixed(0)}% of floor (min 10%)`],[2,'Exits: main double door 1.6 m + rear door 1.0 m']];
+ $('rules').innerHTML=it.map(([k,t])=>`<li class="${k===2?'info':k?'':'bad'}">${t}</li>`).join('')}
+// UI
+const fmt={H:v=>v.toFixed(1)+' m',c:v=>(v*1000).toFixed(0)+' mm',f:v=>v.toFixed(1)+' m'};
+['H','c','f'].forEach(k=>{const u=()=>{P[k]=+$(k).value;$(k+'v').textContent=fmt[k](P[k])};$(k).oninput=()=>{u();build()};u()});
+names.forEach(n=>$('l_'+n).onchange=e=>{L[n].visible=e.target.checked});
+const setCut=v=>{$('cut').value=v;clip.constant=+v;$('cutv').textContent=+v>=FULL?'off':(+v).toFixed(2)+' m'};$('cut').oninput=e=>setCut(e.target.value);setCut(FULL);
+const VW={corner:[[11,7.5,13],[0,3.3,0]],front:[[-1,4.5,17],[0,3.3,0]],rear:[[0,5,-17],[0,3.3,0]],top:[[.01,22,.01],[0,0,0]]};
+const go=k=>{cam.position.set(...VW[k][0]);ctl.target.set(...VW[k][1]);ctl.update()};
+document.querySelectorAll('#hud button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+$('pgf').onclick=()=>{setCut(FL.F0+1.3);go('top')};$('p1f').onclick=()=>{setCut(FL.F1+1.3);go('top')};$('pno').onclick=()=>setCut(FULL);
+function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+$('glb').onclick=()=>new T.GLTFExporter().parse(root,r=>dl(new Blob([r],{type:'model/gltf-binary'}),'library-building.glb'),{binary:true});
+$('spec').onclick=()=>{const cnt={};names.forEach(n=>cnt[n]=L[n].children.length);dl(new Blob([JSON.stringify({id:'library-building',units:'m',plot:{shatak:2,size:[9,9]},building:{footprint:[7.5,6.75],storeys:2,levels:FL,params:P},windowArea:{ground:+win[0].toFixed(2),first:+win[1].toFixed(2)},groups:cnt},null,1)],{type:'application/json'}),'library-building.spec.json')};
+function size(){const w=V.clientWidth,hh=V.clientHeight;rd.setSize(w,hh);cam.aspect=w/hh;cam.updateProjectionMatrix()}
+new ResizeObserver(size).observe(V);size();build();go('corner');
+(function loop(){requestAnimationFrame(loop);ctl.update();rd.render(sc,cam)})();
+})();
+</script></body></html>

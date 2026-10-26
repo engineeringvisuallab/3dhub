@@ -1,0 +1,34 @@
+{
+  "id": "library-building",
+  "name": "Library building: 2 storey RCC frame on a 2 shatak plot",
+  "category": "building/library-building",
+  "tier": "free",
+  "units": "m",
+  "plot": { "shatak": 2, "sqft": 871.2, "m2": 80.9, "size": [9.0, 9.0], "setbacks": { "front": 1.5, "side": 0.75, "rear": 0.75 } },
+  "parameters": {
+    "H": { "label": "Storey height (m)", "min": 3.2, "max": 3.8, "step": 0.1, "default": 3.4 },
+    "c": { "label": "Column size (m)", "min": 0.25, "max": 0.4, "step": 0.025, "default": 0.3 },
+    "f": { "label": "Footing size (m)", "min": 1.2, "max": 1.7, "step": 0.1, "default": 1.5 }
+  },
+  "groups": ["Foundation", "Columns", "Beams", "Slabs", "Walls", "Openings", "Stair", "Interior", "Exterior", "Site"],
+  "elements": {
+    "Foundation": "PCC blinding, 9 pad footings, column necks, plinth tie beams, sand fill",
+    "Columns": "9 RCC columns x 2 storeys (3 x 3 grid, max span 3.6 m)",
+    "Beams": "floor and roof beams (450 mm deep) on every grid line",
+    "Slabs": "plinth slab, first floor slab with stair void, roof slab, entrance canopy",
+    "Walls": "230/250 mm brick walls between columns, toilet partitions",
+    "Openings": "main glazed double door, rear exit door, toilet door, 16 windows with frames and glass",
+    "Stair": "dog-leg stair, 20 risers, 250 mm treads, glass balustrade at the void",
+    "Interior": "floor finishes, book stacks, wall shelves, issue desk, reading tables, carrels, chairs, toilet fittings",
+    "Exterior": "parapet with coping, LIBRARY sign, sunshades and sills, entrance steps and posts, roof tank",
+    "Site": "boundary wall, gate, pillars, paved front yard, tree, road"
+  },
+  "rules": [
+    "column span <= 4.5 m",
+    "footing stays inside the plot line",
+    "clear height under beam >= 2.75 m",
+    "stair riser <= 190 mm, tread 250 mm",
+    "window area >= 10% of floor area on each floor"
+  ],
+  "exports": ["glb", "spec.json"]
+}
