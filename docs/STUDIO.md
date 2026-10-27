@@ -32,6 +32,7 @@ save/load (.json), export GLB and OBJ. Details: `app/README.md`.
 | Component | Category | Connects with |
 |---|---|---|
 | di-pipe, di-pipe-fl, gate-valve, end-suction-pump | water-supply | flange ports, same DN/PN |
+| **generator-room** (DG set room, all facilities, 62.5-1000 kVA) | electrical | `face-v` bottom (B) and roof top (T), `face-h` ends (L / R); see round 8 |
 | **door** (rich, 17 designs) | building | `face-h` left/right (frame outer edges); see "Door" below |
 | brick-wall, boundary-wall, window, gate | building | `face-h` left/right; `face-v` top/bottom for walls |
 | rcc-slab | building | `face-v` (sits on a wall top, a wall stands on it) |
@@ -122,6 +123,21 @@ Load `core/examples/pump-station-line.assembly.json` to see a finished line.
 Honest limits: the bend is now a real torus arc in the 3D view (round 7), but its collision shape is still two straight arms; sizes are a generic envelope; walls attach only in a straight line (no corner part yet), so place wall corners by position;
 the pump has flange ports only, so it is placed by position (raise it on a plinth so flanged fittings clear the floor: the conflict checker reports it if not);
 pipe through a wall uses `rcc-wall-opening` (round opening) by position. Next steps are listed below.
+
+## Changes in round 8 (new library item: generator room)
+New component `generator-room` (generator component + real mesh, same pattern as the door): a complete diesel generator room, also published as a library page.
+- What it is: floor slab, walls with REAL openings (wall pieces around doors, louvres, exhaust sleeve, fuel sleeve, so a pipe can pass through), roof with parapet, 1 or 2 DG sets (62.5-1000 kVA) on plinths, exhaust line (bellows, silencer, lagged pipe, sleeve, stack, rain cap; or straight up through the roof), day fuel tank with bund and fuel lines, inlet louvres + discharge louvre, double-leaf door or rolling shutter per set, personnel door, AMF panel, battery rack + charger, cable trench with cover plates and cables, monorail hoist, fire kit, lights, extraction fan, acoustic lining, floor drain.
+- Parameters: set rating, number of sets, room length / width / height (0 = automatic smallest that fits the set, clearances, air and exhaust), wall thickness, exhaust exit, stack height (0 = guideline), day tank hours, 9 facility switches, equipment door type, doors open %, wall / set colour, cutaway (view only: hides roof and front wall, collision unchanged).
+- Rules live in ONE place, `RULE` in `core/engine/gen/genroom.js` (indicative, generic envelopes): 1200 mm side clearance, radiator end 1500, alternator end 1800 (+900 with battery rack), height from the exhaust line (min 3600), air 0.025 m3/s per kVA, inlet louvre 4 m/s on 50 % free area, discharge up to 8 m/s, bund 110 % of the tank, stack 0.2 x sqrt(kVA) m above the roof, hoist = half the set mass. Too-small room sizes are raised to the minimum and a note appears in Details (soft rule, like the door); warnings (for example a stack below the guideline) show in Details and block the download on the library page.
+- Files: `core/engine/gen/genroom.js` (plan(), rules, collision shapes, ports, details), `core/engine/visual/genroom.js` (real mesh), `core/library/components/generator-room.json`, `core/tests/genroom.mjs` (new, in `npm test`), `tools/generator-room-page.template.html` + `tools/build-generator-room-page.mjs` (build the library page by inlining the engine: ONE geometry source), `models/electrical/generator-room/` (README, model.json, `parametric/generator-room.html`).
+- Changed: `core/engine/generate.js` (registers `genroom`), `core/engine/visual/index.js` (registers the builder; builder parts may now carry `opacity`), `core/library/components/manifest.json`, `core/tests/visual.mjs` (flange-face check only for flange ports), `core/package.json`, `commerce/catalog/catalog.json`, `site/index.html`, `docs/MODEL-ROADMAP.md`, `core/README.md`, `tools/README.md`.
+- Ports: B (bottom, `face-v`), T (roof top, `face-v`), L / R (ends, `face-h`). Origin = bottom centre of the outer footprint. The room stands on a slab by its B port.
+- Tested (Node): `cd core && npm test` passes. `tests/genroom.mjs`: all 88 combinations (11 sizes x 1/2 sets x wall/roof exit x door/shutter) build; rule numbers (room size, louvre area, discharge speed, bund 110 %, door size, hoist); openings are really empty and walls beside them solid; doors swing outward; ports; no self-conflict; mesh has 35+ parts and stays under 20 m; cutaway changes only the mesh. `tests/visual.mjs`: triangle winding 100 % for the room.
+- Tested (Node, no browser): the library page script was run with real three.js r128 (stubbed renderer / exporters): it builds, the checks list is filled, rule violations block the download, ZIP download runs without error. The mesh was also rendered with a small software renderer (cutaway, 1 and 2 sets, roof exit, shutter) and looked right.
+- NOT tested: a real browser (WebGL drawing, orbit controls, real GLB / OBJ files opened in Blender) and the Studio UI itself (properties panel with 22 parameters, drag and drop); the Studio draws the same mesh through the same code path as the door and the pump, but this was not clicked through.
+- Limits: sizes are generic envelopes, not a maker's catalogue; air / fuel / stack numbers are rules of thumb (the stack formula is the common DG guideline, check the local rule); the exhaust collision shape is straight pieces (the mesh has real bends); no drawing sheet and no BOM lines for the facilities yet (the room is one BOM line); the room needs 12 m or more for 2 x 1000 kVA, that is expected.
+- Delete nothing.
+
 
 ## Changes in round 7 (real shapes: the visual mesh layer, Stage 1 step 1)
 Problem: every Studio part was only a box or a cylinder (a bend was two straight arms, a valve a drum with a box). The owner wants the ORIGINAL shape.

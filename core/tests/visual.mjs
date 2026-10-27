@@ -61,7 +61,7 @@ for (const d of [{ branch: 'down' }, { branch: 'left' }]) { const c = lib['di-te
 //    Operators (handwheel, lever, gearbox, motor ...) may reach sideways, they are not checked here.
 for (const id of REAL) {
   const c = lib[id], p = resolveParams(c, {}), parts = visualOf(c, p), m = materialize(c, p), num = v => (typeof v === 'string' ? evalExpr(v, p) : v);
-  for (const pt of m.ports) {
+  for (const pt of m.ports.filter(q => q.type === 'flange')) {   // only flanged parts (the generator room has face ports, no flanges)
     const at = pt.at.map(num), dir = pt.dir.map(num); let reach = -Infinity;
     for (const q of parts) if (/^(flange|barrel|body|tube|cone|suction|disc$)/.test(q.name)) for (let i = 0; i < q.pos.length; i += 3) reach = Math.max(reach, (q.pos[i] - at[0]) * dir[0] + (q.pos[i + 1] - at[1]) * dir[1] + (q.pos[i + 2] - at[2]) * dir[2]);
     t(`${id} port ${pt.id}: flange face lies on the port plane`, Math.abs(reach) < 0.5, `reach ${reach.toFixed(2)} mm`);

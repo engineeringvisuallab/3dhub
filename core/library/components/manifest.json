@@ -25,6 +25,7 @@
   "blind-flange",
   "ball-valve",
   "air-valve",
-  "flow-meter"
+  "flow-meter",
+  "generator-room"
  ]
 }

@@ -167,6 +167,23 @@
       "desc": "Plain, Gr 420, TMT 500 and epoxy-coated bars. Eight bar shapes with ld, lap and hook lengths, plus RC beam and column cages with moment, shear and axial capacity."
     },
     {
+      "id": "generator-room",
+      "name": "Generator Room (DG set room)",
+      "tier": "free",
+      "category": "Electrical",
+      "path": "models/electrical/generator-room",
+      "page": "parametric/generator-room.html",
+      "tags": [
+        "DG set",
+        "diesel generator",
+        "exhaust",
+        "day tank",
+        "louvre",
+        "hoist"
+      ],
+      "desc": "Complete diesel generator room: 62.5 to 1000 kVA, 1 or 2 sets, louvres, exhaust, day tank with bund, panel, battery, cable trench, hoist, fire kit. Room size follows the set and failing designs are blocked."
+    },
+    {
       "id": "hdd-crossing",
       "name": "HDD Highway and Railway Crossing",
       "tier": "free",
@@ -216,6 +233,22 @@
         "road"
       ],
       "desc": "One pipe under a highway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
+    },
+    {
+      "id": "ipr-pump-house",
+      "name": "IPR Pump House",
+      "tier": "free",
+      "category": "Water supply",
+      "path": "models/water-supply/pump-houses/ipr-pump-house",
+      "page": "parametric/ipr-pump-house.html",
+      "tags": [
+        "IPR",
+        "wet well",
+        "pump",
+        "header",
+        "roof"
+      ],
+      "desc": "Impounding reservoir pumping station with 4 pumps, valves, DN900 header and roofed operator platform."
     }
   ]
 }

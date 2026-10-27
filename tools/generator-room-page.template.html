@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Generator room</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:12px 20px 24px;max-width:1280px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(70vh,640px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range],input[type=number]{width:100%;box-sizing:border-box}select,input[type=number]{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}.chips{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;margin-top:6px}.chips label{margin:0;color:var(--fg)}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.note::before{content:"ℹ ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}h3{margin:14px 0 0;font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Generator room – parametric</h1><p>EVLab 3D Hub · diesel generator (DG) set room with all facilities · room size, height, louvres, fuel tank and exhaust follow the set · designs that fail the rules cannot be downloaded</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<div class="row"><div><label>DG set rating<select id="kva"></select></label></div><div><label>Number of sets<select id="sets"><option value="1">1 set</option><option value="2">2 sets</option></select></label></div></div>
+<div class="row"><div><label>Exhaust exit<select id="exhaust"><option value="wall">Through the wall, stack outside</option><option value="roof">Straight up through the roof</option></select></label></div><div><label>Equipment door<select id="doorType"><option value="double">Double leaf steel door</option><option value="shutter">Rolling shutter</option></select></label></div></div>
+<h3>Room size (0 = automatic smallest)</h3>
+<div class="row"><div><label>Length mm<input type="number" id="L" min="0" max="16000" step="100" value="0"></label></div><div><label>Width mm<input type="number" id="W" min="0" max="14000" step="100" value="0"></label></div><div><label>Height mm<input type="number" id="H" min="0" max="8000" step="100" value="0"></label></div></div>
+<div class="row"><div><label>Wall thickness mm<input type="number" id="t" min="150" max="350" step="10" value="230"></label></div><div><label>Stack above roof mm (0 = guideline)<input type="number" id="stack" min="0" max="12000" step="100" value="0"></label></div></div>
+<div class="row"><div><label>Day tank autonomy<select id="tankHours"><option value="2">2 h</option><option value="4" selected>4 h</option><option value="6">6 h</option><option value="8">8 h</option></select></label></div><div><label>Wall colour<select id="wallColor"><option value="grey">Grey</option><option value="cream">Cream</option><option value="white">White</option></select></label></div><div><label>DG set colour<select id="setColor"><option value="blue">Blue</option><option value="green">Green</option><option value="yellow">Yellow</option><option value="grey">Grey</option><option value="red">Red</option></select></label></div></div>
+<h3>Facilities</h3>
+<div class="chips" id="fac"></div>
+<label>Doors open: <b id="ov">0 %</b><input type="range" id="open" min="0" max="100" step="10" value="0"></label>
+<label><input type="checkbox" id="cut" checked> Cutaway: hide roof and front wall (view only)</label>
+<ul id="chk"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative sizes: DG set envelopes, air 0.025 m³/s per kVA, fuel 0.15 L/h per kVA at 75 % load, stack guideline 0.2·√kVA m above the roof. These are generic values, not a maker's catalogue: confirm with the DG set maker, the local code and the fire authority before construction.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+/*ENGINE*/
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const FAC=[['dayTank','Day tank + bund'],['panel','Control (AMF) panel'],['battery','Battery + charger'],['trench','Cable trench'],['hoist','Monorail hoist'],['fire','Fire kit'],['lights','Lights'],['vent','Extraction fan'],['acoustic','Acoustic lining']];
+Object.keys(GR.SETS).forEach(k=>$('kva').add(new Option(k+' kVA',k)));$('kva').value='250';
+FAC.forEach(([k,l])=>{const d=document.createElement('label');d.innerHTML='<input type="checkbox" id="'+k+'" checked> '+l;$('fac').appendChild(d)});
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.05,500);S.add(new THREE.AmbientLight(0xffffff,.7));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(8,14,9);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+let model=null,spec={},bad=false;
+function params(){const p={};['L','W','H','t','stack'].forEach(k=>p[k]=+$(k).value||0);p.t=+$('t').value||230;
+ p.kva=+$('kva').value;p.sets=+$('sets').value;p.exhaust=$('exhaust').value;p.doorType=$('doorType').value;p.tankHours=+$('tankHours').value;p.wallColor=$('wallColor').value;p.setColor=$('setColor').value;
+ FAC.forEach(([k])=>p[k]=$(k).checked?1:0);p.open=+$('open').value;p.cutaway=$('cut').checked?1:0;return p}
+function mesh(part){const n=part.geo.pos.length/3,pos=new Float32Array(n*3),nor=new Float32Array(n*3),a=part.geo.pos,b=part.geo.nor;
+ for(let i=0;i<n;i++){pos[3*i]=a[3*i]/1000;pos[3*i+1]=a[3*i+2]/1000;pos[3*i+2]=-a[3*i+1]/1000;nor[3*i]=b[3*i];nor[3*i+1]=b[3*i+2];nor[3*i+2]=-b[3*i+1]}   // engine Z-up (mm) -> three.js Y-up (m)
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('normal',new THREE.BufferAttribute(nor,3));g.setIndex(part.geo.idx);
+ const o=part.opacity===undefined?1:part.opacity,m=new THREE.MeshStandardMaterial({color:part.color,metalness:.2,roughness:.65,side:THREE.DoubleSide,transparent:o<1,opacity:o});
+ const me=new THREE.Mesh(g,m);me.name=part.name;return me}
+function build(fit){
+ const p=params(),P=GR.plan(p);$('ov').textContent=p.open+' %';
+ if(model){S.remove(model);model.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}
+ model=new THREE.Group();model.name='Generator_room_'+p.kva+'kVA_'+p.sets+'set';const parts=GR.genRoom({params:p});parts.forEach(q=>model.add(mesh(q)));S.add(model);
+ const bb=new THREE.Box3().setFromObject(model),c=bb.getCenter(new THREE.Vector3()),sz=bb.getSize(new THREE.Vector3()),r=Math.max(sz.x,sz.y,sz.z);
+ if(fit&&ctl){ctl.target.copy(c);C.position.set(c.x+r*.9,c.y+r*.8,c.z+r*1.0);C.far=r*20;C.updateProjectionMatrix()}
+ const m=v=>(v/1000).toFixed(2)+' m',ck=[];const ok=(c,t)=>ck.push([c,t]);
+ ok(P.Li>=P.Lmin&&P.Wi>=P.Wmin&&P.Hi>=P.Hmin,'Room '+m(P.Li)+' x '+m(P.Wi)+' x '+m(P.Hi)+' inside (smallest for this set: '+m(P.Lmin)+' x '+m(P.Wmin)+' x '+m(P.Hmin)+')');
+ ok(2*P.louvre.free>=P.n*P.Q/4-1e-6,'Cooling air '+(P.n*P.Q).toFixed(1)+' m³/s: inlet louvres '+m(P.louvre.w)+' x '+m(P.louvre.h)+' on each long wall, free area '+(2*P.louvre.free).toFixed(2)+' m² at 4 m/s');
+ ok(P.disc.vel<=8.01,'Discharge opening '+m(P.disc.w)+' x '+m(P.disc.h)+' per set, '+P.disc.vel.toFixed(1)+' m/s (limit 8 m/s)');
+ ok(P.Weq>=P.S.W+600&&P.Heq>=P.ph+P.S.H+300,'Equipment door '+m(P.Weq)+' x '+m(P.Heq)+' lets the set through');
+ if(P.tankOn){const k=P.tank;ok(((k.bx-200)*(k.by-200)*k.hB/1e6)>=1.1*k.V-1e-6,'Day tank '+k.V+' L ('+p.tankHours+' h); bund '+k.hB+' mm high keeps 110 % of the tank')}
+ ok(p.stack===0||p.stack>=P.stackGuide,'Stack '+m(P.stackAbove)+' above the roof (guideline '+m(P.stackGuide)+')');
+ if(p.hoist)ok(true,'Monorail hoist '+P.swl+' t (half the set mass)');
+ P.notes.filter(n=>!/below the guideline/.test(n)).forEach(n=>ok(!/^Warning/.test(n),n));
+ bad=ck.some(c=>!c[0]);$('chk').innerHTML=ck.map(c=>'<li'+(c[0]?(/raised/.test(c[1])?' class="note"':''):' class="bad"')+'>'+c[1]+'</li>').join('');$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';
+ spec={name:model.name,units:'mm',type:'Diesel generator room',parameters:p,details:GR.describe(p),
+  room:{inside_mm:[P.Li,P.Wi,P.Hi],outside_mm:[P.Lo,P.Wo],wall_mm:P.t,floor_mm:P.fl,roof_mm:P.rt,smallest_mm:[P.Lmin,P.Wmin,P.Hmin]},
+  dg_set:{count:P.n,kVA:p.kva,envelope_mm:[P.S.L,P.S.W,P.S.H],mass_kg:P.S.kg,exhaust_DN:P.S.D},
+  air:{per_set_m3s:+P.Q.toFixed(2),inlet_louvre_mm:[P.louvre.w,P.louvre.h],discharge_opening_mm:[P.disc.w,P.disc.h],discharge_speed_ms:+P.disc.vel.toFixed(1)},
+  fuel:{lph_per_set_75pct:+P.lph.toFixed(1),day_tank:P.tankOn?{litres:P.tank.V,size_mm:[P.tank.Lt,P.tank.Wt,P.tank.Ht],bund_height_mm:P.tank.hB}:null},
+  exhaust:{route:P.roofExit?'roof':'wall',silencer_mm:[P.sil.Dia,P.sil.L],stack_above_roof_mm:P.stackAbove,stack_guideline_mm:P.stackGuide},
+  hoist_t:p.hoist?P.swl:null,parts:parts.map(q=>q.name),checks:ck.map(c=>(c[0]?'OK: ':'FAIL: ')+c[1]),
+  standards:'Generic DG set envelopes and indicative rules. Confirm with the set maker, local code and fire authority.'}}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{
+ const was=$('cut').checked;if(was){$('cut').checked=false;build(false)}   // the download always holds the complete room (roof and all walls)
+ const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];model.updateMatrixWorld(true);
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(was){$('cut').checked=true;build(false)}
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['kva','sets','exhaust','doorType','tankHours','wallColor','setColor','L','W','H','t','stack','cut',...FAC.map(f=>f[0])].forEach(i=>$(i).onchange=()=>build(i=='kva'||i=='sets'));$('open').oninput=()=>build(false);
+addEventListener('resize',size);size();build(true);loop();
+</script></body></html>

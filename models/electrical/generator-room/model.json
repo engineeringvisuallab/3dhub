@@ -1,0 +1,136 @@
+{
+  "id": "generator-room",
+  "name": "Generator room (DG set room with all facilities)",
+  "category": "electrical/generator-room",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "kva": [
+      62.5,
+      100,
+      125,
+      160,
+      250,
+      320,
+      400,
+      500,
+      625,
+      750,
+      1000
+    ],
+    "sets": [
+      1,
+      2
+    ],
+    "exhaust": [
+      "wall",
+      "roof"
+    ],
+    "doorType": [
+      "double",
+      "shutter"
+    ],
+    "tankHours": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "room_length_mm": {
+      "min": 0,
+      "max": 16000,
+      "step": 100,
+      "note": "0 = automatic smallest"
+    },
+    "room_width_mm": {
+      "min": 0,
+      "max": 14000,
+      "step": 100,
+      "note": "0 = automatic smallest"
+    },
+    "room_height_mm": {
+      "min": 0,
+      "max": 8000,
+      "step": 100,
+      "note": "0 = automatic smallest"
+    },
+    "wall_mm": {
+      "min": 150,
+      "max": 350,
+      "step": 10
+    },
+    "stack_above_roof_mm": {
+      "min": 0,
+      "max": 12000,
+      "step": 100,
+      "note": "0 = guideline"
+    },
+    "facilities": [
+      "dayTank",
+      "panel",
+      "battery",
+      "trench",
+      "hoist",
+      "fire",
+      "lights",
+      "vent",
+      "acoustic"
+    ]
+  },
+  "rules": {
+    "sideClear_mm": 1200,
+    "radiatorEndClear_mm": 1500,
+    "alternatorEndClear_mm": "1800 (+900 with battery rack)",
+    "minHeight_mm": 3600,
+    "airPerKva_m3s": 0.025,
+    "inletLouvreFreeSpeed_ms": 4,
+    "louvreFreeAreaRatio": 0.5,
+    "dischargeSpeedMax_ms": 8,
+    "fuel_Lph_per_kVA_75pct": 0.15,
+    "bund": "110 % of the day tank",
+    "stack": "0.2 x sqrt(kVA) m above the roof (guideline, check the local rule)",
+    "hoist": "half the set mass, rounded up to 1/2/3/5/10/15 t"
+  },
+  "ports": [
+    {
+      "id": "B",
+      "type": "face-v"
+    },
+    {
+      "id": "T",
+      "type": "face-v"
+    },
+    {
+      "id": "L",
+      "type": "face-h"
+    },
+    {
+      "id": "R",
+      "type": "face-h"
+    }
+  ],
+  "groups": [
+    "floor-slab",
+    "walls",
+    "roof-slab",
+    "opening-frames",
+    "louvre-blades",
+    "equipment-doors / rolling-shutters",
+    "personnel-door",
+    "set-skid / radiator / engine / alternator",
+    "exhaust-bellows / silencer / pipe / lagging",
+    "day-tank / tank-bund / fuel-pipes",
+    "control-panel",
+    "battery-rack",
+    "trench-cover-plates / power-cables",
+    "monorail-beam / hoist",
+    "fire-extinguishers",
+    "led-battens",
+    "extraction-fan"
+  ],
+  "animations": [],
+  "files": {
+    "parametric": "parametric/generator-room.html",
+    "studio_component": "core/library/components/generator-room.json"
+  }
+}

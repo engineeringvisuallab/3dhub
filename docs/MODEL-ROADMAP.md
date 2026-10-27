@@ -49,6 +49,7 @@ Every model: named groups, ON/OFF where it has moving parts, engineering rules t
 35. Distribution board
 36. Switch + socket
 37. Street light pole
+41. Generator room (DG set room with all facilities) – DONE (library page + Studio component)
 
 ## F. Roads / structures
 38. Box culvert

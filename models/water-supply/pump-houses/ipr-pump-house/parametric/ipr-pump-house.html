@@ -1,0 +1,349 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – IPR Pump House</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(66vh,620px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+li.x::before{content:"✖ ";color:#d33}li.x{color:#d33}button:disabled{opacity:.45;cursor:not-allowed}
+.sec{background:var(--bg)!important;color:var(--fg)!important;border:1px solid var(--bd)}
+</style></head><body>
+<header><p><a href="../../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>IPR Pump House – Impounding Reservoir pumping station</h1><p>Wet-well pump house with 4 vertical pumps, 4 × DN400 delivery lines, gate valve + dismantling joint on each line, and the DN900 header to the Parshall flume. Based on the IPR pumping station drawing (plan −0.50 m, plan +7.50 m, section A-A, section B-B) with the roofed operator platform above the deck.</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<div class="row"><div><label>Delivery pipe (steel) DN<select id="dn"></select></label></div><div><label>Header DN<select id="hdn"></select></label></div></div>
+<div class="row"><div><label>Pressure class<select id="pn"><option value="10">PN10</option><option value="16">PN16</option></select></label></div><div><label>Intake holes per pump bay<select id="ih"><option value="2">2 (2 × 1)</option><option value="4">4 (2 × 2)</option><option value="6" selected>6 (3 × 2)</option></select></label></div></div>
+<label>Flow per pump (velocity check only): <b id="Qv"></b><input type="range" id="Q" min="200" max="2500" step="50" value="900"></label>
+<label>Pipe run, pit wall to header axis: <b id="RLv"></b><input type="range" id="RL" min="6000" max="20000" step="500" value="12500"></label>
+<label>Roof height above deck: <b id="RHv"></b><input type="range" id="RH" min="3000" max="7000" step="250" value="4500"></label>
+<label><input type="checkbox" id="sw"> Closed side walls with door (open shelter by default)</label>
+<label><input type="checkbox" id="bs" checked> Concrete basement 6475 × 1225 × 500 (position assumed)</label>
+<label><input type="checkbox" id="tr" checked> Transparent concrete (view only)</label>
+<ul id="chk"></ul>
+<button id="tg" class="sec">Valves OPEN (ON) – click to close</button>
+<button id="pg" class="sec">Pumps RUNNING (ON) – click to stop</button>
+<button id="dw" class="sec">Show drawings (2 plans, 2 sections, 3 elevations)</button>
+<button id="dxf" class="sec">Export DXF (2 plans, 2 sections, 3 elevations)</button>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + DXF + PNG + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="dxf">Drawings only (DXF)</option><option value="png">Drawing sheet only (PNG)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label>
+<button id="dl">Download</button><div id="msg"></div>
+<small>Sizes follow the drawing: 10 900 × 4 200 pit, 400 mm walls and columns, levels −4.00 / +5.90 / +7.50 m. Flanges (EN 1092-1), steel pipe OD and gate-valve face-to-face (EN 558) are indicative. Pump size, valve make, column base width, the basement position and the intake-hole layout are assumptions: confirm with the project drawings and the pump / valve makers.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id),PI=Math.PI,VT=2;
+// ---------- tables (mm). Flanges EN 1092-1 [OD, bolt circle, bolts, bolt dia, thickness]; steel pipe OD; gate valve face-to-face EN 558 (indicative)
+const FL={10:{300:[445,400,12,20,24.5],400:[565,515,16,24,24.5],500:[670,620,20,24,26.5],600:[780,725,20,27,30],800:[1015,950,24,30,34],900:[1115,1050,28,30,38],1000:[1230,1160,28,33,42],1200:[1455,1380,32,36,47]},
+16:{300:[460,410,12,24,24.5],400:[580,525,16,27,28],500:[715,650,20,33,31.5],600:[840,770,20,36,36],800:[1025,950,24,33,44],900:[1125,1050,28,33,46],1000:[1255,1170,28,36,48],1200:[1485,1390,32,39,53]}};
+const OD={300:323.9,400:406.4,500:508,600:610,800:813,900:914,1000:1016,1200:1219},FTF={300:270,400:310,500:350,600:390};
+const DNS=[300,400,500,600],HDN=[600,800,900,1000,1200];
+DNS.forEach(d=>$('dn').add(new Option('DN'+d,d)));$('dn').value=400;HDN.forEach(d=>$('hdn').add(new Option('DN'+d,d)));$('hdn').value=900;
+// ---------- building frame (mm): x across the pit (0..10900), y from the river face (0) towards the header, z = level (m x 1000)
+const CX=5450,CY=2100,WID=10900,DEP=4200,TW=400;
+const ZB=-4500,ZF=-4000,ZBM=6500,ZDS=7200,ZD=7500,ZRUN=5900,WL=5500,ZO=-3000;      // slab bottom, pit floor, beam soffit, deck slab soffit, deck, pipe run axis, max water level, pump outlet axis
+const COLX=[0,3100,7400,10500],BAYS=[[400,3100],[3500,7400],[7800,10500]],PBAY=[0,2];      // column x (left faces), bays between columns, bays with intake holes
+const RIS=[3300-490.5,3300+490.5],YR=2575,PV=600;                                            // riser x (outer-pump riser, inner-pump riser) of the left group; riser axis y; pump volute radius
+const GR=[850,700,3500];                                                                      // grating half width, y from, y to
+const DJL=250;
+const mir=x=>WID-x;
+let model,spec={},MV=[],ROT=[],cur=1,tgt=1,run=1,runT=1,dirty={},CUTA=0,CUTB=0;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.25,roughness:.6,transparent:o<1,opacity:o});
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,500);S.add(new THREE.AmbientLight(0xffffff,.65));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(8,14,10);S.add(dl);const ctl=new THREE.OrbitControls(C,R.domElement);
+const V3=(x,y,z)=>new THREE.Vector3(x-CX,z,-(y-CY));
+// rectangle minus rectangles -> list of boxes [u0,u1,v0,v1] (used for walls with holes and the deck with openings)
+function carve(u0,u1,v0,v1,holes){const cl=(a,l,h)=>Math.min(h,Math.max(l,a)),H=holes.map(h=>[cl(h[0],u0,u1),cl(h[1],u0,u1),cl(h[2],v0,v1),cl(h[3],v0,v1)]).filter(h=>h[1]>h[0]&&h[3]>h[2]);
+ const U=[...new Set([u0,u1,...H.flatMap(h=>[h[0],h[1]])])].sort((a,b)=>a-b),W=[...new Set([v0,v1,...H.flatMap(h=>[h[2],h[3]])])].sort((a,b)=>a-b),out=[];
+ for(let j=0;j<W.length-1;j++){let r=null;const cv=(W[j]+W[j+1])/2;for(let i=0;i<U.length-1;i++){const cu=(U[i]+U[i+1])/2,inH=H.some(h=>cu>h[0]&&cu<h[1]&&cv>h[2]&&cv<h[3]);
+  if(inH){if(r){out.push(r);r=null}}else if(r)r[1]=U[i+1];else r=[U[i],U[i+1],W[j],W[j+1]]}if(r)out.push(r)}return out}
+function lay(){const dn=+$('dn').value,hd=+$('hdn').value,pn=+$('pn').value,RL=+$('RL').value,od=OD[dn],Rb=od,fo=FL[pn][dn][0];
+ const yH=DEP+RL,yp=YR-PV-Rb;                                   // header axis y; pump axis y (outlet leaves the volute and turns up after one bend radius)
+ const lines=[];                                                 // 4 lines: [group, pump x, riser x, valve y]
+ [[RIS[0],RIS[0]-950,DEP+1300,'L-outer'],[RIS[1],RIS[1],DEP+3200,'L-inner']].forEach(([rx,px,vy,n])=>lines.push({n,rx,px,vy,out:px!=rx}));
+ [[mir(RIS[0]),mir(RIS[0]-950),DEP+1300,'R-outer'],[mir(RIS[1]),mir(RIS[1]),DEP+3200,'R-inner']].forEach(([rx,px,vy,n])=>lines.push({n,rx,px,vy,out:Math.abs(px-rx)>1}));
+  return{dn,hd,pn,RL,od,Rb,fo,yH,yp,lines,hx0:CX-3200,hx1:CX+3200,hod:OD[hd]}}
+function build(fit){
+ const L=lay(),{dn,hd,pn,RL,od,Rb,fo,yH,yp,lines,hx0,hx1,hod}=L,Q=+$('Q').value,n6=+$('ih').value;
+ $('Qv').textContent=Q+' m³/h';$('RLv').textContent=RL+' mm';
+ if(model){model.traverse(o=>o.geometry&&o.geometry.dispose());S.remove(model)}
+ const g=model=new THREE.Group();g.name='IPR_PumpHouse_DN'+dn+'_Header'+hd+'_PN'+pn;g.scale.setScalar(.001);S.add(g);MV=[];ROT=[];
+ const conc=M(0xb4b4b0,$('tr').checked?.4:1),concD=M(0xa4a49f,$('tr').checked?.4:1),stl=M(0x7a828c),pipe=M(0x4f6d8c),fb=M(0x1f5fa8),dk=M(0x222222),gm=M(0x3a3f45),grn=M(0x2e8b57),vol=M(0x1f5fa8),red=M(0xc43d2f);
+ let P=g;const grp=(nm,par=g)=>{const q=new THREE.Group();q.name=nm;par.add(q);P=q;return q};
+ const add=(geo,mat,v)=>{const o=new THREE.Mesh(geo,mat);o.position.copy(v);P.add(o);return o};
+ const bxm=(x0,x1,y0,y1,z0,z1,mat)=>add(new THREE.BoxGeometry(x1-x0,z1-z0,y1-y0),mat,V3((x0+x1)/2,(y0+y1)/2,(z0+z1)/2));
+ const cyl=(ax,r,len,mat,x,y,z,sg=40)=>{const q=new THREE.CylinderGeometry(r,r,len,sg);if(ax=='x')q.rotateZ(PI/2);else if(ax=='y')q.rotateX(PI/2);return add(q,mat,V3(x,y,z))};
+ const flg=(ax,d,x,y,z,mat)=>{const f=FL[pn][d];return cyl(ax,f[0]/2,f[4],mat,x,y,z,48)};
+ function tube(pts,Rbend,rad,mat){const v=pts.map(p=>V3(...p)),cp=new THREE.CurvePath();let c=v[0].clone();
+  for(let i=1;i<v.length;i++){if(i<v.length-1){const a=v[i-1],b=v[i],d=v[i+1],d1=b.clone().sub(a),d2=d.clone().sub(b),r1=Math.min(Rbend,d1.length()/2),r2=Math.min(Rbend,d2.length()/2),e1=b.clone().addScaledVector(d1.normalize(),-r1),e2=b.clone().addScaledVector(d2.normalize(),r2);
+    cp.add(new THREE.LineCurve3(c,e1));cp.add(new THREE.QuadraticBezierCurve3(e1,b.clone(),e2));c=e2}else cp.add(new THREE.LineCurve3(c,v[i]))}
+  const o=new THREE.Mesh(new THREE.TubeGeometry(cp,Math.min(500,Math.ceil(cp.getLength()/150)),rad,20,false),mat);P.add(o);return o}
+ // ===== STRUCTURE =====
+ const st=grp('Structure');
+ grp('Base_Slab',st);bxm(0,WID,0,DEP,ZB,ZF,concD);
+ grp('Columns',st);for(const x of COLX)for(const y of[0,DEP-TW])bxm(x,x+TW,y,y+TW,ZF,ZBM,concD);
+ // intake holes 410 x 820 with steel grid in the river-side wall of the two pump bays
+ const cols=n6==6?3:2,rows=n6==2?1:2,holes=[];
+ for(const b of PBAY){const c=(BAYS[b][0]+BAYS[b][1])/2;for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){const x=c+700*(i-(cols-1)/2),z=-3500+j*1100;holes.push([x-205,x+205,z,z+820])}}
+ grp('River_Wall',st);BAYS.forEach(b=>carve(b[0],b[1],ZF,ZBM,holes).forEach(r=>bxm(r[0],r[1],0,TW,r[2],r[3],conc)));
+ grp('Intake_Grids',st);holes.forEach(h=>bxm(h[0],h[1],10,40,h[2],h[3],stl));
+ const sl=Math.ceil((fo+150)/50)*50,sleeves=lines.map(l=>[l.rx-sl/2,l.rx+sl/2,ZRUN-sl/2,ZRUN+sl/2]);
+ grp('Back_Wall',st);BAYS.forEach(b=>carve(b[0],b[1],ZF,ZBM,sleeves).forEach(r=>bxm(r[0],r[1],DEP-TW,DEP,r[2],r[3],conc)));
+ grp('End_Walls',st);bxm(0,TW,TW,DEP-TW,ZF,ZBM,conc);bxm(WID-TW,WID,TW,DEP-TW,ZF,ZBM,conc);
+ grp('Deck_Beams',st);for(const y of[50,DEP-350])bxm(0,WID,y,y+300,ZBM,ZDS,concD);
+ const px=lines.map(l=>l.px).sort((a,b)=>a-b),open=px.map(x=>[x-GR[0],x+GR[0],GR[1],GR[2]]);
+ grp('Deck_Slab',st);carve(0,WID,0,DEP,open).forEach(r=>bxm(r[0],r[1],r[2],r[3],ZDS,ZD,conc));
+ grp('Gratings',st);open.forEach(o=>bxm(o[0]+30,o[1]-30,o[2]+30,o[3]-30,ZD-60,ZD-20,stl));
+ if($('bs').checked){grp('Concrete_Basement',st);bxm(CX-3237.5,CX+3237.5,YR,YR+1225,ZF,ZF+500,concD)}
+
+ // ===== SUPERSTRUCTURE above the deck: columns, roof beams, roof slab, MS I-beam monorail, optional walls =====
+ const RH=+$('RH').value,ZR=ZD+RH;$('RHv').textContent=RH+' mm';
+ const su=grp('Superstructure');grp('Roof_Columns',su);for(const x of COLX)for(const y of[0,DEP-TW])bxm(x,x+TW,y,y+TW,ZD,ZR-600,concD);
+ grp('Roof_Beams',su);for(const y of[50,DEP-350])bxm(-300,WID+300,y,y+300,ZR-600,ZR,concD);for(const x of COLX)bxm(x+50,x+350,350,DEP-350,ZR-600,ZR,concD);
+ grp('Roof_Slab',su);bxm(-300,WID+300,-300,DEP+300,ZR,ZR+150,conc);
+ if($('sw').checked){grp('Side_Walls',su);bxm(TW,WID-TW,0,200,ZD,ZR-600,conc);bxm(0,200,TW,DEP-TW,ZD,ZR-600,conc);bxm(WID-200,WID,TW,DEP-TW,ZD,ZR-600,conc);
+  carve(TW,WID-TW,ZD,ZR-600,[[CX-600,CX+600,ZD,ZD+2400]]).forEach(r=>bxm(r[0],r[1],DEP-200,DEP,r[2],r[3],conc))}
+ grp('MS_IBeam_Monorail',su);const zb=ZR-1000,xm0=900,xm1=WID-900;bxm(xm0,xm1,yp-70,yp+70,zb,zb+14,stl);bxm(xm0,xm1,yp-70,yp+70,zb+386,zb+400,stl);bxm(xm0,xm1,yp-5,yp+5,zb+14,zb+386,stl);
+ cyl('z',20,400,gm,px[0],yp,zb-250,12);const hk=new THREE.TorusGeometry(70,16,10,24);add(hk,red,V3(px[0],yp,zb-520));bxm(px[0]-150,px[0]+150,yp-120,yp+120,zb-90,zb,gm);
+ // ===== PUMPS (vertical, volute on the pit floor, motor above) =====
+ const gp=grp('Pumps'),PUMP_COL=[0x1f5fa8,0x1f5fa8];ROT=[];
+ lines.forEach((l,i)=>{const q=grp('Pump_'+(i+1),gp),x=l.px,y=yp;
+  cyl('z',PV+60,200,gm,x,y,ZF+100,48);
+  const lv=new THREE.LatheGeometry([[0,0],[PV*.86,0],[PV,70],[PV,880],[PV*.86,950],[PV*.5,1000],[0,1000]].map(p=>new THREE.Vector2(p[0],p[1])),56);add(lv,vol,V3(x,y,ZF+200));
+  cyl('z',380,1300,grn,x,y,ZF+200+1000+650,40);for(const k of[.2,.4,.6,.8])cyl('z',392,26,grn,x,y,ZF+1200+1300*k+0,40);
+  bxm(x+330,x+530,y-100,y+100,-2400,-2200,dk);
+  const tor=new THREE.TorusGeometry(110,18,10,28);tor.rotateX(PI/2);add(tor,stl,V3(x,y,ZF+200+1000+1300+60));
+  const ro=new THREE.Group();ro.name='Rotor_'+(i+1);ro.position.copy(V3(x,y,ZF+200+1000+1300));q.add(ro);ROT.push(ro);
+  const sh=new THREE.Mesh(new THREE.CylinderGeometry(70,70,70,24),stl);ro.add(sh);
+  const sp=new THREE.Mesh(new THREE.BoxGeometry(360,40,60),red);sp.position.y=40;ro.add(sp);const sp2=new THREE.Mesh(new THREE.BoxGeometry(60,40,360),red);sp2.position.y=40;ro.add(sp2)});
+ // ===== PIPEWORK =====
+ const pw=grp('Pipework');lines.forEach((l,i)=>{grp('Line_'+(i+1)+'_DN'+dn,pw);
+  const a=[l.px,yp+PV,ZO];const pts=l.out?[[l.px,yp+PV,ZO],[l.px,YR,ZO],[l.rx,YR,ZO],[l.rx,YR,ZRUN],[l.rx,yH,ZRUN]]:[[l.rx,yp+PV,ZO],[l.rx,YR,ZO],[l.rx,YR,ZRUN],[l.rx,yH,ZRUN]];
+  tube(pts,Rb,od/2,pipe);flg('y',dn,l.px,yp+PV,ZO,fb).translateZ(0)});
+ grp('Header_DN'+hd,pw);const hl=hx1-hx0,hx=CX;
+ cyl('x',hod/2,hl,pipe,hx,yH,ZRUN,64);cyl('x',FL[pn][hd][0]/2,FL[pn][hd][4],fb,hx0+FL[pn][hd][4]/2,yH,ZRUN,64);cyl('x',FL[pn][hd][0]/2,FL[pn][hd][4],fb,hx1-FL[pn][hd][4]/2,yH,ZRUN,64);
+ cyl('x',FL[pn][hd][0]/2,FL[pn][hd][4]*1.6,gm,hx0-FL[pn][hd][4]*.8,yH,ZRUN,64);
+ const stub=700,hh=FL[pn][hd];cyl('x',hod/2,stub,pipe,hx1+stub/2,yH,ZRUN,64);cyl('x',hh[0]/2,hh[4],fb,hx1+stub-hh[4]/2,yH,ZRUN,64);
+ const cone=new THREE.ConeGeometry(.28*hod,.7*hod,24);cone.rotateZ(-PI/2);add(cone,red,V3(hx1+stub+.6*hod,yH,ZRUN));
+ // ===== VALVES (gate valve + dismantling joint on each line, outside the pit) =====
+ const gv=grp('Valves');
+ lines.forEach((l,i)=>{const d=dn,f=FL[pn][d],x=l.rx,y=l.vy,FT=FTF[d],vh=2*d+300,vg=grp('GateValve_'+(i+1),gv),bm=M(0x1f5fa8);
+  cyl('y',.6*d,FT,bm,x,y,ZRUN);cyl('y',f[0]/2,f[4],bm,x,y-FT/2+f[4]/2,ZRUN,48);cyl('y',f[0]/2,f[4],bm,x,y+FT/2-f[4]/2,ZRUN,48);
+  cyl('z',.55*d,1.65*d,bm,x,y,ZRUN+.825*d,32);cyl('z',.62*d,25,bm,x,y,ZRUN+.6*d,32);
+  for(const s of[-1,1])bxm(x+s*.28*d-15,x+s*.28*d+15,y-15,y+15,ZRUN+1.65*d,ZRUN+vh-90,bm);bxm(x-.3*d,x+.3*d,y-15,y+15,ZRUN+vh-105,ZRUN+vh-75,bm);
+  const gt=new THREE.Group();gt.name='Gate_'+(i+1);gt.position.copy(V3(x,y,ZRUN));vg.add(gt);const dc=new THREE.Mesh(new THREE.CylinderGeometry(.52*d,.52*d,30,32).rotateX(PI/2),gm);gt.add(dc);
+  const hw=new THREE.Group();hw.name='Handwheel_'+(i+1);hw.position.copy(V3(x,y,ZRUN));vg.add(hw);
+  const stem=new THREE.Mesh(new THREE.CylinderGeometry(Math.max(12,.04*d),Math.max(12,.04*d),vh-.4*d,16),stl);stem.position.y=(.4*d+vh)/2;hw.add(stem);
+  const tor=new THREE.Mesh(new THREE.TorusGeometry((d+100)/2,14,10,40).rotateX(PI/2),bm);tor.position.y=vh-40;hw.add(tor);
+  const hub=new THREE.Mesh(new THREE.CylinderGeometry(40,40,60,16),bm);hub.position.y=vh-40;hw.add(hub);
+  for(const r of[0,PI/2]){const sp=new THREE.Mesh(new THREE.BoxGeometry(d+100,12,24),bm);sp.rotation.y=r;sp.position.y=vh-40;hw.add(sp)}
+  MV.push({gt,hw,trv:d+30,bx:gt.position.x,by:gt.position.y,bz:gt.position.z});
+  // dismantling joint downstream of the valve, 150 mm gap
+  const yj=y+FT/2+150+DJL/2,dj=grp('DismantlingJoint_'+(i+1),gv),jm=M(0x5b7f6a);
+  cyl('y',od/2+30,DJL-2*f[4],jm,x,yj,ZRUN,32);cyl('y',f[0]/2,f[4],jm,x,yj-DJL/2+f[4]/2,ZRUN,48);cyl('y',f[0]/2,f[4],jm,x,yj+DJL/2-f[4]/2,ZRUN,48);
+  for(let k=0;k<6;k++){const a=k/6*2*PI;cyl('y',9,DJL+20,stl,x+(od/2+60)*Math.cos(a),yj,ZRUN+(od/2+60)*Math.sin(a),8)}});
+ // ===== checks =====
+ const area=d=>PI*((d-24)/2000)**2,vR=Q/3600/area(dn),vH=4*Q/3600/area(hd),ck=[],c=(f,t)=>ck.push([f,t]);
+ const gapR=981-fo,beam=ZBM-(ZRUN+fo/2),inv=(ZRUN-od/2)-WL,cover=ZD-(ZRUN+hod/2),oBend=950-2*Rb;
+ c(vR<=3,'Delivery velocity '+vR.toFixed(2)+' m/s in DN'+dn+' (max 3.0)');
+ c(vH<=2.5,'Header velocity, 4 pumps: '+vH.toFixed(2)+' m/s in DN'+hd+' (max 2.5)');
+ c(oBend>=0,'Offset bend fits between the outer pump and its riser: 950 − 2R = '+Math.round(oBend)+' mm (min 0)');
+ c(gapR>=300,'Gap between the two risers of a group (flange to flange): '+Math.round(gapR)+' mm (min 300)');
+ c(1931-2*PV>=300,'Gap between the two pump volutes: '+(1931-2*PV)+' mm (min 300)');
+ c(GR[0]*2-2*PV>=400,'Deck opening 1700 mm passes the 1200 mm pump with '+(GR[0]*2-2*PV)+' mm to spare (min 400)');
+ c(beam>=150,'Clearance, flange to deck beam soffit at the run level: '+Math.round(beam)+' mm (min 150)');
+ c(inv>=100,'Pipe invert +'+((ZRUN-od/2)/1000).toFixed(2)+' m is '+Math.round(inv)+' mm above max water level +5.50 m (min 100)');
+ c(cover>=1000,'Cover over the header crown up to +7.50 m: '+Math.round(cover)+' mm (min 1000)');
+ c(hl>=Math.max(...lines.map(l=>l.rx))-Math.min(...lines.map(l=>l.rx))+600,'Header length '+hl+' mm covers all risers with 300 mm at each end');
+ c(zb-ZD>=3400,'Hook height: I-beam soffit '+(zb-ZD)+' mm above the deck, a pump (2560 mm) needs 3400 to clear the deck when lifted');
+ c(true,'Levels: pit floor −4.00, pipe run axis +5.90 (header top +'+((ZRUN+hod/2)/1000).toFixed(2)+'), deck +7.50, roof +'+(ZR/1000).toFixed(2)+' m');
+ $('chk').innerHTML=ck.map(([f,t])=>`<li class="${f?'':'x'}">${t}</li>`).join('');const ok=ck.every(a=>a[0]);$('dl').disabled=!ok;$('msg').textContent=ok?'':'Fix the red items to download.';
+ CUTA=(lines[1].rx-CX)/1000;CUTB=-(yp-CY)/1000;
+ spec={name:g.name,units:'mm',station:'IPR pumping station (wet-well pump house)',levels:{pit_floor:-4000,slab_bottom:-4500,pipe_run_axis:ZRUN,max_water_level:WL,deck:ZD},
+  pit:{overall:[WID,DEP],wall_and_column:TW,columns:'400 x 400',beam_deck:'300 x 1000',intake_holes:holes.length+' x 410 x 820 with grid (50 mm)'},
+  pumps:{count:4,pitch_mm:1931,volute_dia:2*PV,axis_y:Math.round(yp),x:lines.map(l=>Math.round(l.px))},
+  delivery:{DN:dn,PN:pn,steel_OD:od,riser_x:lines.map(l=>Math.round(l.rx)),run_length_mm:RL,valve_y:lines.map(l=>l.vy),flow_per_pump_m3h:Q,velocity_ms:+vR.toFixed(2)},
+  header:{DN:hd,length_mm:hl,axis_y:Math.round(yH),velocity_ms_4_pumps:+vH.toFixed(2),outlet:'right end, to Parshall flume'},
+  components:{gate_valves:4,dismantling_joints:4,concrete_basement:$('bs').checked?'6475 x 1225 x 500':'not shown'},
+  superstructure:{roof_level:ZR,columns:'400 x 400',roof_beams:'300 x 600',roof_slab:150,monorail:'MS I-beam 400 x 140',side_walls:$('sw').checked},groups:['Structure','Superstructure','Pumps','Pipework','Valves'],animations:['Open','Close','Run'],checks:ck.map(a=>(a[0]?'OK: ':'FAIL: ')+a[1]),
+  note:'Indicative model from the IPR pumping station drawing. Pump size, valve make, basement position, intake-hole layout and column base are assumptions. Verify before construction.'};
+ apply();
+ if(fit){const bb=new THREE.Box3().setFromObject(g),ce=bb.getCenter(new THREE.Vector3()),z=bb.getSize(new THREE.Vector3()),d=Math.max(z.x,z.y,z.z);C.position.set(ce.x+d*.75,ce.y+d*.55,ce.z+d*.95);C.lookAt(ce);ctl.target.copy(ce);ctl.update()}
+}
+function apply(){for(const m of MV){m.gt.position.y=m.by+cur*m.trv;m.hw.rotation.y=cur*VT*2*PI}}
+function clips(){const out=[],q=a=>new THREE.Quaternion().setFromEuler(new THREE.Euler(0,a,0)).toArray();
+ if(MV.length){const mk=(nm,rev)=>{const tr=[];for(const m of MV){const t=[],qq=[],v=[];for(let i=0;i<=8;i++){const p=rev?1-i/8:i/8;t.push(i/4);qq.push(...q(p*VT*2*PI));v.push(m.bx,m.by+p*m.trv,m.bz)}
+   tr.push(new THREE.QuaternionKeyframeTrack(m.hw.name+'.quaternion',t,qq),new THREE.VectorKeyframeTrack(m.gt.name+'.position',t,v))}return new THREE.AnimationClip(nm,-1,tr)};out.push(mk('Open',0),mk('Close',1))}
+ if(ROT.length){const t=[],qq=[];for(let i=0;i<=8;i++){t.push(i/4);qq.push(...q(i/8*2*PI))}out.push(new THREE.AnimationClip('Run',-1,ROT.map(r=>new THREE.QuaternionKeyframeTrack(r.name+'.quaternion',t,qq))))}
+ return out}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+(function loop(){requestAnimationFrame(loop);if(cur!==tgt){cur+=(tgt-cur)*.07;if(Math.abs(tgt-cur)<.003)cur=tgt;apply()}if(runT&&ROT.length)ROT.forEach(r=>r.rotation.y+=.12);ctl.update();R.render(S,C)})();
+/* ===== vector drawing engine: HLR + sections + hatch + DXF (pure JS, units mm) ===== */
+const vdDot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],vdCross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],vdNorm=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]};
+function vdCollect(model){const out=[];model.updateMatrixWorld(true);
+ model.traverse(o=>{if(!o.isMesh)return;let p=o,ok=true;while(p){if(!p.visible){ok=false;break}if(p===model)break;p=p.parent}if(!ok)return;
+  const g=o.geometry,pa=g.attributes.position,e=o.matrixWorld.elements,P=new Float64Array(pa.count*3);
+  for(let i=0;i<pa.count;i++){const x=pa.getX(i),y=pa.getY(i),z=pa.getZ(i);P[3*i]=(e[0]*x+e[4]*y+e[8]*z+e[12])*1000;P[3*i+1]=(e[1]*x+e[5]*y+e[9]*z+e[13])*1000;P[3*i+2]=(e[2]*x+e[6]*y+e[10]*z+e[14])*1000}
+  const T=g.index?Array.from(g.index.array):Array.from({length:pa.count},(_,i)=>i);
+  out.push({P,T,glass:!!(o.material&&o.material.userData&&o.material.userData.glass)})});return out}
+function vdEdges(m){const{P,T}=m,nv=P.length/3,idm=new Map(),vid=new Int32Array(nv);let c=0;
+ for(let i=0;i<nv;i++){const k=Math.round(P[3*i]*100)+'_'+Math.round(P[3*i+1]*100)+'_'+Math.round(P[3*i+2]*100);let v=idm.get(k);if(v===undefined){v=c++;idm.set(k,v)}vid[i]=v}
+ const em=new Map();
+ for(let t=0;t<T.length;t+=3){const a=T[t],b=T[t+1],c2=T[t+2],ux=P[3*b]-P[3*a],uy=P[3*b+1]-P[3*a+1],uz=P[3*b+2]-P[3*a+2],vx=P[3*c2]-P[3*a],vy=P[3*c2+1]-P[3*a+1],vz=P[3*c2+2]-P[3*a+2];
+  let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;const l=Math.hypot(nx,ny,nz);if(l<1e-9)continue;nx/=l;ny/=l;nz/=l;
+  for(const [p,q] of[[a,b],[b,c2],[c2,a]]){const i1=vid[p],i2=vid[q];if(i1===i2)continue;const k=i1<i2?i1*4194304+i2:i2*4194304+i1;let r=em.get(k);if(!r){r={p,q,n:[[nx,ny,nz]]};em.set(k,r)}else r.n.push([nx,ny,nz])}}
+ const out=[];for(const r of em.values()){const n=r.n;out.push({a:[P[3*r.p],P[3*r.p+1],P[3*r.p+2]],b:[P[3*r.q],P[3*r.q+1],P[3*r.q+2]],f:n.length!=2||vdDot(n[0],n[1])<.9063,n1:n[0],n2:n[1]||null})}return out}
+function vdClip(poly,w0){const out=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],ia=a[2]<=w0,ib=b[2]<=w0;if(ia)out.push(a);if(ia!==ib){const t=(w0-a[2])/(b[2]-a[2]);out.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,w0])}}return out}
+function vdTri(zb,idb,id,W,H,a,b,c){const D=(a[0]-c[0])*(b[1]-c[1])-(b[0]-c[0])*(a[1]-c[1]);if(Math.abs(D)<1e-9)return;
+ const A=((a[2]-c[2])*(b[1]-c[1])-(b[2]-c[2])*(a[1]-c[1]))/D,B=((a[0]-c[0])*(b[2]-c[2])-(b[0]-c[0])*(a[2]-c[2]))/D,C=c[2]-A*c[0]-B*c[1];
+ const y0=Math.max(0,Math.floor(Math.min(a[1],b[1],c[1]))),y1=Math.min(H-1,Math.ceil(Math.max(a[1],b[1],c[1]))),E=[[a,b],[b,c],[c,a]];
+ for(let y=y0;y<=y1;y++){const yc=y+.5;let xl=1e18,xr=-1e18;for(const [p,q] of E){if((p[1]<=yc&&q[1]>yc)||(q[1]<=yc&&p[1]>yc)){const x=p[0]+(q[0]-p[0])*(yc-p[1])/(q[1]-p[1]);if(x<xl)xl=x;if(x>xr)xr=x}}
+  if(xl>xr)continue;const xa=Math.max(0,Math.ceil(xl-.5)),xb=Math.min(W-1,Math.floor(xr-.5));for(let x=xa;x<=xb;x++){const z=A*(x+.5)+B*yc+C,i=y*W+x;if(z>zb[i]){zb[i]=z;idb[i]=id}}}}
+function vdFill(zb,idb,id,W,H,loops,z){let y0=1e18,y1=-1e18;loops.forEach(l=>l.forEach(p=>{y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1])}));
+ for(let y=Math.max(0,Math.floor(y0));y<=Math.min(H-1,Math.ceil(y1));y++){const yc=y+.5,xs=[];
+  for(const l of loops)for(let i=0;i<l.length;i++){const p=l[i],q=l[(i+1)%l.length];if((p[1]<=yc&&q[1]>yc)||(q[1]<=yc&&p[1]>yc))xs.push(p[0]+(q[0]-p[0])*(yc-p[1])/(q[1]-p[1]))}
+  xs.sort((a,b)=>a-b);for(let k=0;k+1<xs.length;k+=2){const xa=Math.max(0,Math.ceil(xs[k]-.5)),xb=Math.min(W-1,Math.floor(xs[k+1]-.5));for(let x=xa;x<=xb;x++){const i=y*W+x;if(z>zb[i]){zb[i]=z;idb[i]=id}}}}}
+function vdCutSegs(m,d,p0){const{P,T}=m,s=i=>(P[3*i]-p0[0])*d[0]+(P[3*i+1]-p0[1])*d[1]+(P[3*i+2]-p0[2])*d[2],out=[];
+ for(let t=0;t<T.length;t+=3){const ids=[T[t],T[t+1],T[t+2]],sv=ids.map(s),pos=sv.map(x=>x>1e-6);if(pos[0]===pos[1]&&pos[1]===pos[2])continue;const pts=[];
+  for(let k=0;k<3;k++){const k2=(k+1)%3;if(pos[k]!==pos[k2]){const a=ids[k],b=ids[k2],q=sv[k]/(sv[k]-sv[k2]);pts.push([P[3*a]+(P[3*b]-P[3*a])*q,P[3*a+1]+(P[3*b+1]-P[3*a+1])*q,P[3*a+2]+(P[3*b+2]-P[3*a+2])*q])}}
+  if(pts.length==2)out.push(pts)}return out}
+function vdLoops(segs){const K=(u,v)=>Math.round(u*100)+'_'+Math.round(v*100),adj=new Map();
+ segs.forEach((s,i)=>{for(const k of[K(s[0],s[1]),K(s[2],s[3])]){let a=adj.get(k);if(!a){a=[];adj.set(k,a)}a.push(i)}});
+ const used=new Uint8Array(segs.length),loops=[];
+ for(let i=0;i<segs.length;i++){if(used[i])continue;used[i]=1;const pts=[[segs[i][0],segs[i][1]],[segs[i][2],segs[i][3]]],start=K(segs[i][0],segs[i][1]);let cur=K(segs[i][2],segs[i][3]);
+  while(cur!==start){const nx=(adj.get(cur)||[]).find(j=>!used[j]);if(nx===undefined)break;used[nx]=1;const s=segs[nx];if(K(s[0],s[1])===cur){pts.push([s[2],s[3]]);cur=K(s[2],s[3])}else{pts.push([s[0],s[1]]);cur=K(s[0],s[1])}}
+  const closed=cur===start;if(closed)pts.pop();loops.push({pts,closed})}return loops}
+function vdSimp(pts,closed){let p=pts.slice(),ch=true;while(ch&&p.length>2){ch=false;for(let i=0;i<p.length;i++){if(!closed&&(i==0||i==p.length-1))continue;const a=p[(i+p.length-1)%p.length],b=p[i],c=p[(i+1)%p.length],cr=(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0]),l=Math.hypot(c[0]-a[0],c[1]-a[1])||1;if(Math.abs(cr)/l<.05){p.splice(i,1);ch=true;break}}}return p}
+function vdHatch(loops,hs,out){let mnS=1e18,mxS=-1e18,mnT=1e18,mxT=-1e18;const R=Math.SQRT1_2,L=loops.map(l=>l.pts.map(p=>[(p[0]+p[1])*R,(p[1]-p[0])*R]));
+ L.forEach(l=>l.forEach(p=>{mnS=Math.min(mnS,p[0]);mxS=Math.max(mxS,p[0]);mnT=Math.min(mnT,p[1]);mxT=Math.max(mxT,p[1])}));if(mxS-mnS<hs*1.5&&mxT-mnT<hs*1.5)return;
+ for(let s=Math.ceil(mnS/hs)*hs;s<mxS;s+=hs){const ts=[];for(const l of L)for(let i=0;i<l.length;i++){const p=l[i],q=l[(i+1)%l.length];if((p[0]<=s&&q[0]>s)||(q[0]<=s&&p[0]>s))ts.push(p[1]+(q[1]-p[1])*(s-p[0])/(q[0]-p[0]))}
+  ts.sort((a,b)=>a-b);for(let k=0;k+1<ts.length;k+=2)out.push([(s-ts[k])*R,(s+ts[k])*R,(s-ts[k+1])*R,(s+ts[k+1])*R])}}
+function vdMerge(segs,tol){const g=new Map();
+ for(const s of segs){let dx=s[2]-s[0],dy=s[3]-s[1];const l=Math.hypot(dx,dy);if(l<1e-9)continue;dx/=l;dy/=l;let x1=s[0],y1=s[1],x2=s[2],y2=s[3];if(dx<-1e-9||(Math.abs(dx)<=1e-9&&dy<0)){dx=-dx;dy=-dy;[x1,y1,x2,y2]=[x2,y2,x1,y1]}
+  const k=Math.round(Math.atan2(dy,dx)*2000)+'|'+Math.round((-dy*x1+dx*y1)/tol);let a=g.get(k);if(!a){a=[];g.set(k,a)}a.push([x1*dx+y1*dy,x2*dx+y2*dy,dx,dy,-dy*x1+dx*y1])}
+ const out=[];for(const a of g.values()){a.sort((p,q)=>p[0]-q[0]);let cur=null;const emit=c=>{const dx=c[2],dy=c[3],off=c[4];out.push([c[0]*dx-off*dy,c[0]*dy+off*dx,c[1]*dx-off*dy,c[1]*dy+off*dx])};
+  for(const r of a){if(cur&&r[0]<=cur[1]+tol*2){if(r[1]>cur[1])cur[1]=r[1]}else{if(cur)emit(cur);cur=r.slice()}}if(cur)emit(cur)}return out}
+function vdView(meshes,EDG,v,N){
+ const px=Math.max(v.w,v.h)/1600||1,W=Math.ceil(v.w/px)+6,H=Math.ceil(v.h/px)+6,zb=new Float32Array(W*H).fill(-1e30),idb=new Int32Array(W*H).fill(-1),X=u=>(u-v.u0)/px+3,Y=w=>(v.v1-w)/px+3,cut=v.cut,w0=cut?vdDot(cut.p,v.d):1e18,vis=[],cutL=[],hatch=[];
+ const prj=(P,i)=>{const x=P[3*i],y=P[3*i+1],z=P[3*i+2];return[x*v.ax[0]+y*v.ax[1]+z*v.ax[2],x*v.ay[0]+y*v.ay[1]+z*v.ay[2],x*v.d[0]+y*v.d[1]+z*v.d[2]]};
+ meshes.forEach((m,mi)=>{if(m.glass)return;const{P,T}=m,PV=[];for(let i=0;i<P.length/3;i++)PV.push(prj(P,i));
+  for(let t=0;t<T.length;t+=3){let poly=[PV[T[t]],PV[T[t+1]],PV[T[t+2]]];if(cut){poly=vdClip(poly,w0);if(poly.length<3)continue}const q=poly.map(p=>[X(p[0]),Y(p[1]),p[2]]);for(let k=1;k<q.length-1;k++)vdTri(zb,idb,mi,W,H,q[0],q[k],q[k+1])}});
+ if(cut)meshes.forEach((m,mi)=>{const segs=vdCutSegs(m,v.d,cut.p).map(s=>{const a=[vdDot(s[0],v.ax),vdDot(s[0],v.ay)],b=[vdDot(s[1],v.ax),vdDot(s[1],v.ay)];return[a[0],a[1],b[0],b[1]]});if(!segs.length)return;
+  const loops=vdLoops(segs).map(l=>({pts:vdSimp(l.pts,l.closed),closed:l.closed}));
+  loops.forEach(l=>{const n=l.pts.length;for(let i=0;i<(l.closed?n:n-1);i++){const a=l.pts[i],b=l.pts[(i+1)%n];cutL.push([a[0],a[1],b[0],b[1]])}});
+  if(!m.glass){const cl=loops.filter(l=>l.closed&&l.pts.length>2);if(cl.length){vdFill(zb,idb,mi,W,H,cl.map(l=>l.pts.map(p=>[X(p[0]),Y(p[1])])),w0+px*.5);vdHatch(cl,2.5*N,hatch)}}});
+ const z=(ix,iy)=>{if(ix<0||iy<0||ix>=W||iy>=H)return-1e30;return zb[iy*W+ix]};
+ const visAt=(u,vv,w,mi,sil)=>{const x=X(u),y=Y(vv),ix=Math.floor(x),iy=Math.floor(y);let z0=z(ix,iy),g=0,id=(ix<0||iy<0||ix>=W||iy>=H)?-1:idb[iy*W+ix];
+  if(z0<-1e29){let lo=1e30,bi=-1;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const q=z(ix+dx,iy+dy);if(q>-1e29){if(q>z0){z0=q;bi=idb[(iy+dy)*W+ix+dx]}lo=Math.min(lo,q)}}if(z0<-1e29)return true;g=z0-lo;id=bi}
+  else for(const q of[z(ix+1,iy),z(ix-1,iy),z(ix,iy+1),z(ix,iy-1)])if(q>-1e29)g=Math.max(g,Math.abs(q-z0));
+  if(sil&&id===mi)return true;return w>=z0-(2*px+g)};
+ EDG.forEach((E,mi)=>E.forEach(e=>{const sil=!e.f&&e.n2&&vdDot(e.n1,v.d)*vdDot(e.n2,v.d)<0;if(!(e.f||sil))return;
+  let a=[vdDot(e.a,v.ax),vdDot(e.a,v.ay),vdDot(e.a,v.d)],b=[vdDot(e.b,v.ax),vdDot(e.b,v.ay),vdDot(e.b,v.d)];
+  if(cut){if(a[2]>w0&&b[2]>w0)return;const lp=(p,q)=>{const t=(w0-p[2])/(q[2]-p[2]);return[p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t,w0]};if(a[2]>w0)a=lp(b,a);else if(b[2]>w0)b=lp(a,b)}
+  const len=Math.hypot(b[0]-a[0],b[1]-a[1]);if(len<.3*px)return;
+  const at=t=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t],vt=t=>{const p=at(t);return visAt(p[0],p[1],p[2],mi,sil)},n=Math.min(3000,Math.max(2,Math.ceil(len/px)));
+  const bis=(lo,hi)=>{const hv=vt(hi);let l=lo,h=hi;for(let k=0;k<7;k++){const m2=(l+h)/2;if(vt(m2)===hv)h=m2;else l=m2}return(l+h)/2};
+  let prev=vt(0),st=prev?0:-1,pt=0;
+  for(let i=1;i<=n;i++){const t=i/n,cv=vt(t);if(cv!==prev){if(cv)st=bis(pt,t);else{const en=bis(pt,t),p1=at(st),p2=at(en);vis.push([p1[0],p1[1],p2[0],p2[1]]);st=-1}prev=cv}pt=t}
+  if(prev&&st>=0){const p1=at(st),p2=at(1);vis.push([p1[0],p1[1],p2[0],p2[1]])}}));
+ return{vis:vdMerge(vis.filter(s=>Math.hypot(s[2]-s[0],s[3]-s[1])>.3*px),.6*px),cut:vdMerge(cutL,.6*px),hatch}}
+function vdBuild(meshes,cfg){
+ const V=[['FRONT ELEVATION',[0,0,1],[0,1,0]],['BACK ELEVATION',[0,0,-1],[0,1,0]],['RIGHT ELEVATION',[1,0,0],[0,1,0]]].map(([n,d,u])=>({n,d,u}));
+ cfg.cuts.forEach(c=>V.push({n:c.label,d:c.d,u:c.up,cut:{n:c.n,p:c.p.map(x=>x*1000)}}));
+ const items=[],L=(l,x1,y1,x2,y2,vi)=>items.push({t:'L',l,x1,y1,x2,y2,vi}),sh={N:1,W:420,H:297,items,views:V};
+ if(!meshes.length)return sh;
+ const mn=[1e18,1e18,1e18],mx=[-1e18,-1e18,-1e18];meshes.forEach(m=>{const P=m.P;for(let i=0;i<P.length;i+=3)for(let k=0;k<3;k++){if(P[i+k]<mn[k])mn[k]=P[i+k];if(P[i+k]>mx[k])mx[k]=P[i+k]}});
+ const cs=[];for(const x of[mn[0],mx[0]])for(const y of[mn[1],mx[1]])for(const z of[mn[2],mx[2]])cs.push([x,y,z]);
+ V.forEach(v=>{v.ax=vdNorm(vdCross(v.u,v.d));v.ay=vdNorm(vdCross(v.d,v.ax));let a=1e18,b=-1e18,c=1e18,e=-1e18;cs.forEach(p=>{const u=vdDot(p,v.ax),w=vdDot(p,v.ay);a=Math.min(a,u);b=Math.max(b,u);c=Math.min(c,w);e=Math.max(e,w)});Object.assign(v,{u0:a,u1:b,v0:c,v1:e,w:b-a,h:e-c})});
+ const N=[1,2,5,10,15,20,25,30,40,50,60,75,100,150,200,250,300,400,500,1000,2000,5000].find(n=>V.every(v=>v.w/n<=60&&v.h/n<=90))||5000;Object.assign(sh,{N,W:420*N,H:297*N});
+ const T=(l,x,y,h,s,rot=0,al='l')=>{const w=.55*h*s.length,sx=al=='c'?-w/2:0;items.push({t:'T',l,x:x+sx*Math.cos(rot*Math.PI/180),y:y+sx*Math.sin(rot*Math.PI/180),h,s,rot})},EDG=meshes.map(vdEdges);
+ const rect=(l,x0,y0,x1,y1)=>{L(l,x0,y0,x1,y0);L(l,x1,y0,x1,y1);L(l,x1,y1,x0,y1);L(l,x0,y1,x0,y0)};
+ rect('A-FRAME',5*N,5*N,415*N,292*N);rect('A-FRAME',10*N,10*N,410*N,287*N);
+ const tick=(x,y)=>L('A-DIM',x-N,y-N,x+N,y+N);
+ const dimH=(x1,x2,y,txt)=>{L('A-DIM',x1,y,x2,y);tick(x1,y);tick(x2,y);T('A-DIM',(x1+x2)/2,y+1.2*N,2.5*N,txt,0,'c')},dimV=(y1,y2,x,txt)=>{L('A-DIM',x,y1,x,y2);tick(x,y1);tick(x,y2);T('A-DIM',x-1.2*N,(y1+y2)/2,2.5*N,txt,90,'c')};
+ V.forEach((v,i)=>{const col=i%4,row=Math.floor(i/4),cx0=(10+col*100)*N,cy0=(287-(row+1)*138.5)*N,tx=cx0+42*N-(v.u0+v.u1)/2,ty=cy0+(69.25+12)*N-(v.v0+v.v1)/2;
+  rect('A-FRAME',cx0,cy0,cx0+100*N,cy0+138.5*N);
+  const r=vdView(meshes,EDG,v,N);r.vis.forEach(s=>L('A-VIS',s[0]+tx,s[1]+ty,s[2]+tx,s[3]+ty,i));r.cut.forEach(s=>L('A-CUT',s[0]+tx,s[1]+ty,s[2]+tx,s[3]+ty,i));r.hatch.forEach(s=>L('A-HATCH',s[0]+tx,s[1]+ty,s[2]+tx,s[3]+ty,i));
+  const xl=v.u0+tx,xr=v.u1+tx,yb=v.v0+ty,yt=v.v1+ty;
+  L('A-DIM',xl,yb-N,xl,yb-9.5*N);L('A-DIM',xr,yb-N,xr,yb-9.5*N);L('A-DIM',xr+N,yb,xr+9.5*N,yb);L('A-DIM',xr+N,yt,xr+9.5*N,yt);
+  dimH(xl,xr,yb-8*N,String(Math.round(v.w)));dimV(yb,yt,xr+8*N,String(Math.round(v.h)));
+  if(cfg.ground&&Math.abs(v.d[1])<1e-6){const gy=cfg.ground.y*1000+ty;if(gy>cy0+16*N&&gy<cy0+138*N){L('A-GROUND',cx0+2*N,gy,cx0+98*N,gy);T('A-TEXT',cx0+3*N,gy+1.2*N,2.5*N,cfg.ground.label)}}
+  cfg.cuts.forEach(c=>{const n=c.d;if(Math.abs(vdDot(n,v.d))>1e-6)return;const dir=vdNorm(vdCross(n,v.d)),p0=c.p.map(x=>x*1000),u0=vdDot(p0,v.ax),w0=vdDot(p0,v.ay),du=vdDot(dir,v.ax),dv=vdDot(dir,v.ay),cu=(v.u0+v.u1)/2,cv=(v.v0+v.v1)/2,ext=(Math.abs(du)*v.w+Math.abs(dv)*v.h)/2+4*N+Math.hypot(u0-cu,w0-cv),ar=[-vdDot(n,v.ax),-vdDot(n,v.ay)];
+   const E=[[u0-du*ext+tx,w0-dv*ext+ty],[u0+du*ext+tx,w0+dv*ext+ty]];L('A-SECT',E[0][0],E[0][1],E[1][0],E[1][1]);
+   E.forEach(([ex,ey])=>{const tx2=ex+ar[0]*8*N,ty2=ey+ar[1]*8*N,an=Math.atan2(ty2-ey,tx2-ex);L('A-SECT',ex,ey,tx2,ty2);L('A-SECT',tx2,ty2,tx2-2.5*N*Math.cos(an-.4),ty2-2.5*N*Math.sin(an-.4));L('A-SECT',tx2,ty2,tx2-2.5*N*Math.cos(an+.4),ty2-2.5*N*Math.sin(an+.4));T('A-TEXT',ex+ar[0]*12*N-1.2*N,ey+ar[1]*12*N-1.5*N,4*N,c.n)})});
+  T('A-TEXT',cx0+3*N,cy0+12*N,4*N,v.n);T('A-TEXT',cx0+3*N,cy0+6*N,3*N,'SCALE 1:'+N)});
+ const bx=(10+300)*N,by=10*N,flat=(o,p,r)=>{for(const k in o){const q=o[k];if(q&&typeof q=='object'&&!Array.isArray(q))flat(q,p+k+'.',r);else r.push(p+k+': '+(Array.isArray(q)?q.join(', '):q))}return r};
+ T('A-TEXT',bx+3*N,by+128*N,5*N,'EVLab 3D Hub');T('A-TEXT',bx+3*N,by+120*N,4*N,cfg.title);T('A-TEXT',bx+3*N,by+114*N,2.5*N,cfg.name);
+ flat(cfg.spec||{},'',[]).filter(s=>!/^(name|units|groups|animations|note)/.test(s)).slice(0,17).forEach((s,k)=>T('A-TEXT',bx+3*N,by+107*N-k*5.5*N,2.5*N,s.slice(0,46)));
+ T('A-TEXT',bx+3*N,by+11*N,3*N,'SCALE 1:'+N+'   UNITS: mm   SHEET 1/1');T('A-TEXT',bx+3*N,by+6*N,2.2*N,new Date().toISOString().slice(0,10)+'  Indicative drawing from the 3D model.');T('A-TEXT',bx+3*N,by+2.5*N,2.2*N,'Verify all dimensions before manufacture or construction.');
+ return sh}
+const VDL={'A-VIS':[7,'CONTINUOUS','#000',1.6],'A-CUT':[1,'CONTINUOUS','#c00',3.2],'A-HATCH':[3,'CONTINUOUS','#0a7',.9],'A-DIM':[5,'CONTINUOUS','#00a',1],'A-TEXT':[7,'CONTINUOUS','#000',1],'A-SECT':[1,'DASHDOT','#c00',1.8],'A-GROUND':[8,'DASHED','#555',2],'A-FRAME':[8,'CONTINUOUS','#999',1]};
+function vdDXF(sh){const o=[],f=x=>(+x).toFixed(3),p=(c,v)=>{o.push(String(c));o.push(String(v))},N=sh.N;
+ p(0,'SECTION');p(2,'HEADER');p(9,'$ACADVER');p(1,'AC1009');p(9,'$EXTMIN');p(10,0);p(20,0);p(30,0);p(9,'$EXTMAX');p(10,f(sh.W));p(20,f(sh.H));p(30,0);p(0,'ENDSEC');
+ p(0,'SECTION');p(2,'TABLES');
+ p(0,'TABLE');p(2,'LTYPE');p(70,3);
+ p(0,'LTYPE');p(2,'CONTINUOUS');p(70,0);p(3,'Solid line');p(72,65);p(73,0);p(40,0);
+ p(0,'LTYPE');p(2,'DASHED');p(70,0);p(3,'Dashed');p(72,65);p(73,2);p(40,f(9*N));p(49,f(6*N));p(49,f(-3*N));
+ p(0,'LTYPE');p(2,'DASHDOT');p(70,0);p(3,'Dash dot');p(72,65);p(73,4);p(40,f(15*N));p(49,f(9*N));p(49,f(-3*N));p(49,0);p(49,f(-3*N));p(0,'ENDTAB');
+ const ks=Object.keys(VDL);p(0,'TABLE');p(2,'LAYER');p(70,ks.length);ks.forEach(k=>{p(0,'LAYER');p(2,k);p(70,0);p(62,VDL[k][0]);p(6,VDL[k][1])});p(0,'ENDTAB');
+ p(0,'TABLE');p(2,'STYLE');p(70,1);p(0,'STYLE');p(2,'STANDARD');p(70,0);p(40,0);p(41,1);p(50,0);p(71,0);p(42,f(2.5*N));p(3,'txt');p(4,'');p(0,'ENDTAB');p(0,'ENDSEC');
+ p(0,'SECTION');p(2,'ENTITIES');
+ sh.items.forEach(it=>{if(it.t=='L'){p(0,'LINE');p(8,it.l);p(10,f(it.x1));p(20,f(it.y1));p(30,0);p(11,f(it.x2));p(21,f(it.y2));p(31,0)}
+  else{p(0,'TEXT');p(8,it.l);p(10,f(it.x));p(20,f(it.y));p(30,0);p(40,f(it.h));p(1,it.s);if(it.rot)p(50,f(it.rot))}});
+ p(0,'ENDSEC');p(0,'EOF');return o.join('\n')+'\n'}
+function vdCanvas(sh){const k=6/sh.N,c=document.createElement('canvas');c.width=Math.round(420*6);c.height=Math.round(297*6);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.lineCap='round';
+ const X=v=>v*k,Y=v=>(sh.H-v)*k;
+ for(const it of sh.items){const st=VDL[it.l]||VDL['A-VIS'];if(it.t=='L'){x.strokeStyle=st[2];x.lineWidth=st[3];x.setLineDash(st[1]=='DASHED'?[16,6]:st[1]=='DASHDOT'?[30,8,4,8]:[]);x.beginPath();x.moveTo(X(it.x1),Y(it.y1));x.lineTo(X(it.x2),Y(it.y2));x.stroke()}
+  else{x.save();x.setLineDash([]);x.fillStyle=st[2];x.font=Math.max(6,it.h*k)+'px Arial';x.translate(X(it.x),Y(it.y));if(it.rot)x.rotate(-it.rot*Math.PI/180);x.fillText(it.s,0,0);x.restore()}}return c}
+function sheetBuild(){const c=cfg();return vdBuild(vdCollect(c.model),c)}
+function makeSheet(c0){const c=c0||cfg();return vdCanvas(vdBuild(vdCollect(c.model),c))}
+async function sheetPNG(sh){const cv=vdCanvas(sh||sheetBuild());return new Uint8Array(await new Promise(r=>cv.toBlob(b=>b.arrayBuffer().then(r))))}
+function sheetDXF(sh){return vdDXF(sh||sheetBuild())}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+
+function cfg(){return{model,spec,title:'IPR PUMP HOUSE',name:model.name,ground:{y:7.5,label:'DECK LEVEL +7.50'},cuts:[
+ {n:'D',label:'PLAN AT DECK LEVEL +7.50 (roof removed)',d:[0,1,0],up:[0,0,-1],p:[0,7.8,0]},
+ {n:'C',label:'PLAN AT LEVEL (-)0.50 m',d:[0,1,0],up:[0,0,-1],p:[0,-0.5,0]},
+ {n:'A',label:'SECTION A-A (along delivery line)',d:[1,0,0],up:[0,1,0],p:[CUTA,0,0]},
+ {n:'B',label:'SECTION B-B (across the pumps)',d:[0,0,1],up:[0,1,0],p:[0,0,CUTB]}]}}
+$('dl').onclick=async()=>{const msg=$('msg');try{const c0=cur;cur=1;apply();const r0=ROT.map(r=>r.rotation.y);ROT.forEach(r=>r.rotation.y=0);const sv=[];model.traverse(o=>{const m=o.material;if(m&&m.transparent){sv.push([m,m.opacity]);m.opacity=1;m.transparent=false}});model.updateMatrixWorld(true);
+ const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];let png=null,dxf=null;
+ if(fm=='zip'||fm=='png'||fm=='dxf'){try{const sh=sheetBuild();if(fm!='dxf')png=await sheetPNG(sh);if(fm!='png')dxf=e.encode(vdDXF(sh))}catch(x){msg.textContent='Drawing failed: '+(x&&x.message||x)}}
+ try{if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true,animations:clips()}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+  if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))})}
+ finally{sv.forEach(([m,o])=>{m.opacity=o;m.transparent=true});cur=c0;ROT.forEach((r,i)=>r.rotation.y=r0[i]);apply()}
+ if(dxf)fs.push({n:model.name+'_drawings.dxf',d:dxf});if(png)fs.push({n:model.name+'_drawings.png',d:png});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['dn','hdn','pn','ih','bs','sw'].forEach(i=>$(i).onchange=()=>build(true));['Q','RL','RH'].forEach(i=>$(i).oninput=()=>build(false));$('tr').oninput=()=>build(false);
+$('tg').onclick=()=>{tgt=1-tgt;$('tg').textContent=tgt?'Valves OPEN (ON) – click to close':'Valves CLOSED (OFF) – click to open'};
+$('pg').onclick=()=>{runT=!runT;$('pg').textContent=runT?'Pumps RUNNING (ON) – click to stop':'Pumps STOPPED (OFF) – click to run'};
+let showD=false,dT;const SWR=document.createElement('div');SWR.style.cssText='display:none;overflow:auto;height:100%;background:#fff';box.appendChild(SWR);
+function drawNow(){try{const c=makeSheet(cfg());c.style.cssText='width:100%;display:block';SWR.innerHTML='';SWR.appendChild(c)}catch(e){SWR.textContent='Drawing failed: '+(e&&e.message||e)}}
+{const _b=build;build=function(f){_b(f);if(showD){clearTimeout(dT);dT=setTimeout(drawNow,400)}}}
+$('dw').onclick=()=>{showD=!showD;R.domElement.style.display=showD?'none':'block';SWR.style.display=showD?'block':'none';$('dw').textContent=showD?'Back to 3D view':'Show drawings (2 plans, 2 sections, 3 elevations)';if(showD)drawNow()};
+$('dxf').onclick=()=>{try{const s=vdDXF(sheetBuild()),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([s],{type:'application/dxf'}));a.download='EVLab_'+model.name+'_drawings.dxf';document.body.appendChild(a);a.click();a.remove();$('msg').textContent='DXF saved.'}catch(x){$('msg').textContent='DXF failed: '+(x&&x.message||x)}};
+addEventListener('resize',size);size();build(true);
+</script></body></html>

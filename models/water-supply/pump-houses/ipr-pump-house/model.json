@@ -1,0 +1,111 @@
+{
+  "id": "ipr-pump-house",
+  "name": "IPR Pump House (Impounding Reservoir pumping station)",
+  "category": "water-supply/pump-houses",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "deliveryDN": [
+      300,
+      400,
+      500,
+      600
+    ],
+    "headerDN": [
+      600,
+      800,
+      900,
+      1000,
+      1200
+    ],
+    "PN": [
+      10,
+      16
+    ],
+    "flowPerPump_m3h": {
+      "min": 200,
+      "max": 2500,
+      "step": 50,
+      "use": "velocity check only"
+    },
+    "runLength_mm": {
+      "min": 6000,
+      "max": 20000,
+      "step": 500,
+      "default": 12500
+    },
+    "intakeHoles": [
+      2,
+      4,
+      6
+    ],
+    "roofHeightAboveDeck_mm": {
+      "min": 3000,
+      "max": 7000,
+      "step": 250,
+      "default": 4500
+    }
+  },
+  "fixedFromDrawing": {
+    "pit": [
+      10900,
+      4200
+    ],
+    "wallAndColumn": 400,
+    "levels_m": {
+      "slabBottom": -4.5,
+      "pitFloor": -4.0,
+      "pipeRunAxis": 5.9,
+      "maxWL": 5.5,
+      "deck": 7.5
+    },
+    "pumps": 4,
+    "pumpPitch": 1931,
+    "riserSpacing": 981,
+    "outerPumpOffset": 950,
+    "header": "DN900, 6400 long",
+    "deckOpening": [
+      1700,
+      2800
+    ],
+    "intakeHole": [
+      410,
+      820
+    ],
+    "superstructure": "roofed operator platform above the deck: 400x400 columns on the pit grid, 300x600 roof beams, 150 slab, MS I-beam monorail over the pumps (sizes assumed)"
+  },
+  "rules": {
+    "deliveryVelocityMax_ms": 3.0,
+    "headerVelocityMax_ms": 2.5,
+    "pipeInvertAboveMaxWL_mm": 100,
+    "headerCoverMin_mm": 1000,
+    "flangeToBeamMin_mm": 150
+  },
+  "groups": [
+    "Structure",
+    "Superstructure",
+    "Pumps",
+    "Pipework",
+    "Valves"
+  ],
+  "animations": [
+    "Open",
+    "Close",
+    "Run"
+  ],
+  "assumptions": [
+    "pump size and make",
+    "gate valve make and face-to-face",
+    "concrete basement 6475x1225x500 position",
+    "intake hole layout",
+    "column base width 800x400 at level -0.50 not modelled",
+    "DJ downstream of valve",
+    "flange tables indicative",
+    "superstructure and roof sizes and height",
+    "side walls and door (optional)",
+    "monorail position and I-beam size"
+  ],
+  "files": {
+    "parametric": "parametric/ipr-pump-house.html"
+  }
+}

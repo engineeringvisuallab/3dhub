@@ -3,8 +3,9 @@
 // Everything else in the engine only sees plain shapes and ports, so snap, collision, save/load and export work unchanged.
 import * as door from './gen/door.js';
 import * as pipefit from './gen/pipefit.js';
+import * as genroom from './gen/genroom.js';
 
-const GEN = { door, bend: pipefit.bend, tee: pipefit.tee, reducer: pipefit.reducer };
+const GEN = { door, bend: pipefit.bend, tee: pipefit.tee, reducer: pipefit.reducer, genroom };
 const memo = new Map();
 
 export function validateParams(comp, params) {

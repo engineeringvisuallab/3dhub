@@ -12,12 +12,13 @@ import { resolveParams } from '../assembly.js';
 import * as pw from './pipework.js';
 import * as vv from './valves.js';
 import { pump } from './pump.js';
+import { genRoom } from './genroom.js';
 
 export const BUILDERS = {
   'di-pipe': pw.pipe, 'di-pipe-fl': pw.pipeFl, 'di-bend-90': pw.bend, 'di-bend-45': pw.bend, 'di-tee': pw.tee, 'di-reducer': pw.reducer,
   'blind-flange': pw.blindFlange, 'dismantling-joint': pw.dismantlingJoint,
   'gate-valve': vv.gateValve, 'butterfly-valve': vv.butterflyValve, 'check-valve': vv.checkValve, 'ball-valve': vv.ballValve, 'air-valve': vv.airValve, 'flow-meter': vv.flowMeter,
-  'end-suction-pump': pump
+  'end-suction-pump': pump, 'generator-room': genRoom
 };
 const AXIS_ROT = { z: [1, 0, 0, 0, 1, 0, 0, 0, 1], x: [0, 0, -1, 0, 1, 0, 1, 0, 0], y: [1, 0, 0, 0, 0, -1, 0, 1, 0] };
 const memo = new Map();
@@ -52,7 +53,7 @@ export function visualOf(comp, params) {
   if (b) {
     const color = (comp.shapes || m.shapes).find(s => s.color !== undefined)?.color ?? m.shapes.find(s => s.color !== undefined)?.color ?? colorOf(comp.tags || []);
     const parts = b({ comp, params, ports: numericPorts(comp, params, m.ports), color });
-    r = parts.map(p => pack(p.geo, p.name, p.color ?? color, { tags: comp.tags || [] }));
+    r = parts.map(p => pack(p.geo, p.name, p.color ?? color, { tags: comp.tags || [], ...(p.opacity !== undefined ? { opacity: p.opacity } : {}) }));
   } else r = fromShapes(comp, params, m.shapes);
   if (memo.size > 300) memo.clear();
   memo.set(key, r);

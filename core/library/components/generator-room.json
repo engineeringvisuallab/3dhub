@@ -1,0 +1,394 @@
+{
+ "id": "generator-room",
+ "name": "Generator room (DG set room with all facilities)",
+ "category": "electrical/generator-room",
+ "kind": "parametric",
+ "generator": "genroom",
+ "visual": "generator-room",
+ "tags": [
+  "building",
+  "room",
+  "generator"
+ ],
+ "bom": {
+  "ignore": [
+   "open",
+   "cutaway"
+  ]
+ },
+ "units": "mm",
+ "description": "Complete diesel generator room: walls with real openings, roof, 1 or 2 DG sets on plinths, day tank with bund, exhaust (bellows, silencer, sleeve, stack), cooling-air louvres, doors, control panel, battery rack, cable trench, monorail hoist, fire kit, lights, extraction fan, acoustic lining. Room size, height and louvres follow the set size and the rules (generator: core/engine/gen/genroom.js; real mesh: core/engine/visual/genroom.js). Origin = bottom centre of the outer footprint. Sizes are generic envelopes: confirm with the DG set maker and local rules.",
+ "parameters": {
+  "kva": {
+   "label": "DG set rating (kVA)",
+   "short": "kVA",
+   "options": [
+    {
+     "v": 62.5,
+     "label": "62.5 kVA"
+    },
+    {
+     "v": 100,
+     "label": "100 kVA"
+    },
+    {
+     "v": 125,
+     "label": "125 kVA"
+    },
+    {
+     "v": 160,
+     "label": "160 kVA"
+    },
+    {
+     "v": 250,
+     "label": "250 kVA"
+    },
+    {
+     "v": 320,
+     "label": "320 kVA"
+    },
+    {
+     "v": 400,
+     "label": "400 kVA"
+    },
+    {
+     "v": 500,
+     "label": "500 kVA"
+    },
+    {
+     "v": 625,
+     "label": "625 kVA"
+    },
+    {
+     "v": 750,
+     "label": "750 kVA"
+    },
+    {
+     "v": 1000,
+     "label": "1000 kVA"
+    }
+   ],
+   "default": 250
+  },
+  "sets": {
+   "label": "Number of DG sets",
+   "short": "Sets",
+   "options": [
+    {
+     "v": 1,
+     "label": "1 set"
+    },
+    {
+     "v": 2,
+     "label": "2 sets"
+    }
+   ],
+   "default": 1
+  },
+  "L": {
+   "label": "Room inside length (0 = automatic smallest)",
+   "short": "Length",
+   "min": 0,
+   "max": 16000,
+   "step": 100,
+   "default": 0,
+   "unit": "mm"
+  },
+  "W": {
+   "label": "Room inside width (0 = automatic smallest)",
+   "short": "Width",
+   "min": 0,
+   "max": 14000,
+   "step": 100,
+   "default": 0,
+   "unit": "mm"
+  },
+  "H": {
+   "label": "Room inside height (0 = automatic smallest)",
+   "short": "Height",
+   "min": 0,
+   "max": 8000,
+   "step": 100,
+   "default": 0,
+   "unit": "mm"
+  },
+  "t": {
+   "label": "Wall thickness",
+   "short": "Wall t",
+   "min": 150,
+   "max": 350,
+   "step": 10,
+   "default": 230,
+   "unit": "mm"
+  },
+  "exhaust": {
+   "label": "Exhaust exit",
+   "short": "Exhaust",
+   "options": [
+    {
+     "v": "wall",
+     "label": "Through the wall, stack outside"
+    },
+    {
+     "v": "roof",
+     "label": "Straight up through the roof"
+    }
+   ],
+   "default": "wall"
+  },
+  "stack": {
+   "label": "Stack height above the roof (0 = guideline 0.2 x sqrt(kVA) m)",
+   "short": "Stack",
+   "min": 0,
+   "max": 12000,
+   "step": 100,
+   "default": 0,
+   "unit": "mm"
+  },
+  "dayTank": {
+   "label": "Day fuel tank with bund",
+   "short": "Day tank",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "tankHours": {
+   "label": "Day tank autonomy at 75 % load",
+   "short": "Tank h",
+   "options": [
+    {
+     "v": 2,
+     "label": "2 h"
+    },
+    {
+     "v": 4,
+     "label": "4 h"
+    },
+    {
+     "v": 6,
+     "label": "6 h"
+    },
+    {
+     "v": 8,
+     "label": "8 h"
+    }
+   ],
+   "default": 4
+  },
+  "panel": {
+   "label": "Control (AMF) panel",
+   "short": "Panel",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "battery": {
+   "label": "Battery rack and charger",
+   "short": "Battery",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "trench": {
+   "label": "Cable trench with cover plates",
+   "short": "Trench",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "hoist": {
+   "label": "Monorail chain hoist",
+   "short": "Hoist",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "fire": {
+   "label": "Fire extinguishers and smoke detectors",
+   "short": "Fire",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "lights": {
+   "label": "LED lights, emergency and exit light",
+   "short": "Lights",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "vent": {
+   "label": "Extraction fan",
+   "short": "Fan",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "acoustic": {
+   "label": "Acoustic wall lining",
+   "short": "Acoustic",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "doorType": {
+   "label": "Equipment door",
+   "short": "Eq. door",
+   "options": [
+    {
+     "v": "double",
+     "label": "Double leaf steel door"
+    },
+    {
+     "v": "shutter",
+     "label": "Rolling shutter"
+    }
+   ],
+   "default": "double"
+  },
+  "open": {
+   "label": "Doors open (0 closed, 100 fully open)",
+   "short": "Open %",
+   "min": 0,
+   "max": 100,
+   "step": 10,
+   "default": 0,
+   "unit": "%"
+  },
+  "wallColor": {
+   "label": "Wall colour",
+   "short": "Wall",
+   "options": [
+    {
+     "v": "grey",
+     "label": "Grey"
+    },
+    {
+     "v": "cream",
+     "label": "Cream"
+    },
+    {
+     "v": "white",
+     "label": "White"
+    }
+   ],
+   "default": "grey"
+  },
+  "setColor": {
+   "label": "DG set colour",
+   "short": "Set",
+   "options": [
+    {
+     "v": "blue",
+     "label": "Blue"
+    },
+    {
+     "v": "green",
+     "label": "Green"
+    },
+    {
+     "v": "yellow",
+     "label": "Yellow"
+    },
+    {
+     "v": "grey",
+     "label": "Grey"
+    },
+    {
+     "v": "red",
+     "label": "Red"
+    }
+   ],
+   "default": "blue"
+  },
+  "cutaway": {
+   "label": "Cutaway: hide roof and front wall (view only)",
+   "short": "Cutaway",
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "default": 0
+  }
+ },
+ "shapes": [],
+ "ports": []
+}

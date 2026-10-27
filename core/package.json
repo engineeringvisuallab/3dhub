@@ -1,2 +1,2 @@
 { "name": "evlab-3d-core", "version": "0.1.0", "type": "module", "private": true,
-  "scripts": { "test": "node tests/run.mjs && node tests/door.mjs && node tests/pipefit.mjs && node tests/library.mjs && node tests/drawing.mjs && node tests/bom.mjs && node tests/visual.mjs" } }
+  "scripts": { "test": "node tests/run.mjs && node tests/door.mjs && node tests/pipefit.mjs && node tests/library.mjs && node tests/drawing.mjs && node tests/bom.mjs && node tests/visual.mjs && node tests/genroom.mjs" } }
