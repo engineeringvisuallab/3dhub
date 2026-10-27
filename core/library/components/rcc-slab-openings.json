@@ -1,0 +1,45 @@
+{
+  "id": "rcc-slab-openings",
+  "name": "RCC slab with three round pipe openings (reservoir roof)",
+  "category": "building/slab",
+  "kind": "parametric",
+  "tags": ["slab", "concrete", "host"],
+  "units": "mm",
+  "description": "Flat RCC slab with three round openings for pipes, each with a raised kerb (keeps rain and dirt out of a clear water reservoir). Origin = bottom centre. Opening centres are measured from the slab centre. The opening is a void that accepts pipes; the kerb is a square upstand around it. B / T are face-v like rcc-slab. Keep unused openings away from anything, they are only holes.",
+  "parameters": {
+    "L": { "min": 1000, "max": 20000, "step": 50, "default": 6000, "label": "Length (X)", "short": "L" },
+    "W": { "min": 1000, "max": 12000, "step": 50, "default": 4000, "label": "Width (Y)", "short": "W" },
+    "T": { "min": 100, "max": 600, "step": 25, "default": 300, "label": "Thickness", "short": "T" },
+    "openDia": { "min": 250, "max": 800, "step": 10, "default": 400, "label": "Opening diameter", "short": "d" },
+    "kerbH": { "min": 50, "max": 300, "step": 10, "default": 150, "label": "Kerb height", "short": "kh" },
+    "o1x": { "min": -10000, "max": 10000, "step": 5, "default": -1500, "label": "Opening 1 X", "short": "o1x" },
+    "o1y": { "min": -6000, "max": 6000, "step": 5, "default": 0, "label": "Opening 1 Y", "short": "o1y" },
+    "o2x": { "min": -10000, "max": 10000, "step": 5, "default": 0, "label": "Opening 2 X", "short": "o2x" },
+    "o2y": { "min": -6000, "max": 6000, "step": 5, "default": 0, "label": "Opening 2 Y", "short": "o2y" },
+    "o3x": { "min": -10000, "max": 10000, "step": 5, "default": 1500, "label": "Opening 3 X", "short": "o3x" },
+    "o3y": { "min": -6000, "max": 6000, "step": 5, "default": 0, "label": "Opening 3 Y", "short": "o3y" }
+  },
+  "bom": { "ignore": ["o1x", "o1y", "o2x", "o2y", "o3x", "o3y"] },
+  "shapes": [
+    { "id": "slab", "role": "solid", "type": "box", "size": ["$L", "$W", "$T"], "at": [0, 0, "$T/2"] },
+    { "id": "open-1", "role": "void", "type": "cylinder", "axis": "z", "radius": "$openDia/2", "length": "$T+20", "at": ["$o1x", "$o1y", "$T/2"], "accepts": ["pipe"] },
+    { "id": "open-2", "role": "void", "type": "cylinder", "axis": "z", "radius": "$openDia/2", "length": "$T+20", "at": ["$o2x", "$o2y", "$T/2"], "accepts": ["pipe"] },
+    { "id": "open-3", "role": "void", "type": "cylinder", "axis": "z", "radius": "$openDia/2", "length": "$T+20", "at": ["$o3x", "$o3y", "$T/2"], "accepts": ["pipe"] },
+    { "id": "kerb-1-n", "role": "solid", "type": "box", "size": ["$openDia+200", 100, "$kerbH"], "at": ["$o1x", "$o1y+$openDia/2+50", "$T+$kerbH/2"] },
+    { "id": "kerb-1-s", "role": "solid", "type": "box", "size": ["$openDia+200", 100, "$kerbH"], "at": ["$o1x", "$o1y-$openDia/2-50", "$T+$kerbH/2"] },
+    { "id": "kerb-1-e", "role": "solid", "type": "box", "size": [100, "$openDia", "$kerbH"], "at": ["$o1x+$openDia/2+50", "$o1y", "$T+$kerbH/2"] },
+    { "id": "kerb-1-w", "role": "solid", "type": "box", "size": [100, "$openDia", "$kerbH"], "at": ["$o1x-$openDia/2-50", "$o1y", "$T+$kerbH/2"] },
+    { "id": "kerb-2-n", "role": "solid", "type": "box", "size": ["$openDia+200", 100, "$kerbH"], "at": ["$o2x", "$o2y+$openDia/2+50", "$T+$kerbH/2"] },
+    { "id": "kerb-2-s", "role": "solid", "type": "box", "size": ["$openDia+200", 100, "$kerbH"], "at": ["$o2x", "$o2y-$openDia/2-50", "$T+$kerbH/2"] },
+    { "id": "kerb-2-e", "role": "solid", "type": "box", "size": [100, "$openDia", "$kerbH"], "at": ["$o2x+$openDia/2+50", "$o2y", "$T+$kerbH/2"] },
+    { "id": "kerb-2-w", "role": "solid", "type": "box", "size": [100, "$openDia", "$kerbH"], "at": ["$o2x-$openDia/2-50", "$o2y", "$T+$kerbH/2"] },
+    { "id": "kerb-3-n", "role": "solid", "type": "box", "size": ["$openDia+200", 100, "$kerbH"], "at": ["$o3x", "$o3y+$openDia/2+50", "$T+$kerbH/2"] },
+    { "id": "kerb-3-s", "role": "solid", "type": "box", "size": ["$openDia+200", 100, "$kerbH"], "at": ["$o3x", "$o3y-$openDia/2-50", "$T+$kerbH/2"] },
+    { "id": "kerb-3-e", "role": "solid", "type": "box", "size": [100, "$openDia", "$kerbH"], "at": ["$o3x+$openDia/2+50", "$o3y", "$T+$kerbH/2"] },
+    { "id": "kerb-3-w", "role": "solid", "type": "box", "size": [100, "$openDia", "$kerbH"], "at": ["$o3x-$openDia/2-50", "$o3y", "$T+$kerbH/2"] }
+  ],
+  "ports": [
+    { "id": "B", "at": [0, 0, 0], "dir": [0, 0, -1], "type": "face-v" },
+    { "id": "T", "at": [0, 0, "$T"], "dir": [0, 0, 1], "type": "face-v" }
+  ]
+}

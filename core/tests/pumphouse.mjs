@@ -1,0 +1,24 @@
+// Pump house example (pump-house-cwr.assembly.json): loads, no broken link, no conflict, key levels and the three pump lines.
+import { readFileSync } from 'node:fs';
+import { parse } from '../engine/io.js';
+import { check } from '../engine/collision.js';
+import { brokenLinks } from '../engine/snap.js';
+import { buildBOM } from '../engine/bom.js';
+const J = p => JSON.parse(readFileSync(new URL('../' + p, import.meta.url)));
+const lib = {}; for (const id of J('library/components/manifest.json').components) lib[id] = J('library/components/' + id + '.json');
+const prules = J('rules/port-rules.json'), crules = J('rules/conflict-rules.json');
+let fail = 0; const t = (n, c, i = '') => { console.log((c ? 'PASS ' : 'FAIL ') + n + (i ? '  ' + i : '')); if (!c) fail++; };
+const asm = parse(readFileSync(new URL('../examples/pump-house-cwr.assembly.json', import.meta.url), 'utf8'), lib);
+const by = c => asm.instances.filter(i => i.component === c);
+t('loads (every component known, every parameter valid)', asm.instances.length > 100, asm.instances.length + ' objects');
+t('no broken link', brokenLinks(asm, lib, prules).length === 0);
+const rep = check(asm, lib, crules);
+t('no conflict', rep.conflicts.length === 0, JSON.stringify(rep.conflicts).slice(0, 200));
+t('no warning', rep.warnings.length === 0, JSON.stringify(rep.warnings).slice(0, 200));
+t('3 pumps on 3 plinths, same size', by('vertical-inline-pump').length === 3 && by('pump-plinth').length === 3 && new Set(by('vertical-inline-pump').map(p => p.params.DN)).size === 1);
+t('pumps stand on the CWR roof level (4100 + plinth)', by('vertical-inline-pump').every(p => p.pos[2] > 4100));
+t('each pump has suction gate valve, check valve, isolating valve, 2 dismantling joints', [1, 2, 3].every(n => ['suction-gate-valve', 'check-valve', 'isolating-valve', 'suction-dj', 'discharge-dj'].every(k => asm.instances.some(i => i.id === `${k}-${n}`))));
+t('3 suction pipes pass the 3 roof openings', by('rcc-slab-openings').length === 1 && [1, 2, 3].every(n => asm.instances.some(i => i.id === `suction-pipe-${n}`)));
+const bom = buildBOM(asm, lib);
+t('BOM builds with straight pipe length and a column rebar schedule', bom.totals.pipeLength_m > 10 && bom.rebar && (bom.rebar.totals ?? bom.rebar).kg > 100, JSON.stringify(bom.totals));
+console.log(fail ? `\n${fail} FAILED` : '\nall pump house tests passed'); process.exit(fail ? 1 : 0);

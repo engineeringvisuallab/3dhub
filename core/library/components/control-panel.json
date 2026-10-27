@@ -1,0 +1,18 @@
+{
+  "id": "control-panel",
+  "name": "Control panel (floor standing cabinet)",
+  "category": "electrical/panel",
+  "kind": "parametric",
+  "tags": ["electrical", "steel"],
+  "units": "mm",
+  "description": "Floor standing motor control / starter / PLC cabinet, generic envelope. Origin = bottom centre. The FRONT faces -Y (turn it with the rotation). A soft clearance zone of 1000 mm in front keeps the working space free (warning if something stands in it).",
+  "parameters": {
+    "W": { "min": 400, "max": 3000, "step": 50, "default": 800, "label": "Width (X)", "short": "W" },
+    "D": { "min": 300, "max": 1000, "step": 50, "default": 600, "label": "Depth (Y)", "short": "D" },
+    "H": { "min": 1200, "max": 2400, "step": 50, "default": 2000, "label": "Height", "short": "H" }
+  },
+  "shapes": [
+    { "id": "cabinet", "role": "solid", "type": "box", "size": ["$W", "$D", "$H"], "at": [0, 0, "$H/2"], "color": 7506394 },
+    { "id": "front-access", "role": "clearance", "type": "box", "size": ["$W", 1000, "$H"], "at": [0, "-$D/2-500", "$H/2"] }
+  ]
+}

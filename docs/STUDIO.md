@@ -115,6 +115,16 @@ Order: window, staircase, column, railing, room-interior, rebar   (door is done:
 If the model has many options like the door, add a generator in core/engine/gen/ and register it in core/engine/generate.js.
 ```
 
+## Pump house on a clear water reservoir (example design, round 9)
+File: `core/examples/pump-house-cwr.assembly.json` (Studio: Load). Built by `node tools/build-pump-house.mjs` (all design numbers are in the object `D` at the top of that script); BOM, drawing sheet (SVG + DXF) and previews are in `exports/pump-house-cwr/` (`node tools/export-pump-house.mjs`).
+- **CWR** 15.0 x 8.0 m outside, RCC walls 300, internal height 3.5 m, base slab 300, roof slab 300 with three round openings (400 mm, kerb 150) and an inlet DN300 through the south wall (gate valve + blind flange outside).
+- **Pump house** 12.0 x 6.0 m on the CWR roof: RCC frame (10 columns 300 x 300, beams 300 x 500, roof slab 150), brick infill 230, windows, personal door (north), equipment double door (west gable), control room (4th bay) with partition door, external door, window and 3 panels.
+- **3 pumps** (2 duty + 1 standby assumed, DN200 PN16, vertical in-line `vertical-inline-pump`) on 300 mm plinths. Suction: dismantling joint, gate valve, bend down, DN200 pipe through the roof opening, reducer as bell mouth 300 mm above the CWR floor. Discharge: dismantling joint, check valve, butterfly valve, pipe, reducer, tee on the DN300 header. Header: air valve (DN150) tee, end blind flange; outlet to the west: dismantling joint, butterfly valve, pipe through the gable wall, flow meter, blind flange (connect the rising main here).
+- 123 objects, 70 links, 0 conflicts, 0 warnings. Column cages from the rebar library (10 sets, 334 kg).
+New parts: `rcc-wall`, `rcc-slab-openings` (roof with 3 pipe openings and kerbs), `control-panel`, `vertical-inline-pump` (realistic casing and motor; builder `core/engine/visual/pump-inline.js`). Changed: `rcc-slab` max length 12000 -> 20000, `visual/index.js` (registers the pump builder), `manifest.json`, `package.json`, `tests/pumphouse.mjs`.
+Assumed, not calculated: flow 40 l/s per pump (about 1.3 m/s in DN200, 1.1 m/s in the DN300 header with 2 pumps running), sizes of structure are indicative (no structural design). Not in the library yet: hoist / monorail, roof hatch and handrail, CWR vent, overflow, scour, ladder, internal baffles, cable trench, pressure gauges, surge vessel, beam rebar (`rcc-beam` origin is the bottom face, `beam-cage` expects the centre), slab / wall mesh.
+Not run in a real browser here (no three.js available in this sandbox); engine tests pass and the model was rendered with a separate software renderer.
+
 ## Pump house (what the owner wants the Studio for)
 A big model such as a pump house: civil structure (slab, plinth, column, beam, walls, door, window) plus a pipe line (pump, dismantling joint, check valve, butterfly / gate valve, bends, tee, reducer) at different heights.
 How to build: select a part, optionally pick **Next part attaches at** (port A / B / C ...), click the next model in the list: it attaches and becomes the selected part, so a line grows click by click.

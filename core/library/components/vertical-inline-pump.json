@@ -1,0 +1,31 @@
+{
+  "id": "vertical-inline-pump",
+  "name": "Vertical in-line pump set, flanged (motor on top)",
+  "category": "water-supply/pump",
+  "kind": "parametric",
+  "tags": ["pump"],
+  "units": "mm",
+  "description": "Vertical in-line pump set: suction and discharge flanges on one horizontal line (like end-suction-pump, same ports and port height 0.8 DN), casing and a motor of realistic size standing on a steel base plate. Origin = bottom centre of the base plate: put it on a pump-plinth (raise it 15 mm for the grout). Sizes are a generic envelope from the table below, confirm with the maker.",
+  "parameters": {
+    "DN": { "min": 50, "max": 300, "default": 100 },
+    "PN": { "default": 16 }
+  },
+  "derived": {
+    "L":  { "from": "DN", "table": { "50": 350, "80": 420, "100": 480, "150": 600, "200": 720, "250": 840, "300": 960 } },
+    "RC": { "from": "DN", "table": { "50": 110, "80": 140, "100": 165, "150": 215, "200": 260, "250": 305, "300": 350 } },
+    "LH": { "from": "DN", "table": { "50": 130, "80": 160, "100": 190, "150": 240, "200": 300, "250": 350, "300": 400 } },
+    "MD": { "from": "DN", "table": { "50": 190, "80": 240, "100": 290, "150": 380, "200": 460, "250": 540, "300": 620 } },
+    "MH": { "from": "DN", "table": { "50": 360, "80": 460, "100": 560, "150": 760, "200": 960, "250": 1160, "300": 1340 } }
+  },
+  "shapes": [
+    { "id": "baseplate", "role": "solid", "type": "box", "size": ["$L", "$RC*2", "$DN*0.12"], "at": [0, 0, "$DN*0.06"], "tags": ["steel"] },
+    { "id": "barrel", "role": "solid", "type": "cylinder", "axis": "x", "radius": "$DN*0.56", "length": "$L", "at": [0, 0, "$DN*0.8"] },
+    { "id": "casing", "role": "solid", "type": "cylinder", "axis": "z", "radius": "$RC", "length": "$DN", "at": [0, 0, "$DN*0.8"] },
+    { "id": "lantern", "role": "solid", "type": "cylinder", "axis": "z", "radius": "$MD*0.4", "length": "$LH", "at": [0, 0, "$DN*1.3+$LH/2"], "tags": ["steel"] },
+    { "id": "motor", "role": "solid", "type": "cylinder", "axis": "z", "radius": "$MD/2", "length": "$MH", "at": [0, 0, "$DN*1.3+$LH+$MH/2"], "color": 3829413 }
+  ],
+  "ports": [
+    { "id": "A", "at": ["-$L/2", 0, "$DN*0.8"], "dir": [-1, 0, 0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" },
+    { "id": "B", "at": ["$L/2", 0, "$DN*0.8"], "dir": [1, 0, 0], "type": "flange", "DN": "$DN", "PN": "$PN", "std": "EN1092-2" }
+  ]
+}

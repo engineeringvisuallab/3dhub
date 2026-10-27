@@ -1,0 +1,2786 @@
+{
+  "name": "Pump house on clear water reservoir (3 pumps)",
+  "units": "mm",
+  "instances": [
+    {
+      "id": "cwr-base",
+      "component": "rcc-slab",
+      "params": {
+        "L": 15000,
+        "W": 8000,
+        "T": 300
+      },
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "cwr-wall-north",
+      "component": "rcc-wall",
+      "params": {
+        "L": 15000,
+        "T": 300,
+        "H": 3500
+      },
+      "pos": [
+        0,
+        3850,
+        300
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "cwr-wall-west",
+      "component": "rcc-wall",
+      "params": {
+        "L": 7400,
+        "T": 300,
+        "H": 3500
+      },
+      "pos": [
+        -7350,
+        0,
+        300
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "cwr-wall-east",
+      "component": "rcc-wall",
+      "params": {
+        "L": 7400,
+        "T": 300,
+        "H": 3500
+      },
+      "pos": [
+        7350,
+        0,
+        300
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "cwr-wall-south-1",
+      "component": "rcc-wall",
+      "params": {
+        "L": 1500,
+        "T": 300,
+        "H": 3500
+      },
+      "pos": [
+        -6750,
+        -3850,
+        300
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "cwr-wall-south-inlet",
+      "component": "rcc-wall-opening",
+      "params": {
+        "L": 2000,
+        "T": 300,
+        "H": 3500,
+        "openDia": 400,
+        "openZ": 3150,
+        "openX": 0
+      },
+      "pos": [
+        -5000,
+        -3850,
+        2050
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "cwr-wall-south-2",
+      "component": "rcc-wall",
+      "params": {
+        "L": 11500,
+        "T": 300,
+        "H": 3500
+      },
+      "pos": [
+        1750,
+        -3850,
+        300
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "cwr-roof",
+      "component": "rcc-slab-openings",
+      "params": {
+        "L": 15000,
+        "W": 8000,
+        "T": 300,
+        "openDia": 400,
+        "kerbH": 150,
+        "o1x": -4387.5,
+        "o1y": -1980,
+        "o2x": -1462.5,
+        "o2y": -1980,
+        "o3x": 1462.5,
+        "o3y": -1980
+      },
+      "pos": [
+        0,
+        0,
+        3800
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "inlet-pipe",
+      "component": "di-pipe-fl",
+      "params": {
+        "DN": 300,
+        "PN": 16,
+        "len": 2000
+      },
+      "pos": [
+        -5000,
+        -3850,
+        3450
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "inlet-gate-valve",
+      "component": "gate-valve",
+      "params": {
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -5000,
+        -4985,
+        3450
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "inlet-blind-flange",
+      "component": "blind-flange",
+      "params": {
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -5000,
+        -5132.25,
+        3450
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "col-1S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        -5850,
+        -2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-1N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        -5850,
+        2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-2S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        -2925,
+        -2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-2N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        -2925,
+        2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-3S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        0,
+        -2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-3N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        0,
+        2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-4S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        2925,
+        -2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-4N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        2925,
+        2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-5S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        5850,
+        -2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-5N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        5850,
+        2850,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-S1",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3075,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        -4462.5,
+        -2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-S2",
+      "component": "rcc-beam",
+      "params": {
+        "L": 2925,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        -1462.5,
+        -2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-S3",
+      "component": "rcc-beam",
+      "params": {
+        "L": 2925,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        1462.5,
+        -2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-S4",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3075,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        4462.5,
+        -2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-N1",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3075,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        -4462.5,
+        2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-N2",
+      "component": "rcc-beam",
+      "params": {
+        "L": 2925,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        -1462.5,
+        2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-N3",
+      "component": "rcc-beam",
+      "params": {
+        "L": 2925,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        1462.5,
+        2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-N4",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3075,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        4462.5,
+        2850,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-cross-1",
+      "component": "rcc-beam",
+      "params": {
+        "L": 5400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        -5850,
+        0,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "beam-cross-2",
+      "component": "rcc-beam",
+      "params": {
+        "L": 5400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        -2925,
+        0,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "beam-cross-3",
+      "component": "rcc-beam",
+      "params": {
+        "L": 5400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        0,
+        0,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "beam-cross-4",
+      "component": "rcc-beam",
+      "params": {
+        "L": 5400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        2925,
+        0,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "beam-cross-5",
+      "component": "rcc-beam",
+      "params": {
+        "L": 5400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        5850,
+        0,
+        8100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "roof-slab",
+      "component": "rcc-slab",
+      "params": {
+        "L": 12300,
+        "W": 6300,
+        "T": 150
+      },
+      "pos": [
+        0,
+        0,
+        8600
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "plinth-1",
+      "component": "pump-plinth",
+      "params": {
+        "L": 700,
+        "W": 1000,
+        "T": 300
+      },
+      "pos": [
+        -4387.5,
+        -850,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pump-1",
+      "component": "vertical-inline-pump",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -850,
+        4415
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "suction-dj-1",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 250,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -1335,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-gate-valve-1",
+      "component": "gate-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -1575,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-bend-1",
+      "component": "di-bend-90",
+      "params": {
+        "turn": "down",
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -1980,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "suction-pipe-1",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 3285,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -1980,
+        2642.5
+      ],
+      "rot": [
+        -90,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-bell-1",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -1980,
+        800
+      ],
+      "rot": [
+        0,
+        -90,
+        0
+      ]
+    },
+    {
+      "id": "discharge-dj-1",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 250,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -365,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "check-valve-1",
+      "component": "check-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        -94,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "isolating-valve-1",
+      "component": "butterfly-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        128,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "discharge-pipe-1",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 500,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        454,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "discharge-reducer-1",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 200,
+        "PN": 16
+      },
+      "pos": [
+        -4387.5,
+        904,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "header-tee-1",
+      "component": "di-tee",
+      "params": {
+        "DN": 300,
+        "PN": 16,
+        "branch": "right"
+      },
+      "pos": [
+        -4387.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "plinth-2",
+      "component": "pump-plinth",
+      "params": {
+        "L": 700,
+        "W": 1000,
+        "T": 300
+      },
+      "pos": [
+        -1462.5,
+        -850,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pump-2",
+      "component": "vertical-inline-pump",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -850,
+        4415
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "suction-dj-2",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 250,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -1335,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-gate-valve-2",
+      "component": "gate-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -1575,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-bend-2",
+      "component": "di-bend-90",
+      "params": {
+        "turn": "down",
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -1980,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "suction-pipe-2",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 3285,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -1980,
+        2642.5
+      ],
+      "rot": [
+        -90,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-bell-2",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -1980,
+        800
+      ],
+      "rot": [
+        0,
+        -90,
+        0
+      ]
+    },
+    {
+      "id": "discharge-dj-2",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 250,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -365,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "check-valve-2",
+      "component": "check-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        -94,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "isolating-valve-2",
+      "component": "butterfly-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        128,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "discharge-pipe-2",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 500,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        454,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "discharge-reducer-2",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 200,
+        "PN": 16
+      },
+      "pos": [
+        -1462.5,
+        904,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "header-tee-2",
+      "component": "di-tee",
+      "params": {
+        "DN": 300,
+        "PN": 16,
+        "branch": "right"
+      },
+      "pos": [
+        -1462.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "plinth-3",
+      "component": "pump-plinth",
+      "params": {
+        "L": 700,
+        "W": 1000,
+        "T": 300
+      },
+      "pos": [
+        1462.5,
+        -850,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pump-3",
+      "component": "vertical-inline-pump",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -850,
+        4415
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "suction-dj-3",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 250,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -1335,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-gate-valve-3",
+      "component": "gate-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -1575,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-bend-3",
+      "component": "di-bend-90",
+      "params": {
+        "turn": "down",
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -1980,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "suction-pipe-3",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 3285,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -1980,
+        2642.5
+      ],
+      "rot": [
+        -90,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "suction-bell-3",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -1980,
+        800
+      ],
+      "rot": [
+        0,
+        -90,
+        0
+      ]
+    },
+    {
+      "id": "discharge-dj-3",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 250,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -365,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "check-valve-3",
+      "component": "check-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        -94,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "isolating-valve-3",
+      "component": "butterfly-valve",
+      "params": {
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        128,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "discharge-pipe-3",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 500,
+        "DN": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        454,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "discharge-reducer-3",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 200,
+        "PN": 16
+      },
+      "pos": [
+        1462.5,
+        904,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "header-tee-3",
+      "component": "di-tee",
+      "params": {
+        "DN": 300,
+        "PN": 16,
+        "branch": "right"
+      },
+      "pos": [
+        1462.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "header-pipe-1",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 2125,
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -2925,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "header-pipe-2a",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 662.5,
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -731.25,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "air-valve-tee",
+      "component": "di-tee",
+      "params": {
+        "branch": "up",
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        0,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "header-pipe-2b",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 662.5,
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        731.25,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "air-valve-reducer",
+      "component": "di-reducer",
+      "params": {
+        "DN2": 150,
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        0,
+        1504,
+        5212.5
+      ],
+      "rot": [
+        0,
+        -90,
+        0
+      ]
+    },
+    {
+      "id": "air-valve-1",
+      "component": "air-valve",
+      "params": {
+        "DN": 150,
+        "PN": 16
+      },
+      "pos": [
+        0,
+        1504,
+        5450
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "header-end-flange",
+      "component": "blind-flange",
+      "params": {
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        1874.75,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "outlet-dj",
+      "component": "dismantling-joint",
+      "params": {
+        "FTF": 300,
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -4937.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "outlet-valve",
+      "component": "butterfly-valve",
+      "params": {
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -5176.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "outlet-pipe",
+      "component": "di-pipe-fl",
+      "params": {
+        "len": 1200,
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -5865.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "outlet-flow-meter",
+      "component": "flow-meter",
+      "params": {
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -6715.5,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "outlet-blind-flange",
+      "component": "blind-flange",
+      "params": {
+        "DN": 300,
+        "PN": 16
+      },
+      "pos": [
+        -6977.75,
+        1504,
+        4575
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-S1-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -5343.75,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S1-2",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -4387.5,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S1-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -3431.25,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S2-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -2418.75,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S2-2",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -1462.5,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S2-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -506.25,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S3-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        506.25,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S3-2",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        1462.5,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S3-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        2418.75,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S4-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        3431.25,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S4-2",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        4387.5,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S4-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5343.75,
+        -2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-N4-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 2625,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        4387.5,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N3-1",
+      "component": "door",
+      "params": {
+        "design": "stflush",
+        "finish": "grey",
+        "W": 1000,
+        "doorH": 2200,
+        "leaves": 1,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        2210,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N3-2",
+      "component": "brick-wall",
+      "params": {
+        "L": 1495,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        897.5,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N2-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -506.25,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N2-2",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -1462.5,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N2-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -2418.75,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N1-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -3431.25,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N1-2",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -4387.5,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N1-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 712.5,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -5343.75,
+        2885,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-W-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 596,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -5885,
+        2402,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-W-2",
+      "component": "rcc-wall-opening",
+      "params": {
+        "L": 1200,
+        "T": 230,
+        "H": 4000,
+        "openDia": 400,
+        "openZ": 475,
+        "openX": 0
+      },
+      "pos": [
+        -5885,
+        1504,
+        6100
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-W-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -5885,
+        654,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-W-4",
+      "component": "door",
+      "params": {
+        "design": "stflush",
+        "finish": "grey",
+        "W": 2000,
+        "doorH": 2500,
+        "leaves": 2,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -5885,
+        -661,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-W-5",
+      "component": "brick-wall",
+      "params": {
+        "L": 974,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -5885,
+        -2213,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-E-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 600,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5885,
+        -2400,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-2",
+      "component": "door",
+      "params": {
+        "design": "stflush",
+        "finish": "grey",
+        "W": 1000,
+        "doorH": 2200,
+        "leaves": 1,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5885,
+        -1535,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 800,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5885,
+        -570,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-4",
+      "component": "window",
+      "params": {
+        "W": 1200,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5885,
+        430,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-5",
+      "component": "brick-wall",
+      "params": {
+        "L": 1670,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5885,
+        1865,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-P-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 800,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        2925,
+        -2300,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-P-2",
+      "component": "door",
+      "params": {
+        "design": "stflush",
+        "finish": "grey",
+        "W": 1000,
+        "doorH": 2200,
+        "leaves": 1,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        2925,
+        -1335,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-P-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 3470,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        2925,
+        965,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "panel-1",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        3500,
+        2470,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-2",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        4350,
+        2470,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-3",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        5200,
+        2470,
+        4100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "links": [
+    {
+      "a": "inlet-pipe.A",
+      "b": "inlet-gate-valve.B"
+    },
+    {
+      "a": "inlet-gate-valve.A",
+      "b": "inlet-blind-flange.A"
+    },
+    {
+      "a": "pump-1.A",
+      "b": "suction-dj-1.B"
+    },
+    {
+      "a": "suction-dj-1.A",
+      "b": "suction-gate-valve-1.B"
+    },
+    {
+      "a": "suction-gate-valve-1.A",
+      "b": "suction-bend-1.A"
+    },
+    {
+      "a": "suction-bend-1.B",
+      "b": "suction-pipe-1.A"
+    },
+    {
+      "a": "suction-pipe-1.B",
+      "b": "suction-bell-1.B"
+    },
+    {
+      "a": "pump-1.B",
+      "b": "discharge-dj-1.A"
+    },
+    {
+      "a": "discharge-dj-1.B",
+      "b": "check-valve-1.A"
+    },
+    {
+      "a": "check-valve-1.B",
+      "b": "isolating-valve-1.A"
+    },
+    {
+      "a": "isolating-valve-1.B",
+      "b": "discharge-pipe-1.A"
+    },
+    {
+      "a": "discharge-pipe-1.B",
+      "b": "discharge-reducer-1.B"
+    },
+    {
+      "a": "discharge-reducer-1.A",
+      "b": "header-tee-1.C"
+    },
+    {
+      "a": "pump-2.A",
+      "b": "suction-dj-2.B"
+    },
+    {
+      "a": "suction-dj-2.A",
+      "b": "suction-gate-valve-2.B"
+    },
+    {
+      "a": "suction-gate-valve-2.A",
+      "b": "suction-bend-2.A"
+    },
+    {
+      "a": "suction-bend-2.B",
+      "b": "suction-pipe-2.A"
+    },
+    {
+      "a": "suction-pipe-2.B",
+      "b": "suction-bell-2.B"
+    },
+    {
+      "a": "pump-2.B",
+      "b": "discharge-dj-2.A"
+    },
+    {
+      "a": "discharge-dj-2.B",
+      "b": "check-valve-2.A"
+    },
+    {
+      "a": "check-valve-2.B",
+      "b": "isolating-valve-2.A"
+    },
+    {
+      "a": "isolating-valve-2.B",
+      "b": "discharge-pipe-2.A"
+    },
+    {
+      "a": "discharge-pipe-2.B",
+      "b": "discharge-reducer-2.B"
+    },
+    {
+      "a": "discharge-reducer-2.A",
+      "b": "header-tee-2.C"
+    },
+    {
+      "a": "pump-3.A",
+      "b": "suction-dj-3.B"
+    },
+    {
+      "a": "suction-dj-3.A",
+      "b": "suction-gate-valve-3.B"
+    },
+    {
+      "a": "suction-gate-valve-3.A",
+      "b": "suction-bend-3.A"
+    },
+    {
+      "a": "suction-bend-3.B",
+      "b": "suction-pipe-3.A"
+    },
+    {
+      "a": "suction-pipe-3.B",
+      "b": "suction-bell-3.B"
+    },
+    {
+      "a": "pump-3.B",
+      "b": "discharge-dj-3.A"
+    },
+    {
+      "a": "discharge-dj-3.B",
+      "b": "check-valve-3.A"
+    },
+    {
+      "a": "check-valve-3.B",
+      "b": "isolating-valve-3.A"
+    },
+    {
+      "a": "isolating-valve-3.B",
+      "b": "discharge-pipe-3.A"
+    },
+    {
+      "a": "discharge-pipe-3.B",
+      "b": "discharge-reducer-3.B"
+    },
+    {
+      "a": "discharge-reducer-3.A",
+      "b": "header-tee-3.C"
+    },
+    {
+      "a": "header-tee-1.B",
+      "b": "header-pipe-1.A"
+    },
+    {
+      "a": "header-pipe-1.B",
+      "b": "header-tee-2.A"
+    },
+    {
+      "a": "header-tee-2.B",
+      "b": "header-pipe-2a.A"
+    },
+    {
+      "a": "header-pipe-2a.B",
+      "b": "air-valve-tee.A"
+    },
+    {
+      "a": "air-valve-tee.B",
+      "b": "header-pipe-2b.A"
+    },
+    {
+      "a": "header-pipe-2b.B",
+      "b": "header-tee-3.A"
+    },
+    {
+      "a": "air-valve-tee.C",
+      "b": "air-valve-reducer.A"
+    },
+    {
+      "a": "air-valve-reducer.B",
+      "b": "air-valve-1.A"
+    },
+    {
+      "a": "header-tee-3.B",
+      "b": "header-end-flange.A"
+    },
+    {
+      "a": "header-tee-1.A",
+      "b": "outlet-dj.A"
+    },
+    {
+      "a": "outlet-dj.B",
+      "b": "outlet-valve.A"
+    },
+    {
+      "a": "outlet-valve.B",
+      "b": "outlet-pipe.A"
+    },
+    {
+      "a": "outlet-pipe.B",
+      "b": "outlet-flow-meter.A"
+    },
+    {
+      "a": "outlet-flow-meter.B",
+      "b": "outlet-blind-flange.A"
+    },
+    {
+      "a": "wall-S1-1.R",
+      "b": "wall-S1-2.L"
+    },
+    {
+      "a": "wall-S1-2.R",
+      "b": "wall-S1-3.L"
+    },
+    {
+      "a": "wall-S2-1.R",
+      "b": "wall-S2-2.L"
+    },
+    {
+      "a": "wall-S2-2.R",
+      "b": "wall-S2-3.L"
+    },
+    {
+      "a": "wall-S3-1.R",
+      "b": "wall-S3-2.L"
+    },
+    {
+      "a": "wall-S3-2.R",
+      "b": "wall-S3-3.L"
+    },
+    {
+      "a": "wall-S4-1.R",
+      "b": "wall-S4-2.L"
+    },
+    {
+      "a": "wall-S4-2.R",
+      "b": "wall-S4-3.L"
+    },
+    {
+      "a": "wall-N3-1.R",
+      "b": "wall-N3-2.L"
+    },
+    {
+      "a": "wall-N2-1.R",
+      "b": "wall-N2-2.L"
+    },
+    {
+      "a": "wall-N2-2.R",
+      "b": "wall-N2-3.L"
+    },
+    {
+      "a": "wall-N1-1.R",
+      "b": "wall-N1-2.L"
+    },
+    {
+      "a": "wall-N1-2.R",
+      "b": "wall-N1-3.L"
+    },
+    {
+      "a": "wall-W-3.R",
+      "b": "wall-W-4.L"
+    },
+    {
+      "a": "wall-W-4.R",
+      "b": "wall-W-5.L"
+    },
+    {
+      "a": "wall-E-1.R",
+      "b": "wall-E-2.L"
+    },
+    {
+      "a": "wall-E-2.R",
+      "b": "wall-E-3.L"
+    },
+    {
+      "a": "wall-E-3.R",
+      "b": "wall-E-4.L"
+    },
+    {
+      "a": "wall-E-4.R",
+      "b": "wall-E-5.L"
+    },
+    {
+      "a": "wall-P-1.R",
+      "b": "wall-P-2.L"
+    },
+    {
+      "a": "wall-P-2.R",
+      "b": "wall-P-3.L"
+    }
+  ],
+  "rebarSets": [
+    {
+      "id": "col-1S-cage",
+      "host": "col-1S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-1N-cage",
+      "host": "col-1N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-2S-cage",
+      "host": "col-2S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-2N-cage",
+      "host": "col-2N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-3S-cage",
+      "host": "col-3S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-3N-cage",
+      "host": "col-3N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-4S-cage",
+      "host": "col-4S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-4N-cage",
+      "host": "col-4N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-5S-cage",
+      "host": "col-5S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-5N-cage",
+      "host": "col-5N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    }
+  ]
+}

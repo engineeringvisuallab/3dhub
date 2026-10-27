@@ -26,6 +26,10 @@
   "ball-valve",
   "air-valve",
   "flow-meter",
-  "generator-room"
+  "generator-room",
+  "rcc-wall",
+  "rcc-slab-openings",
+  "control-panel",
+  "vertical-inline-pump"
  ]
 }
