@@ -1,0 +1,163 @@
+{
+  "id": "hdd-crossing",
+  "name": "HDD Highway and Railway Crossing (HDPE pipe)",
+  "category": "civil/hdd-crossing",
+  "tier": "free",
+  "units": "mm",
+  "unitsNote": "pipe OD in mm; chainages, depths, ROW widths, covers and radius in metres (unit field per parameter)",
+  "parameters": {
+    "od": {
+      "unit": "mm",
+      "values": [
+        315,
+        400,
+        450,
+        500,
+        560,
+        630,
+        710,
+        800,
+        900,
+        1000
+      ],
+      "default": 630
+    },
+    "sdr": {
+      "values": [
+        11,
+        13.6,
+        17,
+        21,
+        26
+      ],
+      "default": 17
+    },
+    "L": {
+      "unit": "m",
+      "min": 40,
+      "max": 200,
+      "step": 1,
+      "default": 70
+    },
+    "D": {
+      "unit": "m",
+      "min": 2,
+      "max": 15,
+      "step": 0.1,
+      "default": 4.5
+    },
+    "th": {
+      "unit": "deg",
+      "min": 6,
+      "max": 20,
+      "step": 1,
+      "default": 12
+    },
+    "ph": {
+      "unit": "deg",
+      "min": 6,
+      "max": 20,
+      "step": 1,
+      "default": 10
+    },
+    "R": {
+      "unit": "m",
+      "min": 30,
+      "max": 250,
+      "step": 1,
+      "default": 60
+    },
+    "hw0": {
+      "unit": "m",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "default": 14
+    },
+    "hwW": {
+      "unit": "m",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "default": 22
+    },
+    "car": {
+      "unit": "m",
+      "min": 6,
+      "max": 40,
+      "step": 1,
+      "default": 16
+    },
+    "gap": {
+      "unit": "m",
+      "min": 2,
+      "max": 40,
+      "step": 1,
+      "default": 8
+    },
+    "rwW": {
+      "unit": "m",
+      "min": 8,
+      "max": 30,
+      "step": 1,
+      "default": 14
+    },
+    "emb": {
+      "unit": "m",
+      "min": 0.1,
+      "max": 4,
+      "step": 0.1,
+      "default": 1
+    },
+    "mh": {
+      "unit": "m",
+      "min": 1.5,
+      "max": 6,
+      "step": 0.1,
+      "default": 3
+    },
+    "mr": {
+      "unit": "m",
+      "min": 2,
+      "max": 6,
+      "step": 0.1,
+      "default": 3.5
+    }
+  },
+  "rules": {
+    "pathFits": "flat run between entry and exit curves >= 0",
+    "crossingInsideBore": "railway ROW end < bore length",
+    "carriagewayInRow": "carriageway <= highway ROW",
+    "bendRadius": "R >= 90 x OD (indicative, confirm with contractor)",
+    "coverHighway": "crown of pipe to pavement top >= min cover",
+    "coverRailway": "crown of pipe to base of rail >= min cover"
+  },
+  "ports": [],
+  "clearance": [],
+  "groups": [
+    "PIPE",
+    "ROAD",
+    "RAIL",
+    "GROUND"
+  ],
+  "animations": [],
+  "drawings": [
+    "plan",
+    "long section A-A",
+    "cross section at highway centre",
+    "cross section at track centre"
+  ],
+  "exports": [
+    "glb",
+    "obj",
+    "stl",
+    "dxf 3DFACE",
+    "dxf drawings",
+    "svg drawings",
+    "spec.json",
+    "zip"
+  ],
+  "files": {
+    "parametric": "parametric/hdd-crossing.html"
+  }
+}

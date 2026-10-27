@@ -1,0 +1,138 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – HDD Highway and Railway Crossing</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(66vh,600px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tabs button{width:auto;margin:0;padding:6px 10px;font-size:13px;background:var(--card);color:var(--fg);border:1px solid var(--bd)}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+#dw{display:none;background:#fff;border-radius:8px;overflow:auto;max-height:70vh}#dw svg{display:block;width:100%;height:auto;max-height:66vh}
+.A-PIPE{stroke:#1f5fa8}.A-CL{stroke:#0891b2}.A-BORE{stroke:#6b7280}.A-GRND{stroke:#8a5a2c}.A-ROAD{stroke:#374151}.A-RAIL{stroke:#a21caf}.A-ROW{stroke:#c0392b}.A-PIT{stroke:#b45309}.A-DIM{stroke:#15803d}.A-FRAME{stroke:#111}
+svg text{fill:#111;stroke:none;font-family:Arial,sans-serif}svg line,svg circle{fill:none;stroke-width:1.1;vector-effect:non-scaling-stroke}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>HDD Highway and Railway Crossing – parametric</h1><p>EVLab 3D Hub · one HDPE pipe drilled under a highway and then a railway · 3D model, plan, long section and cross sections · GLB, OBJ, STL, DXF, SVG</p></header>
+<main><div class="card"><div class="tabs" id="tabs"></div><div id="view" style="height:min(62vh,560px);min-height:300px;overflow:hidden"></div><div id="dw"></div></div>
+<div class="card"><div id="pars"></div><label><input type="checkbox" id="sv"> Show soil (view only, not exported)</label><ul id="chk"></ul>
+<label>Download<select id="fmt"><option value="zip">ZIP (everything below)</option><option value="glb">3D – GLB (Blender, Revit link, viewers)</option><option value="obj">3D – OBJ (Blender, SketchUp)</option><option value="stl">3D – STL (mesh)</option><option value="dxf3d">3D – DXF 3DFACE (AutoCAD, Civil 3D)</option><option value="dxf">Drawings – DXF sheet (plan, long section, cross sections)</option><option value="svg">Drawings – SVG sheet</option><option value="json">Spec – JSON</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative planning model. Cover, bend radius and pipe data must be confirmed with the HDD contractor, the geotechnical report and the highway and railway authorities. Drawings are drawn full size in metres; plot plan and long section at 1:200, cross sections at 1:50. STEP, IFC and FBX are not produced.</small></div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id),r2=x=>(Math.round(x*100)/100).toFixed(2);
+//#PURE-START
+const PAR=[['L','Total bore length',40,200,1,70,'m'],['D','Pipe centreline depth (flat run)',2,15,.1,4.5,'m'],['th','Entry angle',6,20,1,12,'°'],['ph','Exit angle',6,20,1,10,'°'],['R','Drill path bend radius',30,250,1,60,'m'],['hw0','Highway ROW starts at chainage',5,60,1,14,'m'],['hwW','Highway ROW width',10,60,1,22,'m'],['car','Carriageway width',6,40,1,16,'m'],['gap','Gap, highway ROW to railway ROW',2,40,1,8,'m'],['rwW','Railway ROW width',8,30,1,14,'m'],['emb','Railway embankment height',.1,4,.1,1,'m'],['mh','Min. cover, highway (authority)',1.5,6,.1,3,'m'],['mr','Min. cover, railway (authority)',2,6,.1,3.5,'m']];
+const ODS=[315,400,450,500,560,630,710,800,900,1000],SDRS=[11,13.6,17,21,26];
+function G(p){const th=p.th*Math.PI/180,ph=p.ph*Math.PI/180,R=p.R,D=p.D,L=p.L,r=p.od/2000;
+ const x1=R*Math.sin(th)+(D-R+R*Math.cos(th))/Math.tan(th),x2=L-(R*Math.sin(ph)+(D-R+R*Math.cos(ph))/Math.tan(ph));
+ const P1=[x1-R*Math.sin(th),R-D-R*Math.cos(th)],P2=[x2+R*Math.sin(ph),R-D-R*Math.cos(ph)];
+ const f=x=>{if(x<=P1[0])return[-x*Math.tan(th),-Math.tan(th)];if(x<=x1){const s=x-x1,q=Math.sqrt(R*R-s*s);return[R-D-q,s/q]}
+  if(x<=x2)return[-D,0];if(x<=P2[0]){const s=x-x2,q=Math.sqrt(R*R-s*s);return[R-D-q,s/q]}return[-(L-x)*Math.tan(ph),Math.tan(ph)]};
+ return{x1,x2,P1,P2,f,r,y:x=>f(x)[0],crown:x=>{const[a,m]=f(x);return a+r*Math.hypot(1,m)},flat:x2-x1,ok:x2>=x1&&P1[0]>0&&P2[0]<L&&D>R*(1-Math.cos(th))&&D>R*(1-Math.cos(ph))}}
+function LAY(p){const h0=p.hw0,h1=h0+p.hwW,c0=h0+(p.hwW-p.car)/2,c1=c0+p.car,r0=h1+p.gap,r1=r0+p.rwW,rc=(r0+r1)/2;return{h0,h1,c0,c1,r0,r1,rc,hc:(c0+c1)/2,b0:rc-2.15,b1:rc+2.15,e0:rc-3,e1:rc+3}}
+function PT(p,g){const a=[],N=Math.ceil(p.L/.25);for(let i=0;i<=N;i++){const x=p.L*i/N,[y,m]=g.f(x);a.push([x,y,m])}return a}
+function CHK(p,g,l){const ck=[],c=(ok,t,i)=>ck.push([ok,t,i]);
+ c(g.ok,g.ok?'Bore path fits: entry '+p.th+'°, flat run '+r2(g.flat)+' m, exit '+p.ph+'°':'Bore path does not fit: increase length, depth or angle, or reduce the bend radius');
+ c(l.r1<p.L&&l.h0>0,'Both crossings lie inside the bore length (railway ROW ends at '+r2(l.r1)+' m of '+p.L+' m)');
+ c(p.car<=p.hwW,'Carriageway '+p.car+' m fits in the highway ROW '+p.hwW+' m');
+ c(p.R>=90*p.od/1000,'Bend radius '+p.R+' m (indicative minimum 90 × OD = '+r2(90*p.od/1000)+' m, confirm with the contractor)');
+ if(g.ok){let a=1e9,b=1e9;for(let x=l.c0;x<=l.c1;x+=.25)a=Math.min(a,-g.crown(x));for(let x=l.b0;x<=l.b1;x+=.25)b=Math.min(b,p.emb-g.crown(x));
+  c(a>=p.mh,'Cover under the highway '+r2(a)+' m (min '+p.mh+' m), crown of pipe to pavement top');c(b>=p.mr,'Cover under the railway '+r2(b)+' m (min '+p.mr+' m), crown of pipe to base of rail');ck.cov=[a,b]}
+ return ck}
+function B(h){const a=[];a.h=h;a.l=(L,x1,y1,x2,y2)=>{a.push({t:'l',L,a:[x1,y1,x2,y2]});return a};
+ a.pl=(L,P)=>{for(let i=1;i<P.length;i++)a.l(L,P[i-1][0],P[i-1][1],P[i][0],P[i][1]);return a};
+ a.rc=(L,x1,y1,x2,y2)=>a.pl(L,[[x1,y1],[x2,y1],[x2,y2],[x1,y2],[x1,y1]]);
+ a.c=(L,x,y,r)=>{a.push({t:'c',L,a:[x,y,r]});return a};
+ a.t=(s,x,y,al='l',rot=0,hh=h)=>{a.push({t:'t',L:'A-TEXT',a:[x,y,hh,s,al,rot]});return a};
+ a.dash=(L,x1,y1,x2,y2,d)=>{const k=Math.max(1,Math.round(Math.hypot(x2-x1,y2-y1)/(2*d)));for(let i=0;i<k;i++){const u=i/k,v=(i+.6)/k;a.l(L,x1+(x2-x1)*u,y1+(y2-y1)*u,x1+(x2-x1)*v,y1+(y2-y1)*v)}return a};
+ a.dh=(x1,x2,y,s)=>{a.l('A-DIM',x1,y,x2,y).l('A-DIM',x1,y-h/2,x1,y+h/2).l('A-DIM',x2,y-h/2,x2,y+h/2);return a.t(s,(x1+x2)/2,y+h*.4,'m')};
+ a.dv=(x,y1,y2,s)=>{a.l('A-DIM',x,y1,x,y2).l('A-DIM',x-h/2,y1,x+h/2,y1).l('A-DIM',x-h/2,y2,x+h/2,y2);return a.t(s,x+h*.6,(y1+y2)/2,'l')};return a}
+function bb(P){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;const e=(x,y)=>{x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y)};
+ for(const q of P){const a=q.a;if(q.t=='l'){e(a[0],a[1]);e(a[2],a[3])}else if(q.t=='c'){e(a[0]-a[2],a[1]-a[2]);e(a[0]+a[2],a[1]+a[2])}else{const w=a[3].length*a[2]*.62,al=a[4],xa=al=='m'?a[0]-w/2:al=='r'?a[0]-w:a[0],xb=xa+w;if(a[5]){const d=al=='r'?-w:0;e(a[0],a[1]+d);e(a[0],a[1]+d+w)}else{e(xa,a[1]);e(xb,a[1]+a[2])}}}return{x0,y0,x1,y1}}
+function vPlan(p,g,l){const b=B(.6),W=20,L=p.L,r=g.r,rr=1.5*r;[l.h0,l.h1,l.r0,l.r1].forEach(x=>b.l('A-ROW',x,-W,x,W));[l.c0,l.c1].forEach(x=>b.l('A-ROAD',x,-W,x,W));b.dash('A-ROAD',l.hc,-W,l.hc,W,1.5);
+ [l.b0,l.b1,l.rc-.7175,l.rc+.7175].forEach(x=>b.l('A-RAIL',x,-W,x,W));b.dash('A-RAIL',l.rc,-W,l.rc,W,1.5);b.dash('A-CL',-6,0,L+6,0,1.2);
+ [r,-r].forEach(y=>b.l('A-PIPE',0,y,L,y));[rr,-rr].forEach(y=>b.dash('A-BORE',0,y,L,y,.5));b.rc('A-PIT',-5,-2,0,2).rc('A-PIT',L,-2,L+5,2);
+ b.t('ENTRY PIT',-2.5,2.6,'m').t('(RIG SIDE)',-2.5,-3.2,'m').t('EXIT PIT',L+2.5,2.6,'m').t('(PIPE SIDE)',L+2.5,-3.2,'m').t('Ø'+p.od+' HDPE PIPE (HDD)',3,3,'l').t('DRILL DIRECTION →',3,-4,'l');
+ b.t('HIGHWAY ROW',(l.h0+l.h1)/2,W+1,'m').t('HIGHWAY',(l.c0+l.hc)/2,W-2,'m').t('RAILWAY ROW',(l.r0+l.r1)/2,W+1,'m').t('TRACK',l.b1+.5,W-2,'l');
+ const y=-W-3;[[0,l.h0],[l.h0,l.h1],[l.h1,l.r0],[l.r0,l.r1],[l.r1,L]].forEach(s=>b.dh(s[0],s[1],y,r2(s[1]-s[0])));b.dh(0,L,y-3.5,'TOTAL '+r2(L)+' m');b.dh(l.c0,l.c1,W+4,'CARRIAGEWAY '+r2(p.car));return b}
+function vLong(p,g,l){const b=B(.6),L=p.L,e=p.emb,r=g.r,D=p.D,pts=PT(p,g),off=d=>pts.map(([x,y,m])=>{const k=d/Math.hypot(1,m);return[x-m*k,y+k]}),yA=-(D+3.5);
+ b.l('A-GRND',-8,0,L+8,0).rc('A-ROAD',l.c0,-.6,l.c1,0).pl('A-RAIL',[[l.r0,0],[l.e0,e],[l.e1,e],[l.r1,0]]).rc('A-RAIL',l.b0,e,l.b1,e+.35);
+ [l.h0,l.h1,l.r0,l.r1].forEach(x=>b.l('A-ROW',x,yA,x,e+5));b.t('HIGHWAY ROW',(l.h0+l.h1)/2,e+5.5,'m').t('RAILWAY ROW',(l.r0+l.r1)/2,e+5.5,'m').t('HIGHWAY',l.hc,1.6,'m').t('RAILWAY TRACK',l.rc,e+2.2,'m').t('BASE OF RAIL +'+r2(e)+' m',l.rc,e+1.2,'m',0,.45).t('GL',-7.8,-.9,'l');
+ b.pl('A-CL',pts.map(q=>[q[0],q[1]])).pl('A-PIPE',off(r)).pl('A-PIPE',off(-r)).pl('A-BORE',off(1.5*r)).pl('A-BORE',off(-1.5*r));
+ if(g.ok){b.dv((g.x1+g.x2)/2,0,-D,'CL DEPTH '+r2(D)+' m');b.dv(l.c0-1,0,g.crown(l.c0),'COVER '+r2(-g.crown(l.c0))+' m');b.dv(l.b1,e,g.crown(l.b1),r2(e-g.crown(l.b1))+' m')}
+ b.t('ENTRY '+p.th+'°',1,-2.8,'l').t('EXIT '+p.ph+'°',L-1,-2.8,'r').t('R = '+p.R+' m',g.P1[0]+1,-D-1.6,'l').t('R = '+p.R+' m',g.P2[0]-1,-D-1.6,'r').t('ENTRY POINT',-1,.8,'r').t('EXIT POINT',L+1,.8,'l').t('Ø'+p.od+' HDPE',g.x1+(g.flat>8?3:0),-D-1.2-(g.flat>8?0:2),'l');
+ b.l('A-DIM',0,yA,L,yA);new Set([0,l.h0,l.c0,g.x1,l.c1,l.h1,g.x2,l.r0,l.r1,L]).forEach(x=>{b.l('A-DIM',x,yA-.3,x,yA+.3);b.t('0+'+r2(x).padStart(6,'0'),x,yA-.6,'r',90,.5)});return b}
+function vCross(p,g,l,k){const b=B(.15),x=k=='h'?l.hc:l.rc,y=g.y(x),r=g.r,e=p.emb,w=6,top=k=='h'?0:e+.35;
+ b.l('A-GRND',-w,0,w,0);if(k=='h'){b.rc('A-ROAD',-w,-.6,w,0).t('PAVEMENT',-w+.2,.2,'l')}else{b.rc('A-RAIL',-w,0,w,e).rc('A-RAIL',-w,e,w,e+.35).t('EMBANKMENT',-w+.2,.2,'l').t('BALLAST / SLEEPERS (BASE OF RAIL +'+r2(e)+' m)',-w+.2,e+.5,'l')}
+ b.c('A-PIPE',0,y,r).c('A-PIPE',0,y,r-p.od/p.sdr/1000).c('A-BORE',0,y,1.5*r).t('Ø'+p.od+' HDPE SDR'+p.sdr,r*2.2,y+.1,'l').t('REAMED BORE Ø'+Math.round(1.5*p.od),r*2.2,y-.3,'l');
+ b.dv(-2.5,k=='h'?0:e,y+r,'COVER '+r2((k=='h'?0:e)-(y+r))+' m').dv(2.5,0,y,'CL DEPTH '+r2(-y)+' m').dh(-1.5*r,1.5*r,y-1.5*r-.5,'Ø'+Math.round(1.5*p.od));b.t('GL',w-.3,.2,'r');return b}
+function VIEWS(p,g,l){return[['PLAN  1:200',vPlan(p,g,l)],['LONG SECTION A-A (ALONG BORE)  1:200',vLong(p,g,l)],['CROSS SECTION AT HIGHWAY CENTRE (0+'+r2(l.hc).padStart(6,'0')+')  1:50',vCross(p,g,l,'h')],['CROSS SECTION AT TRACK CENTRE (0+'+r2(l.rc).padStart(6,'0')+')  1:50',vCross(p,g,l,'r')]].map(([n,b])=>({n,b,box:bb(b)}))}
+function SHEET(V,p){const P=[],ts=[1.6,1.6,.4,.4];let y=0,W=0;V.forEach(v=>W=Math.max(W,v.box.x1-v.box.x0));W=Math.max(W,90);
+ V.forEach((v,i)=>{const dx=-v.box.x0,dy=y-v.box.y1-ts[i]*2.5;v.q=v.b.map(q=>{const a=q.a.slice();if(q.t=='l'){a[0]+=dx;a[1]+=dy;a[2]+=dx;a[3]+=dy}else{a[0]+=dx;a[1]+=dy}return{...q,a}});P.push(...v.q);
+  P.push({t:'t',L:'A-TEXT',a:[0,y-ts[i]*1.2,ts[i],v.n,'l',0]});y=dy+v.box.y0-ts[i]*5});
+ const tb=[['PROJECT: HDD CROSSING OF HIGHWAY AND RAILWAY'],['Ø'+p.od+' mm HDPE PIPE SDR'+p.sdr+', '+p.L+' m BORE, UNITS m'],['ISSUED FOR REVIEW - NOT FOR CONSTRUCTION. VERIFY WITH SURVEY AND GEOTECHNICAL DATA']];tb.forEach((s,i)=>P.push({t:'t',L:'A-TEXT',a:[0,y-i*1.4,.9,s[0],'l',0]}));const b=bb(P),m=3;P.push(...B(1).rc('A-FRAME',b.x0-m,b.y0-m,b.x1+m,b.y1+m));return P}
+const LC={'A-PIPE':5,'A-CL':4,'A-BORE':8,'A-GRND':30,'A-ROAD':7,'A-RAIL':6,'A-ROW':1,'A-PIT':2,'A-DIM':3,'A-TEXT':7,'A-FRAME':7,PIPE:5,ROAD:7,RAIL:6,GROUND:3};
+const dxfT=s=>String(s).replace(/Ø/g,'%%c').replace(/°/g,'%%d').replace(/→/g,'->').replace(/[^\x20-\x7e]/g,'?'),nf=x=>(+x).toFixed(4);
+function DXF(P,faces){let s='0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLTYPE\n70\n1\n0\nLTYPE\n2\nCONTINUOUS\n70\n0\n3\nSolid line\n72\n65\n73\n0\n40\n0.0\n0\nENDTAB\n0\nTABLE\n2\nLAYER\n70\n'+Object.keys(LC).length+'\n';
+ for(const k in LC)s+='0\nLAYER\n2\n'+k+'\n70\n0\n62\n'+LC[k]+'\n6\nCONTINUOUS\n';s+='0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
+ if(faces)for(const f of faces){const v=f.v;s+='0\n3DFACE\n8\n'+f.l+'\n';[0,1,2,2].forEach((k,i)=>{s+=(10+i)+'\n'+nf(v[k][0])+'\n'+(20+i)+'\n'+nf(v[k][1])+'\n'+(30+i)+'\n'+nf(v[k][2])+'\n'})}
+ else for(const q of P){const a=q.a;s+='0\n'+(q.t=='l'?'LINE':q.t=='c'?'CIRCLE':'TEXT')+'\n8\n'+q.L+'\n';
+  if(q.t=='l')s+='10\n'+nf(a[0])+'\n20\n'+nf(a[1])+'\n30\n0\n11\n'+nf(a[2])+'\n21\n'+nf(a[3])+'\n31\n0\n';
+  else if(q.t=='c')s+='10\n'+nf(a[0])+'\n20\n'+nf(a[1])+'\n30\n0\n40\n'+nf(a[2])+'\n';
+  else{const al=a[4]=='m'?1:a[4]=='r'?2:0;s+='10\n'+nf(a[0])+'\n20\n'+nf(a[1])+'\n30\n0\n40\n'+nf(a[2])+'\n1\n'+dxfT(a[3])+'\n50\n'+a[5]+'\n'+(al?'72\n'+al+'\n11\n'+nf(a[0])+'\n21\n'+nf(a[1])+'\n31\n0\n':'')}}
+ return s+'0\nENDSEC\n0\nEOF\n'}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function SVG(P,pad=2){const b=bb(P),W=b.x1-b.x0+2*pad,H=b.y1-b.y0+2*pad;let s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+[b.x0-pad,-(b.y1+pad),W,H].map(nf).join(' ')+'" width="'+Math.round(W*10)+'" height="'+Math.round(H*10)+'">';
+ for(const q of P){const a=q.a;if(q.t=='l')s+='<line class="'+q.L+'" x1="'+nf(a[0])+'" y1="'+nf(-a[1])+'" x2="'+nf(a[2])+'" y2="'+nf(-a[3])+'"/>';else if(q.t=='c')s+='<circle class="'+q.L+'" cx="'+nf(a[0])+'" cy="'+nf(-a[1])+'" r="'+nf(a[2])+'"/>';
+  else s+='<text x="'+nf(a[0])+'" y="'+nf(-a[1])+'" font-size="'+nf(a[2]*1.25)+'" text-anchor="'+(a[4]=='m'?'middle':a[4]=='r'?'end':'start')+'"'+(a[5]?' transform="rotate('+(-a[5])+' '+nf(a[0])+' '+nf(-a[1])+')"':'')+'>'+esc(a[3])+'</text>'}
+ return s+'</svg>'}
+const SVGCSS='<style>.A-PIPE{stroke:#1f5fa8}.A-CL{stroke:#0891b2}.A-BORE{stroke:#6b7280}.A-GRND{stroke:#8a5a2c}.A-ROAD{stroke:#374151}.A-RAIL{stroke:#a21caf}.A-ROW{stroke:#c0392b}.A-PIT{stroke:#b45309}.A-DIM{stroke:#15803d}.A-FRAME{stroke:#111}line,circle{fill:none;stroke-width:.12}text{font-family:Arial,sans-serif;fill:#111}</style>';
+function SPEC(p,g,l,ck){const t=p.od/p.sdr,id=p.od-2*t,m=Math.PI/4*(p.od*p.od-id*id)*950/1e6,pts=PT(p,g);let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
+ return{name:'HDD_Crossing',units:'m (pipe mm)',pipe:{od_mm:p.od,sdr:p.sdr,wall_mm:+t.toFixed(1),id_mm:+id.toFixed(1),mass_kg_per_m:+m.toFixed(1),installed_length_m:+len.toFixed(1),material:'HDPE (density 950 kg/m3 assumed)'},bore:{reamed_dia_mm:Math.round(1.5*p.od),length_m:p.L,entry_deg:p.th,exit_deg:p.ph,radius_m:p.R,cl_depth_m:p.D,flat_run_m:+g.flat.toFixed(2)},chainages_m:{entry:0,highway_row:[l.h0,l.h1],carriageway:[l.c0,l.c1],railway_row:[l.r0,l.r1],track_centre:l.rc,exit:p.L},cover_m:{highway:ck.cov?+ck.cov[0].toFixed(2):null,railway_below_base_of_rail:ck.cov?+ck.cov[1].toFixed(2):null},checks:ck.map(x=>(x[0]?'OK: ':'FAIL: ')+x[1]),note:'Indicative, confirm with HDD contractor, geotechnical report and authorities'}}
+//#PURE-END
+const tabs=[['3D','3d'],['Plan',0],['Long section',1],['Cross: highway',2],['Cross: railway',3]];let cur='3d',P0={},model,aux,soil,V,spec,bad=false;
+$('tabs').innerHTML=tabs.map(t=>'<button data-k="'+t[1]+'">'+t[0]+'</button>').join('');
+$('pars').innerHTML='<label>Pipe outside diameter<select id="od">'+ODS.map(o=>'<option'+(o==630?' selected':'')+'>'+o+'</option>').join('')+'</select></label><label>Pipe class SDR<select id="sdr">'+SDRS.map(o=>'<option'+(o==17?' selected':'')+'>'+o+'</option>').join('')+'</select></label>'+PAR.map(a=>'<label>'+a[1]+': <b id="v_'+a[0]+'"></b><input type="range" id="'+a[0]+'" min="'+a[2]+'" max="'+a[3]+'" step="'+a[4]+'" value="'+a[5]+'"></label>').join('');
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,1000);S.add(new THREE.AmbientLight(0xffffff,.7));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(30,60,40);S.add(dl);const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.15,roughness:.75,transparent:o<1,opacity:o,side:THREE.DoubleSide});
+function build(fit){const p={od:+$('od').value,sdr:+$('sdr').value};PAR.forEach(a=>{p[a[0]]=+$(a[0]).value;$('v_'+a[0]).textContent=p[a[0]]+' '+a[6]});P0=p;const g=G(p),l=LAY(p),ck=CHK(p,g,l);
+ [model,aux,soil].forEach(o=>o&&S.remove(o));model=new THREE.Group();model.name='HDD_Crossing';aux=new THREE.Group();const Z=40,e=p.emb;
+ const add=(ge,c,lay,x,y,z,o=1,grp=model)=>{const m=new THREE.Mesh(ge,M(c,o));m.position.set(x,y,z);m.userData.layer=lay;grp.add(m);return m},Bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
+ add(Bx(p.L+16,.05,Z),0x6b8f4e,'GROUND',p.L/2,-.03,0);add(Bx(p.car,.6,Z),0x4a4f55,'ROAD',l.hc,-.3,0);add(Bx(.15,.02,Z),0xf2f2ee,'ROAD',l.hc,.01,0);
+ const sh=new THREE.Shape([new THREE.Vector2(l.r0,0),new THREE.Vector2(l.e0,e),new THREE.Vector2(l.e1,e),new THREE.Vector2(l.r1,0)]),eg=new THREE.ExtrudeGeometry(sh,{depth:Z,bevelEnabled:false});eg.translate(0,0,-Z/2);add(eg,0x8d7b68,'RAIL',0,0,0);
+ add(Bx(4.3,.35,Z),0x9a9a98,'RAIL',l.rc,e+.175,0);[-.7175,.7175].forEach(d=>add(Bx(.07,.17,Z),0x2b2b2b,'RAIL',l.rc+d,e+.435,0));
+ if(g.ok){const cv=new THREE.CatmullRomCurve3(PT(p,g).map(q=>new THREE.Vector3(q[0],q[1],0)));add(new THREE.TubeGeometry(cv,200,g.r,14,false),0x1f5fa8,'PIPE',0,0,0);add(new THREE.TubeGeometry(cv,160,1.5*g.r,14,false),0x888888,'BORE',0,0,0,.22,aux)}
+ add(Bx(5,2,4),0xb45309,'PIT',-2.5,-1,0,.5,aux);add(Bx(5,2,4),0xb45309,'PIT',p.L+2.5,-1,0,.5,aux);const dp=Math.max(p.D,2)+3;soil=new THREE.Mesh(Bx(p.L+16,dp,Z),M(0x7a5c3a,.3));soil.position.set(p.L/2,-dp/2-.05,0);soil.visible=$('sv').checked;
+ S.add(model,aux,soil);V=VIEWS(p,g,l);spec=SPEC(p,g,l,ck);$('chk').innerHTML=ck.map(x=>'<li'+(x[0]?'':' class="bad"')+'>'+x[1]+'</li>').join('')+'<li class="info">Pipe '+spec.pipe.od_mm+' mm SDR'+p.sdr+': wall '+spec.pipe.wall_mm+' mm, '+spec.pipe.mass_kg_per_m+' kg/m, about '+spec.pipe.installed_length_m+' m installed</li>';bad=ck.some(x=>!x[0]);$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';draw();
+ if(fit){const b=new THREE.Box3().setFromObject(model),c=b.getCenter(new THREE.Vector3()),d=Math.max(p.L,60);C.position.set(c.x+d*.35,d*.55,d*.8);C.lookAt(c);ctl&&ctl.target.copy(c);ctl&&ctl.update()}}
+function draw(){const is3=cur=='3d';$('view').style.display=is3?'':'none';$('dw').style.display=is3?'none':'block';document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.k==cur));if(is3)size();else{const v=V[+cur];$('dw').innerHTML=SVGCSS+SVG(v.b)}}
+function size(){const w=box.clientWidth,h=box.clientHeight;if(w&&h){R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+function tris(){model.updateMatrixWorld(true);const T=[],Zu=v=>[v.x,-v.z,v.y];model.traverse(o=>{if(!o.isMesh)return;const g=o.geometry,Pp=g.attributes.position,ix=g.index,n=ix?ix.count:Pp.count,v=i=>Zu(new THREE.Vector3().fromBufferAttribute(Pp,i).applyMatrix4(o.matrixWorld));for(let i=0;i<n;i+=3){const a=ix?[ix.getX(i),ix.getX(i+1),ix.getX(i+2)]:[i,i+1,i+2];T.push({l:o.userData.layer,v:a.map(v)})}});return T}
+function STL(T){let s='solid HDD_Crossing\n';for(const t of T){const[a,b,c]=t.v,u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],k=Math.hypot(...n)||1;s+='facet normal '+n.map(x=>(x/k).toExponential(5)).join(' ')+'\nouter loop\n'+t.v.map(q=>'vertex '+q.map(x=>x.toExponential(5)).join(' ')).join('\n')+'\nendloop\nendfacet\n'}return s+'endsolid HDD_Crossing\n'}
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0}),crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),Pp=[],Cd=[];let o=0;for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+ const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);Pp.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);return new Blob([...Pp,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const e=new TextEncoder(),fm=$('fmt').value,all=fm=='zip',n='HDD_Crossing',fs=[],W=x=>fm==x||all;model.updateMatrixWorld(true);
+ if(W('glb')){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:n+'.glb',d:new Uint8Array(b)})}
+ if(W('obj'))fs.push({n:n+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});if(W('stl'))fs.push({n:n+'.stl',d:e.encode(STL(tris()))});if(W('dxf3d'))fs.push({n:n+'_3d.dxf',d:e.encode(DXF(0,tris()))});
+ const sh=SHEET(V,P0);if(W('dxf'))fs.push({n:n+'_drawings.dxf',d:e.encode(DXF(sh))});if(W('svg'))fs.push({n:n+'_drawings.svg',d:e.encode(SVG(sh).replace('>',' >'+SVGCSS))});if(W('json'))fs.push({n:n+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ const one=!all,ext=fs[0].n.split('.').pop(),blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?fs[0].n:n+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded '+fs.length+' file'+(fs.length>1?'s':'')+'.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{cur=b.dataset.k=='3d'?'3d':+b.dataset.k;draw()});
+['od','sdr'].forEach(i=>$(i).onchange=()=>build(false));PAR.forEach(a=>$(a[0]).oninput=()=>build(a[0]=='L'));$('sv').oninput=()=>{soil&&(soil.visible=$('sv').checked)};
+addEventListener('resize',size);size();build(true);loop();
+</script></body></html>

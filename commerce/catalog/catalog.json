@@ -165,6 +165,22 @@
         "column"
       ],
       "desc": "Plain, Gr 420, TMT 500 and epoxy-coated bars. Eight bar shapes with ld, lap and hook lengths, plus RC beam and column cages with moment, shear and axial capacity."
+    },
+    {
+      "id": "hdd-crossing",
+      "name": "HDD Highway and Railway Crossing",
+      "tier": "free",
+      "category": "Civil",
+      "path": "models/civil/hdd-crossing",
+      "page": "parametric/hdd-crossing.html",
+      "tags": [
+        "HDD",
+        "HDPE",
+        "highway",
+        "railway",
+        "long section"
+      ],
+      "desc": "HDPE pipe drilled under a highway and a railway in one bore. Plan, long section and cross sections, cover checks, and GLB, OBJ, STL, DXF and SVG downloads."
     }
   ]
 }
