@@ -314,4 +314,5 @@ function drawNow(){try{const c=makeSheet(cfg());c.style.cssText='width:100%;disp
 $('dw').onclick=()=>{showD=!showD;R.domElement.style.display=showD?'none':'block';SWR.style.display=showD?'block':'none';$('dw').textContent=showD?'Back to 3D view':'Show drawings (plan, 2 sections, 4 elevations)';if(showD)drawNow()};
 $('dxf').onclick=()=>{try{const s=vdDXF(sheetBuild()),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([s],{type:'application/dxf'}));a.download='EVLab_'+model.name+'_drawings.dxf';document.body.appendChild(a);a.click();a.remove();$('msg').textContent='DXF saved.'}catch(x){$('msg').textContent='DXF failed: '+(x&&x.message||x)}};
 addEventListener('resize',size);fillType();$('gl').innerHTML=Object.entries(GK).map(([a,b])=>`<option value="${a}">${b}</option>`).join('');size();build(true);
-</script></body></html>
+</script><script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

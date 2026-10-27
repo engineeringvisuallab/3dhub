@@ -1,254 +1,289 @@
 {
-  "items": [
-    {
-      "id": "valve-chamber",
-      "name": "Valve Chamber (builder)",
-      "tier": "free",
-      "category": "Water supply",
-      "path": "models/water-supply/chambers/valve-chamber",
-      "page": "parametric/valve-chamber.html",
-      "tags": [
-        "GV",
-        "SV",
-        "BV",
-        "PRV",
-        "PSV",
-        "AV",
-        "reducer"
-      ],
-      "desc": "Choose the chamber type, add valves in flow order. Clearances, isolating valves and dismantling joints are checked live."
-    },
-    {
-      "id": "door",
-      "name": "Doors",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/door",
-      "page": "parametric/door.html",
-      "tags": [
-        "wood",
-        "steel",
-        "aluminium",
-        "PVC",
-        "single / double"
-      ],
-      "desc": "17 designs in four materials with 11 glass types, handles, side glass and fanlight. Open and close in 3D."
-    },
-    {
-      "id": "window",
-      "name": "Windows",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/window",
-      "page": "parametric/window.html",
-      "tags": [
-        "casement",
-        "sliding",
-        "awning",
-        "louvre",
-        "grill"
-      ],
-      "desc": "Casement, sliding, awning, double hung, louvre and fixed windows with nets, blinds, shutters and safety glass rules."
-    },
-    {
-      "id": "staircase",
-      "name": "Staircase",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/staircase",
-      "page": "parametric/staircase.html",
-      "tags": [
-        "straight",
-        "L",
-        "U",
-        "RCC",
-        "steel"
-      ],
-      "desc": "Riser, tread, landing, slab depth and floor opening come from the floor height and the stair rules."
-    },
-    {
-      "id": "railing",
-      "name": "Railing / handrail",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/railing",
-      "page": "parametric/railing.html",
-      "tags": [
-        "balusters",
-        "glass",
-        "cable",
-        "gate",
-        "stair",
-        "balcony"
-      ],
-      "desc": "Straight, L-corner or sloped rails. Post section, span and baluster gap come from the use and the load. Optional self-closing gate."
-    },
-    {
-      "id": "pump",
-      "name": "Pumps",
-      "tier": "free",
-      "category": "Water supply",
-      "path": "models/water-supply/pumps",
-      "page": "parametric/pump.html",
-      "tags": [
-        "end-suction",
-        "inline",
-        "split-case",
-        "submersible",
-        "turbine"
-      ],
-      "desc": "Five pump types. Enter flow and head: motor size, stages and pipe size follow, and designs that fail velocity or power rules are blocked."
-    },
-    {
-      "id": "boundary-wall",
-      "name": "Boundary Wall",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/boundary-wall",
-      "page": "parametric/boundary-wall.html",
-      "tags": [
-        "brick",
-        "precast",
-        "grille",
-        "chain-link",
-        "security"
-      ],
-      "desc": "Five boundary wall and fence types. Column size, footing depth and quantities follow the height, and designs that fail the rules are blocked."
-    },
-    {
-      "id": "column",
-      "name": "RCC Column",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/column",
-      "page": "parametric/column.html",
-      "tags": [
-        "rectangular",
-        "round",
-        "rebar",
-        "ties",
-        "spiral",
-        "DXF"
-      ],
-      "desc": "Rectangular or round RCC column with real rebar: main bars, ties, cross-ties, spiral. Rules checked live; GLB, OBJ, DXF drawing and bar schedule."
-    },
-    {
-      "id": "room-interior",
-      "name": "Room Interior (Bedroom)",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/room-interior",
-      "page": "parametric/room-interior.html",
-      "tags": [
-        "wardrobe",
-        "bed",
-        "desk",
-        "dresser",
-        "false ceiling"
-      ],
-      "desc": "Full bedroom interior: wardrobe with loft (sliding or hinged), bed, bedside cabinets, study desk, bookshelf, dresser, curtain and cove light. Circulation and window rules are checked."
-    },
-    {
-      "id": "rebar",
-      "name": "Reinforcement Bar + Cage Capacity",
-      "tier": "free",
-      "category": "Building",
-      "path": "models/building/rebar",
-      "page": "parametric/rebar.html",
-      "tags": [
-        "plain",
-        "Gr 420",
-        "TMT 500",
-        "epoxy",
-        "stirrup",
-        "beam",
-        "column"
-      ],
-      "desc": "Plain, Gr 420, TMT 500 and epoxy-coated bars. Eight bar shapes with ld, lap and hook lengths, plus RC beam and column cages with moment, shear and axial capacity."
-    },
-    {
-      "id": "generator-room",
-      "name": "Generator Room (DG set room)",
-      "tier": "free",
-      "category": "Electrical",
-      "path": "models/electrical/generator-room",
-      "page": "parametric/generator-room.html",
-      "tags": [
-        "DG set",
-        "diesel generator",
-        "exhaust",
-        "day tank",
-        "louvre",
-        "hoist"
-      ],
-      "desc": "Complete diesel generator room: 62.5 to 1000 kVA, 1 or 2 sets, louvres, exhaust, day tank with bund, panel, battery, cable trench, hoist, fire kit. Room size follows the set and failing designs are blocked."
-    },
-    {
-      "id": "hdd-crossing",
-      "name": "HDD Highway and Railway Crossing",
-      "tier": "free",
-      "category": "Civil",
-      "path": "models/civil/hdd-crossing",
-      "page": "parametric/hdd-crossing.html",
-      "tags": [
-        "HDD",
-        "HDPE",
-        "highway",
-        "railway",
-        "long section"
-      ],
-      "desc": "HDPE pipe drilled under a highway and a railway in one bore. Plan, long section and cross sections, cover checks, and GLB, OBJ, STL, DXF and SVG downloads."
-    },
-    {
-      "id": "railway-crossing",
-      "name": "Railway Crossing Methods",
-      "tier": "free",
-      "category": "Civil",
-      "path": "models/civil/railway-crossing",
-      "page": "parametric/railway-crossing.html",
-      "tags": [
-        "microtunnelling",
-        "pipe jacking",
-        "auger boring",
-        "pipe ramming",
-        "box jacking",
-        "open cut"
-      ],
-      "desc": "One pipe under a railway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
-    },
-    {
-      "id": "road-crossing",
-      "name": "Road Crossing Methods",
-      "tier": "free",
-      "category": "Civil",
-      "path": "models/civil/road-crossing",
-      "page": "parametric/road-crossing.html",
-      "tags": [
-        "microtunnelling",
-        "pipe jacking",
-        "auger boring",
-        "pipe ramming",
-        "box jacking",
-        "open cut",
-        "road"
-      ],
-      "desc": "One pipe under a highway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
-    },
-    {
-      "id": "ipr-pump-house",
-      "name": "IPR Pump House",
-      "tier": "free",
-      "category": "Water supply",
-      "path": "models/water-supply/pump-houses/ipr-pump-house",
-      "page": "parametric/ipr-pump-house.html",
-      "tags": [
-        "IPR",
-        "wet well",
-        "pump",
-        "header",
-        "roof"
-      ],
-      "desc": "Impounding reservoir pumping station with 4 pumps, valves, DN900 header and roofed operator platform."
-    }
-  ]
+ "items": [
+  {
+   "id": "valve-chamber",
+   "name": "Valve Chamber (builder)",
+   "tier": "free",
+   "category": "Water supply",
+   "path": "models/water-supply/chambers/valve-chamber",
+   "page": "parametric/valve-chamber.html",
+   "tags": [
+    "GV",
+    "SV",
+    "BV",
+    "PRV",
+    "PSV",
+    "AV",
+    "reducer"
+   ],
+   "desc": "Choose the chamber type, add valves in flow order. Clearances, isolating valves and dismantling joints are checked live."
+  },
+  {
+   "id": "door",
+   "name": "Doors",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/door",
+   "page": "parametric/door.html",
+   "tags": [
+    "wood",
+    "steel",
+    "aluminium",
+    "PVC",
+    "single / double"
+   ],
+   "desc": "17 designs in four materials with 11 glass types, handles, side glass and fanlight. Open and close in 3D."
+  },
+  {
+   "id": "window",
+   "name": "Windows",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/window",
+   "page": "parametric/window.html",
+   "tags": [
+    "casement",
+    "sliding",
+    "awning",
+    "louvre",
+    "grill"
+   ],
+   "desc": "Casement, sliding, awning, double hung, louvre and fixed windows with nets, blinds, shutters and safety glass rules."
+  },
+  {
+   "id": "staircase",
+   "name": "Staircase",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/staircase",
+   "page": "parametric/staircase.html",
+   "tags": [
+    "straight",
+    "L",
+    "U",
+    "RCC",
+    "steel"
+   ],
+   "desc": "Riser, tread, landing, slab depth and floor opening come from the floor height and the stair rules."
+  },
+  {
+   "id": "railing",
+   "name": "Railing / handrail",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/railing",
+   "page": "parametric/railing.html",
+   "tags": [
+    "balusters",
+    "glass",
+    "cable",
+    "gate",
+    "stair",
+    "balcony"
+   ],
+   "desc": "Straight, L-corner or sloped rails. Post section, span and baluster gap come from the use and the load. Optional self-closing gate."
+  },
+  {
+   "id": "pump",
+   "name": "Pumps",
+   "tier": "free",
+   "category": "Water supply",
+   "path": "models/water-supply/pumps",
+   "page": "parametric/pump.html",
+   "tags": [
+    "end-suction",
+    "inline",
+    "split-case",
+    "submersible",
+    "turbine"
+   ],
+   "desc": "Five pump types. Enter flow and head: motor size, stages and pipe size follow, and designs that fail velocity or power rules are blocked."
+  },
+  {
+   "id": "boundary-wall",
+   "name": "Boundary Wall",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/boundary-wall",
+   "page": "parametric/boundary-wall.html",
+   "tags": [
+    "brick",
+    "precast",
+    "grille",
+    "chain-link",
+    "security"
+   ],
+   "desc": "Five boundary wall and fence types. Column size, footing depth and quantities follow the height, and designs that fail the rules are blocked."
+  },
+  {
+   "id": "column",
+   "name": "RCC Column",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/column",
+   "page": "parametric/column.html",
+   "tags": [
+    "rectangular",
+    "round",
+    "rebar",
+    "ties",
+    "spiral",
+    "DXF"
+   ],
+   "desc": "Rectangular or round RCC column with real rebar: main bars, ties, cross-ties, spiral. Rules checked live; GLB, OBJ, DXF drawing and bar schedule."
+  },
+  {
+   "id": "room-interior",
+   "name": "Room Interior (Bedroom)",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/room-interior",
+   "page": "parametric/room-interior.html",
+   "tags": [
+    "wardrobe",
+    "bed",
+    "desk",
+    "dresser",
+    "false ceiling"
+   ],
+   "desc": "Full bedroom interior: wardrobe with loft (sliding or hinged), bed, bedside cabinets, study desk, bookshelf, dresser, curtain and cove light. Circulation and window rules are checked."
+  },
+  {
+   "id": "rebar",
+   "name": "Reinforcement Bar + Cage Capacity",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/rebar",
+   "page": "parametric/rebar.html",
+   "tags": [
+    "plain",
+    "Gr 420",
+    "TMT 500",
+    "epoxy",
+    "stirrup",
+    "beam",
+    "column"
+   ],
+   "desc": "Plain, Gr 420, TMT 500 and epoxy-coated bars. Eight bar shapes with ld, lap and hook lengths, plus RC beam and column cages with moment, shear and axial capacity."
+  },
+  {
+   "id": "generator-room",
+   "name": "Generator Room (DG set room)",
+   "tier": "free",
+   "category": "Electrical",
+   "path": "models/electrical/generator-room",
+   "page": "parametric/generator-room.html",
+   "tags": [
+    "DG set",
+    "diesel generator",
+    "exhaust",
+    "day tank",
+    "louvre",
+    "hoist"
+   ],
+   "desc": "Complete diesel generator room: 62.5 to 1000 kVA, 1 or 2 sets, louvres, exhaust, day tank with bund, panel, battery, cable trench, hoist, fire kit. Room size follows the set and failing designs are blocked."
+  },
+  {
+   "id": "hdd-crossing",
+   "name": "HDD Highway and Railway Crossing",
+   "tier": "free",
+   "category": "Civil",
+   "path": "models/civil/hdd-crossing",
+   "page": "parametric/hdd-crossing.html",
+   "tags": [
+    "HDD",
+    "HDPE",
+    "highway",
+    "railway",
+    "long section"
+   ],
+   "desc": "HDPE pipe drilled under a highway and a railway in one bore. Plan, long section and cross sections, cover checks, and GLB, OBJ, STL, DXF and SVG downloads."
+  },
+  {
+   "id": "railway-crossing",
+   "name": "Railway Crossing Methods",
+   "tier": "free",
+   "category": "Civil",
+   "path": "models/civil/railway-crossing",
+   "page": "parametric/railway-crossing.html",
+   "tags": [
+    "microtunnelling",
+    "pipe jacking",
+    "auger boring",
+    "pipe ramming",
+    "box jacking",
+    "open cut"
+   ],
+   "desc": "One pipe under a railway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
+  },
+  {
+   "id": "road-crossing",
+   "name": "Road Crossing Methods",
+   "tier": "free",
+   "category": "Civil",
+   "path": "models/civil/road-crossing",
+   "page": "parametric/road-crossing.html",
+   "tags": [
+    "microtunnelling",
+    "pipe jacking",
+    "auger boring",
+    "pipe ramming",
+    "box jacking",
+    "open cut",
+    "road"
+   ],
+   "desc": "One pipe under a highway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
+  },
+  {
+   "id": "ipr-pump-house",
+   "name": "IPR Pump House",
+   "tier": "free",
+   "category": "Water supply",
+   "path": "models/water-supply/pump-houses/ipr-pump-house",
+   "page": "parametric/ipr-pump-house.html",
+   "tags": [
+    "IPR",
+    "wet well",
+    "pump",
+    "header",
+    "roof"
+   ],
+   "desc": "Impounding reservoir pumping station with 4 pumps, valves, DN900 header and roofed operator platform."
+  },
+  {
+   "id": "library-building",
+   "name": "Library Building (2 storey, 2 shatak)",
+   "tier": "free",
+   "category": "Building",
+   "path": "models/building/library-building",
+   "page": "parametric/library-building.html",
+   "tags": [
+    "RCC frame",
+    "2 storey",
+    "foundation",
+    "stair",
+    "doors",
+    "windows",
+    "floor plans"
+   ],
+   "desc": "Two storey RCC frame library on a 2 shatak plot: foundation, columns, beams, slabs, walls, openings, stair, interior and exterior. Layers switch ON / OFF. Floor plans, elevations and sections, DXF, SVG, IFC and software packages."
+  },
+  {
+   "id": "gate-valve-chamber",
+   "name": "Gate Valve Chamber (RCC)",
+   "tier": "free",
+   "category": "Water supply",
+   "path": "models/water-supply/chambers/gate-valve-chamber",
+   "page": "parametric/gate-valve-chamber.html",
+   "tags": [
+    "gate valve",
+    "DN100-DN600",
+    "PN10",
+    "PN16",
+    "RCC chamber",
+    "handwheel"
+   ],
+   "desc": "RCC chamber around one flanged gate valve. Chamber size follows DN and PN, minimum clearances are checked, the valve opens and closes in 3D. Plan, elevations and sections, DXF, IFC and STL."
+  }
+ ]
 }

@@ -216,4 +216,6 @@ $('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const e=new TextE
 ['b','h','D','H','nx','ny','nr','em','sm','pt'].forEach(i=>$(i).oninput=()=>build(i=='H'||i=='D'));['sh','fc','cv','gr','dm','dt','tt','se','xt','tl'].forEach(i=>$(i).onchange=()=>build(i=='sh'));$('ex').onchange=()=>build(false);
 $('vc').onchange=()=>{GC.visible=$('vc').checked};$('vr').onchange=()=>{GR.visible=$('vr').checked};$('vt').onchange=()=>{GC.traverse(o=>{if(o.userData.cm){o.material.opacity=$('vt').checked?.28:1;o.material.transparent=$('vt').checked}})};
 addEventListener('resize',size);size();build(true);loop();
-</script></body></html>
+</script><script>window.EV_KIT={exportOnly:true};</script>
+<script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

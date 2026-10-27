@@ -121,4 +121,6 @@ $('dl').onclick=async()=>{const msg=$('msg');try{const c0=cur;cur=1;apply();cons
  const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
 ['dn','pn'].forEach(i=>$(i).onchange=()=>build(true));['L','W','H','tr','sv'].forEach(i=>$(i).oninput=()=>build(false));$('tg').onclick=()=>{tgt=1-tgt;$('tg').textContent=tgt?'Valve OPEN (ON) – click to close':'Valve CLOSED (OFF) – click to open'};
 addEventListener('resize',size);size();build(true);loop();
-</script></body></html>
+</script><script>window.EV_KIT={groundLabel:'GL ±0.000'};</script>
+<script src="../../../../_shared/evlab-kit.js"></script>
+</body></html>

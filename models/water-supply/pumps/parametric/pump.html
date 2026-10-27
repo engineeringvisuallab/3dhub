@@ -152,4 +152,5 @@ $('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const r0=rotor.ro
 ['ty','dn','pn','dp'].forEach(i=>$(i).onchange=()=>build(true));['Q','Hd'].forEach(i=>$(i).oninput=()=>build(false));$('dp').oninput=()=>build(false);$('sv').oninput=()=>build(false);
 const lab=()=>{$('tg').textContent=run?'Pump RUNNING (ON) – click to stop':'Pump STOPPED (OFF) – click to run'};$('tg').onclick=()=>{run=!run;lab()};
 addEventListener('resize',size);size();lab();build(true);loop();
-</script></body></html>
+</script><script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

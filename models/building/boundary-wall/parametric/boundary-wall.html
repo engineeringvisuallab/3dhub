@@ -129,4 +129,5 @@ $('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const sv=[];model
 const setDef=()=>{const d=DEF[$('ty').value];$('H').value=d[0];$('bay').value=d[1];$('D').value=d[2]};
 $('ty').onchange=()=>{setDef();build(true)};['D','gap'].forEach(i=>$(i).oninput=()=>build(false));['H','bay','n'].forEach(i=>$(i).oninput=()=>build(i=='n'));['t','fin','cop'].forEach(i=>$(i).onchange=()=>build(false));$('sv').oninput=()=>{if(soil)soil.visible=!$('sv').checked};
 addEventListener('resize',size);size();setDef();build(true);loop();
-</script></body></html>
+</script><script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

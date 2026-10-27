@@ -147,5 +147,8 @@ $('spec').onclick=()=>{const cnt={};names.forEach(n=>cnt[n]=L[n].children.length
 function size(){const w=V.clientWidth,hh=V.clientHeight;rd.setSize(w,hh);cam.aspect=w/hh;cam.updateProjectionMatrix()}
 new ResizeObserver(size).observe(V);size();build();go('corner');
 (function loop(){requestAnimationFrame(loop);ctl.update();rd.render(sc,cam)})();
+window.EV_PAGE={get model(){return root},get spec(){const cnt={};names.forEach(n=>cnt[n]=L[n].children.length);return{id:'library-building',units:'m',plot:{shatak:2,size:[9,9]},building:{footprint:[7.5,6.75],storeys:2,levels:FL,params:P},windowArea:{ground:+win[0].toFixed(2),first:+win[1].toFixed(2)},groups:cnt}},get clips(){return null}};
+window.EV_KIT={title:'Library building',groundLabel:'GL ±0.000',cuts(b){const g=FL.F0+1.3,f=FL.F1+1.3;return[{n:'A',label:'GROUND FLOOR PLAN (cut at '+g.toFixed(2)+' m)',d:[0,1,0],up:[0,0,-1],p:[0,g,0]},{n:'B',label:'FIRST FLOOR PLAN (cut at '+f.toFixed(2)+' m)',d:[0,1,0],up:[0,0,-1],p:[0,f,0]},{n:'C',label:'SECTION C-C (vertical, through centre)',d:[1,0,0],up:[0,1,0],p:b.centre},{n:'D',label:'SECTION D-D (vertical, through centre)',d:[0,0,1],up:[0,1,0],p:b.centre}]}};
 })();
-</script></body></html>
+</script><script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

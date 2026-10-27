@@ -867,4 +867,6 @@ $('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{
  const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
 ['kva','sets','exhaust','doorType','tankHours','wallColor','setColor','L','W','H','t','stack','cut',...FAC.map(f=>f[0])].forEach(i=>$(i).onchange=()=>build(i=='kva'||i=='sets'));$('open').oninput=()=>build(false);
 addEventListener('resize',size);size();build(true);loop();
-</script></body></html>
+</script><script>window.EV_KIT={before(){window.__evCut=$('cut').checked;if(window.__evCut){$('cut').checked=false;build(false)}},after(){if(window.__evCut){$('cut').checked=true;build(false);window.__evCut=false}}};</script>
+<script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

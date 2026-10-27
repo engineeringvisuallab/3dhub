@@ -22,3 +22,6 @@ See `core/README.md`: component library + auto rebar + conflict checker (tests p
 ## 3D Studio (build by attaching ready models)
 On Windows double-click `start-studio.bat` (needs Python). Or open the site home and click **Open 3D Studio**. Or run `python -m http.server` and open `http://localhost:8000/app/index.html`. Take ready models from the library, attach them to each other, make a bigger model.
 Not a drafting tool, no CAD software copied, all software text English. Drawing sheet (plan / elevations / sections, DXF + SVG) and **BOM** (bill of materials: quantities by model and size, CSV + XLSX) are in the top bar. Full guide: `docs/STUDIO.md`.
+
+## Drawings and export on every model page
+`models/_shared/evlab-kit.js` gives every model page plan, 4 elevations and 2 sections (A3 sheet) and DXF, SVG, PNG, STL, IFC, CSV, ZIP and a software package (Blender, SketchUp, AutoCAD, Revit). `node tools/check-library.mjs` checks that every model page is in the library (`commerce/catalog/catalog.json`) and has drawings + export.

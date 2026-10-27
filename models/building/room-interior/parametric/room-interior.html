@@ -193,4 +193,5 @@ $('dl').onclick=async()=>{const msg=$('msg');if(bad)return;const e=new TextEncod
   if(fm==='zip')save(zip(fs),base+'.zip');else if(fm==='json')save(new Blob([fs[0].d],{type:'application/json'}),base+'_spec.json');else{const f=fs.find(x=>x.n!=='spec.json');save(new Blob([f.d]),base+'.'+f.n.split('.').pop())}
   msg.textContent='Downloaded.'}catch(x){msg.textContent='Export failed: '+(x&&x.message||x)}finally{apply(c0)}};
 fitSize();build(true);
-</script></body></html>
+</script><script src="../../../_shared/evlab-kit.js"></script>
+</body></html>
