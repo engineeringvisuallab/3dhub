@@ -198,6 +198,24 @@
         "open cut"
       ],
       "desc": "One pipe under a railway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
+    },
+    {
+      "id": "road-crossing",
+      "name": "Road Crossing Methods",
+      "tier": "free",
+      "category": "Civil",
+      "path": "models/civil/road-crossing",
+      "page": "parametric/road-crossing.html",
+      "tags": [
+        "microtunnelling",
+        "pipe jacking",
+        "auger boring",
+        "pipe ramming",
+        "box jacking",
+        "open cut",
+        "road"
+      ],
+      "desc": "One pipe under a highway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
     }
   ]
 }

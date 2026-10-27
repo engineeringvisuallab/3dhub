@@ -1,0 +1,125 @@
+{
+  "id": "road-crossing",
+  "name": "Road Crossing Methods (microtunnelling, pipe jacking, auger boring, pipe ramming, box jacking, open cut)",
+  "category": "civil/road-crossing",
+  "tier": "free",
+  "units": "mm",
+  "unitsNote": "carrier pipe OD in mm; chainages, covers and pit sizes in metres",
+  "parameters": {
+    "method": [
+      "mt",
+      "pj",
+      "ab",
+      "pr",
+      "bj",
+      "oc"
+    ],
+    "od": {
+      "unit": "mm",
+      "values": [
+        110,
+        160,
+        200,
+        250,
+        315,
+        400,
+        450,
+        500,
+        560,
+        630,
+        710,
+        800,
+        900,
+        1000
+      ],
+      "default": 630
+    },
+    "sdr": {
+      "values": [
+        11,
+        13.6,
+        17,
+        21,
+        26
+      ],
+      "default": 17
+    },
+    "a": {
+      "unit": "m",
+      "min": 3,
+      "max": 40,
+      "step": 1,
+      "default": 8
+    },
+    "rwW": {
+      "unit": "m",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "default": 24
+    },
+    "b": {
+      "unit": "m",
+      "min": 3,
+      "max": 40,
+      "step": 1,
+      "default": 8
+    },
+    "car": {
+      "unit": "m",
+      "min": 4,
+      "max": 40,
+      "step": 1,
+      "default": 14
+    },
+    "cov": {
+      "unit": "m",
+      "min": 1,
+      "max": 10,
+      "step": 0.1,
+      "default": 2.5
+    },
+    "mr": {
+      "unit": "m",
+      "min": 0.8,
+      "max": 6,
+      "step": 0.1,
+      "default": 1.5
+    }
+  },
+  "rules": {
+    "casing": "smallest standard size that carries the pipe (jacking ID >= OD + 300 mm, man-entry >= 1200 mm; steel ID >= OD + 200 mm)",
+    "driveLength": "indicative max: mt 300, pj 250, ab 100, pr 60, bj 50 m",
+    "cover": "cover (crown to pavement top) >= max(authority min, factor x casing size); factor mt/pj/ab/bj 1.5, pr 2.0, open cut min 1.2 m",
+    "carriageway": "carriageway <= highway ROW"
+  },
+  "ports": [],
+  "clearance": [],
+  "groups": [
+    "PIPE",
+    "CASING",
+    "TEMP",
+    "ROAD",
+    "GROUND"
+  ],
+  "animations": [],
+  "drawings": [
+    "plan",
+    "long section A-A",
+    "cross section at ROW centre",
+    "typical detail"
+  ],
+  "exports": [
+    "glb",
+    "obj",
+    "stl",
+    "dxf 3DFACE",
+    "dxf drawings",
+    "svg drawings",
+    "spec.json",
+    "zip"
+  ],
+  "files": {
+    "parametric": "parametric/road-crossing.html"
+  }
+}
