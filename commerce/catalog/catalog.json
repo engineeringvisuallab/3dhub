@@ -181,6 +181,23 @@
         "long section"
       ],
       "desc": "HDPE pipe drilled under a highway and a railway in one bore. Plan, long section and cross sections, cover checks, and GLB, OBJ, STL, DXF and SVG downloads."
+    },
+    {
+      "id": "railway-crossing",
+      "name": "Railway Crossing Methods",
+      "tier": "free",
+      "category": "Civil",
+      "path": "models/civil/railway-crossing",
+      "page": "parametric/railway-crossing.html",
+      "tags": [
+        "microtunnelling",
+        "pipe jacking",
+        "auger boring",
+        "pipe ramming",
+        "box jacking",
+        "open cut"
+      ],
+      "desc": "One pipe under a railway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
     }
   ]
 }
