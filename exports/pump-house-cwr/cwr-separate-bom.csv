@@ -1,0 +1,113 @@
+﻿Design,"CWR 70 x 70 m with pump sump, pump house and a separate electrical control room"
+
+Bill of materials
+Item,Component,Component id,DN,PN,Dimensions (mm),Options,Qty,Unit length (m),Total length (m)
+1,"Door in wall line (rich: wood, steel, aluminium, PVC)",door,,,"Width 1000, Height 2200, Wall thick. 230, Wall height 4000","Design: Steel - Flush sheet, Finish: Grey (steel, PVC), Leaves: Single, Thickness: Automatic, Hinges on: Left, Opens: Outward, Hardware: Stainless, Handle: Lever, Glass: Clear, Glass type: Tempered, Side glass: None, Fanlight: No, Peephole: No, Closer: No, Kick plate: No, Letterbox: No, Number plate: No",2,,
+2,"Door in wall line (rich: wood, steel, aluminium, PVC)",door,,,"Width 2000, Height 2500, Wall thick. 230, Wall height 4000","Design: Steel - Flush sheet, Finish: Grey (steel, PVC), Leaves: Double, Thickness: Automatic, Hinges on: Left, Opens: Outward, Hardware: Stainless, Handle: Lever, Glass: Clear, Glass type: Tempered, Side glass: None, Fanlight: No, Peephole: No, Closer: No, Kick plate: No, Letterbox: No, Number plate: No",1,,
+3,RCC slab (flat),rcc-slab,,,"L 7600, W 7300, T 150",,1,,
+4,RCC slab (flat),rcc-slab,,,"L 11100, W 7300, T 150",,1,,
+5,RCC slab (flat),rcc-slab,,,"L 13800, W 7400, T 400",,1,,
+6,RCC slab (flat),rcc-slab,,,"L 28600, W 7400, T 400",,2,,
+7,RCC slab (flat),rcc-slab,,,"L 71000, W 7000, T 300",,8,,
+8,RCC slab (flat),rcc-slab,,,"L 71000, W 7500, T 300",,1,,
+9,RCC slab (flat),rcc-slab,,,"L 71000, W 63600, T 400",,1,,
+10,RCC slab with three round pipe openings (reservoir roof),rcc-slab-openings,,,"L 71000, W 7500, T 300, d 500, kh 150",,1,,
+11,Brick wall (straight),brick-wall,,,"L 500, t 230, H 4000",,1,,
+12,Brick wall (straight),brick-wall,,,"L 600, t 230, H 4000",,1,,
+13,Brick wall (straight),brick-wall,,,"L 700, t 230, H 4000",,1,,
+14,Brick wall (straight),brick-wall,,,"L 800, t 230, H 4000",,1,,
+15,Brick wall (straight),brick-wall,,,"L 850, t 230, H 4000",,16,,
+16,Brick wall (straight),brick-wall,,,"L 900, t 230, H 4000",,1,,
+17,Brick wall (straight),brick-wall,,,"L 1270, t 230, H 4000",,1,,
+18,Brick wall (straight),brick-wall,,,"L 2370, t 230, H 4000",,1,,
+19,Brick wall (straight),brick-wall,,,"L 2450, t 230, H 4000",,2,,
+20,Brick wall (straight),brick-wall,,,"L 3200, t 230, H 4000",,2,,
+21,Brick wall (straight),brick-wall,,,"L 4570, t 230, H 4000",,1,,
+22,Window in wall line,window,,,"W 1500, sill 1200, wH 1500, t 230, H 4000",,10,,
+23,Control panel (floor standing cabinet),control-panel,,,"W 800, D 600, H 2000",,6,,
+24,Table,table,,,"W 1400, D 700, Ht 750",,1,,
+25,RCC beam (rectangular),rcc-beam,,,"L 3500, b 300, d 500",,2,,
+26,RCC beam (rectangular),rcc-beam,,,"L 3650, b 300, d 500",,8,,
+27,RCC beam (rectangular),rcc-beam,,,"L 6400, b 300, d 500",,7,,
+28,RCC beam (rectangular),rcc-beam,,,"L 6600, b 400, d 600",,88,,
+29,RCC beam (rectangular),rcc-beam,,,"L 6850, b 400, d 600",,22,,
+30,RCC beam (rectangular),rcc-beam,,,"L 7000, b 400, d 600",,88,,
+31,RCC beam (rectangular),rcc-beam,,,"L 7250, b 400, d 600",,22,,
+32,RCC column,rcc-column,,,"b 300, h 300, H 4000",,14,,
+33,RCC column,rcc-column,,,"b 500, h 500, H 5000",,81,,
+34,Pump plinth (RCC block),pump-plinth,,,"L 1000, W 1300, T 300",,3,,
+35,"RCC wall (straight, no opening)",rcc-wall,,,"L 6500, T 400, H 1500",,2,,
+36,"RCC wall (straight, no opening)",rcc-wall,,,"L 13800, T 400, H 1500",,1,,
+37,"RCC wall (straight, no opening)",rcc-wall,,,"L 13800, T 500, H 6500",,1,,
+38,"RCC wall (straight, no opening)",rcc-wall,,,"L 28600, T 500, H 5000",,2,,
+39,"RCC wall (straight, no opening)",rcc-wall,,,"L 34000, T 500, H 5000",,2,,
+40,"RCC wall (straight, no opening)",rcc-wall,,,"L 70000, T 500, H 5000",,1,,
+41,"RCC wall (straight, no opening)",rcc-wall,,,"L 71000, T 500, H 5000",,1,,
+42,RCC wall with round pipe opening,rcc-wall-opening,,,"L 1600, T 230, H 4000, openDia 700, openZ 555, openX -164",,1,,
+43,RCC wall with round pipe opening,rcc-wall-opening,,,"L 2000, T 500, H 5000, openDia 700, openZ 3600, openX 0",,1,,
+44,Blind flange (end cap),blind-flange,500,16,,,3,,
+45,"DI bend 90 degree, flanged",di-bend-90,300,16,,angle: 90,3,,
+46,"DI reducer, flanged (concentric)",di-reducer,500,16,DN2 250,,1,,
+47,"DI reducer, flanged (concentric)",di-reducer,500,16,DN2 300,,6,,
+48,"DI tee, all flanged (equal)",di-tee,500,16,,,4,,
+49,"Dismantling joint, flanged (adjustable length)",dismantling-joint,300,16,FTF 250,,6,,
+50,"Dismantling joint, flanged (adjustable length)",dismantling-joint,500,16,FTF 300,,1,,
+51,"DI pipe, flanged both ends",di-pipe-fl,300,16,len 500,,3,0.5,1.5
+52,"DI pipe, flanged both ends",di-pipe-fl,300,16,len 3280,,3,3.28,9.84
+53,"DI pipe, flanged both ends",di-pipe-fl,300,16,len 3285,,3,3.285,9.855
+54,"DI pipe, flanged both ends",di-pipe-fl,500,16,len 550,,2,0.55,1.1
+55,"DI pipe, flanged both ends",di-pipe-fl,500,16,len 1500,,1,1.5,1.5
+56,"DI pipe, flanged both ends",di-pipe-fl,500,16,len 2300,,1,2.3,2.3
+57,"DI pipe, flanged both ends",di-pipe-fl,500,16,len 2500,,1,2.5,2.5
+58,"Vertical in-line pump set, flanged (motor on top)",vertical-inline-pump,300,16,,,3,,
+59,"Air valve, flanged (double orifice)",air-valve,250,16,,,1,,
+60,"Butterfly valve, flanged (gear operated)",butterfly-valve,300,16,,,3,,
+61,"Butterfly valve, flanged (gear operated)",butterfly-valve,500,16,,,1,,
+62,"Swing check valve, flanged",check-valve,300,16,,,3,,
+63,"Electromagnetic flow meter, flanged",flow-meter,500,16,,,1,,
+64,"Gate valve, flanged (EN 558 series 14)",gate-valve,300,16,,,3,,
+65,"Gate valve, flanged (EN 558 series 14)",gate-valve,500,16,,,1,,
+,Total number of parts,,,,,,465,,
+,Total straight pipe length (m),,,,,,,,28.595
+
+Notes
+"Objects with the same model and the same sizes are one line. Settings that only turn or pose a part (bend turn, tee branch, valve open, door open angle) do not split a line."
+DN / PN and dimensions come from the model parameters. Dimensions are in mm unless a unit is shown.
+"Length is given only for straight pipe (bends, tees, valves and other fittings are counted, not measured)."
+No weights or prices are given for library parts: the library holds no weight or price data.
+
+Rebar schedule
+Rebar set,Host,Template,Bar type,Dia (mm),Grade,Bars,Total length (m),Weight (kg)
+col-1S-cage,col-1S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-1S-cage,col-1S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-1N-cage,col-1N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-1N-cage,col-1N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-2S-cage,col-2S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-2S-cage,col-2S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-2N-cage,col-2N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-2N-cage,col-2N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-3S-cage,col-3S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-3S-cage,col-3S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-3N-cage,col-3N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-3N-cage,col-3N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-4S-cage,col-4S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-4S-cage,col-4S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-4N-cage,col-4N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-4N-cage,col-4N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+cr-col-1S-cage,cr-col-1S,column-cage,straight,16,tmt500,4,15.68,24.75
+cr-col-1S-cage,cr-col-1S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+cr-col-1N-cage,cr-col-1N,column-cage,straight,16,tmt500,4,15.68,24.75
+cr-col-1N-cage,cr-col-1N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+cr-col-2S-cage,cr-col-2S,column-cage,straight,16,tmt500,4,15.68,24.75
+cr-col-2S-cage,cr-col-2S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+cr-col-2N-cage,cr-col-2N,column-cage,straight,16,tmt500,4,15.68,24.75
+cr-col-2N-cage,cr-col-2N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+cr-col-3S-cage,cr-col-3S,column-cage,straight,16,tmt500,4,15.68,24.75
+cr-col-3S-cage,cr-col-3S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+cr-col-3N-cage,cr-col-3N,column-cage,straight,16,tmt500,4,15.68,24.75
+cr-col-3N-cage,cr-col-3N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+Total,,,,,,420,528.192,468.26
+
+Notes
+"Rebar comes from the rebar sets of the design. Lengths are bar centre-line lengths taken from the model: no hooks, laps or bend allowance are added."
+Weight = dia x dia / 162.2 kg per metre of bar. Check the result before ordering or cutting steel.

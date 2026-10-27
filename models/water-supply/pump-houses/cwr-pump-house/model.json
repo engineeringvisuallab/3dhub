@@ -1,0 +1,28 @@
+{
+  "id": "cwr-pump-house",
+  "name": "Clear water reservoir 70 x 70 m with pump sump, pump house and electrical control room",
+  "category": "water-supply/pump-houses",
+  "tier": "free",
+  "units": "mm",
+  "parameters": {
+    "layout": ["combined", "separate", "control-room"]
+  },
+  "ports": [],
+  "files": {
+    "parametric": "parametric/cwr-pump-house.html",
+    "studio_assemblies": [
+      "core/examples/cwr-combined.assembly.json",
+      "core/examples/cwr-separate.assembly.json",
+      "core/examples/control-room.assembly.json"
+    ],
+    "builder": "tools/build-pump-house.mjs",
+    "page_builder": "tools/build-cwr-page.mjs",
+    "exports": "exports/pump-house-cwr"
+  },
+  "assumptions": [
+    "5 m is the clear height (main floor to underside of roof beams); water depth 3 m",
+    "Pump sump 13.0 x 6.5 m inside, floor 1.5 m below the main floor",
+    "3 vertical in-line pumps DN300 PN16, 2 duty + 1 standby, about 100 l/s each (assumed, not calculated)",
+    "Structure sizes are indicative; no structural design"
+  ]
+}

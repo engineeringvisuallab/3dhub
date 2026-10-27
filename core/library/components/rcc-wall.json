@@ -7,9 +7,9 @@
   "units": "mm",
   "description": "Straight reinforced concrete wall, for example the wall of a clear water reservoir. Origin = bottom centre. L and R (face-h) join walls in a line, B (bottom) sits on a slab, T (top) carries a slab or beam. Use rcc-wall-opening when a pipe must pass through.",
   "parameters": {
-    "L": { "min": 500, "max": 20000, "step": 50, "default": 4000, "label": "Length", "short": "L" },
+    "L": { "min": 500, "max": 80000, "step": 50, "default": 4000, "label": "Length", "short": "L" },
     "T": { "min": 150, "max": 600, "step": 25, "default": 300, "label": "Thickness", "short": "T" },
-    "H": { "min": 1000, "max": 6000, "step": 50, "default": 3500, "label": "Height", "short": "H" }
+    "H": { "min": 1000, "max": 8000, "step": 50, "default": 3500, "label": "Height", "short": "H" }
   },
   "shapes": [
     { "id": "wall", "role": "solid", "type": "box", "size": ["$L", "$T", "$H"], "at": [0, 0, "$H/2"] }

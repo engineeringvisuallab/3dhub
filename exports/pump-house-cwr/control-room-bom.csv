@@ -1,0 +1,45 @@
+﻿Design,Electrical control room (stand-alone building)
+
+Bill of materials
+Item,Component,Component id,DN,PN,Dimensions (mm),Options,Qty,Unit length (m),Total length (m)
+1,"Door in wall line (rich: wood, steel, aluminium, PVC)",door,,,"Width 1000, Height 2200, Wall thick. 230, Wall height 4000","Design: Steel - Flush sheet, Finish: Grey (steel, PVC), Leaves: Single, Thickness: Automatic, Hinges on: Left, Opens: Outward, Hardware: Stainless, Handle: Lever, Glass: Clear, Glass type: Tempered, Side glass: None, Fanlight: No, Peephole: No, Closer: No, Kick plate: No, Letterbox: No, Number plate: No",1,,
+2,RCC slab (flat),rcc-slab,,,"L 7600, W 7300, T 150",,1,,
+3,Brick wall (straight),brick-wall,,,"L 600, t 230, H 4000",,1,,
+4,Brick wall (straight),brick-wall,,,"L 800, t 230, H 4000",,1,,
+5,Brick wall (straight),brick-wall,,,"L 850, t 230, H 4000",,4,,
+6,Brick wall (straight),brick-wall,,,"L 2370, t 230, H 4000",,1,,
+7,Brick wall (straight),brick-wall,,,"L 2450, t 230, H 4000",,2,,
+8,Brick wall (straight),brick-wall,,,"L 3200, t 230, H 4000",,2,,
+9,Window in wall line,window,,,"W 1500, sill 1200, wH 1500, t 230, H 4000",,4,,
+10,Control panel (floor standing cabinet),control-panel,,,"W 800, D 600, H 2000",,6,,
+11,Table,table,,,"W 1400, D 700, Ht 750",,1,,
+12,RCC beam (rectangular),rcc-beam,,,"L 3650, b 300, d 500",,4,,
+13,RCC beam (rectangular),rcc-beam,,,"L 6400, b 300, d 500",,3,,
+14,RCC column,rcc-column,,,"b 300, h 300, H 4000",,6,,
+,Total number of parts,,,,,,37,,
+
+Notes
+"Objects with the same model and the same sizes are one line. Settings that only turn or pose a part (bend turn, tee branch, valve open, door open angle) do not split a line."
+DN / PN and dimensions come from the model parameters. Dimensions are in mm unless a unit is shown.
+"Length is given only for straight pipe (bends, tees, valves and other fittings are counted, not measured)."
+No weights or prices are given for library parts: the library holds no weight or price data.
+
+Rebar schedule
+Rebar set,Host,Template,Bar type,Dia (mm),Grade,Bars,Total length (m),Weight (kg)
+col-1S-cage,col-1S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-1S-cage,col-1S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-1N-cage,col-1N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-1N-cage,col-1N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-2S-cage,col-2S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-2S-cage,col-2S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-2N-cage,col-2N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-2N-cage,col-2N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-3S-cage,col-3S,column-cage,straight,16,tmt500,4,15.68,24.75
+col-3S-cage,col-3S,column-cage,stirrup,8,tmt500,26,22.048,8.7
+col-3N-cage,col-3N,column-cage,straight,16,tmt500,4,15.68,24.75
+col-3N-cage,col-3N,column-cage,stirrup,8,tmt500,26,22.048,8.7
+Total,,,,,,180,226.368,200.68
+
+Notes
+"Rebar comes from the rebar sets of the design. Lengths are bar centre-line lengths taken from the model: no hooks, laps or bend allowance are added."
+Weight = dia x dia / 162.2 kg per metre of bar. Check the result before ordering or cutting steel.

@@ -251,6 +251,22 @@
    "desc": "Impounding reservoir pumping station with 4 pumps, valves, DN900 header and roofed operator platform."
   },
   {
+   "id": "cwr-pump-house",
+   "name": "CWR with Pump House",
+   "tier": "free",
+   "category": "Water supply",
+   "path": "models/water-supply/pump-houses/cwr-pump-house",
+   "page": "parametric/cwr-pump-house.html",
+   "tags": [
+    "CWR",
+    "pump sump",
+    "3 pumps",
+    "control room",
+    "70 x 70 m"
+   ],
+   "desc": "Clear water reservoir 70 x 70 m (3 m water, 5 m clear height) with a 1.5 m pump sump, pump house with 3 pumps on the roof and an electrical control room, together or separate. 3D, plan, elevations, sections and downloads."
+  },
+  {
    "id": "library-building",
    "name": "Library Building (2 storey, 2 shatak)",
    "tier": "free",

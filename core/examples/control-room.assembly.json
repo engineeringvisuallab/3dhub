@@ -1,0 +1,849 @@
+{
+  "name": "Electrical control room (stand-alone building)",
+  "units": "mm",
+  "instances": [
+    {
+      "id": "col-1S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        0,
+        -3350,
+        2000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-1N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        0,
+        3350,
+        2000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-2S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        3500,
+        -3350,
+        2000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-2N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        3500,
+        3350,
+        2000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-3S",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        7000,
+        -3350,
+        2000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "col-3N",
+      "component": "rcc-column",
+      "params": {
+        "b": 300,
+        "h": 300,
+        "H": 4000
+      },
+      "pos": [
+        7000,
+        3350,
+        2000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-S1",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3650,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        1675,
+        -3350,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-S2",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3650,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        5325,
+        -3350,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-N1",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3650,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        1675,
+        3350,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-long-N2",
+      "component": "rcc-beam",
+      "params": {
+        "L": 3650,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        5325,
+        3350,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "beam-cross-1",
+      "component": "rcc-beam",
+      "params": {
+        "L": 6400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        0,
+        0,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "beam-cross-2",
+      "component": "rcc-beam",
+      "params": {
+        "L": 6400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        3500,
+        0,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "beam-cross-3",
+      "component": "rcc-beam",
+      "params": {
+        "L": 6400,
+        "b": 300,
+        "d": 500
+      },
+      "pos": [
+        7000,
+        0,
+        4000
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "roof-slab",
+      "component": "rcc-slab",
+      "params": {
+        "L": 7600,
+        "W": 7300,
+        "T": 150
+      },
+      "pos": [
+        3500,
+        0,
+        4500
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S1-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 850,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        575,
+        -3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S1-2",
+      "component": "window",
+      "params": {
+        "W": 1500,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        1750,
+        -3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S1-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 850,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        2925,
+        -3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S2-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 850,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        4075,
+        -3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S2-2",
+      "component": "window",
+      "params": {
+        "W": 1500,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5250,
+        -3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-S2-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 850,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        6425,
+        -3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wall-N2-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 3200,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        5250,
+        3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-N1-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 3200,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        1750,
+        3385,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        180
+      ]
+    },
+    {
+      "id": "wall-W-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 2450,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -35,
+        1975,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-W-2",
+      "component": "window",
+      "params": {
+        "W": 1500,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -35,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-W-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 2450,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        -35,
+        -1975,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        -90
+      ]
+    },
+    {
+      "id": "wall-E-1",
+      "component": "brick-wall",
+      "params": {
+        "L": 600,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        7035,
+        -2900,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-2",
+      "component": "door",
+      "params": {
+        "design": "stflush",
+        "finish": "grey",
+        "W": 1000,
+        "doorH": 2200,
+        "leaves": 1,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        7035,
+        -2035,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-3",
+      "component": "brick-wall",
+      "params": {
+        "L": 800,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        7035,
+        -1070,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-4",
+      "component": "window",
+      "params": {
+        "W": 1500,
+        "sill": 1200,
+        "wH": 1500,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        7035,
+        80,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "wall-E-5",
+      "component": "brick-wall",
+      "params": {
+        "L": 2370,
+        "t": 230,
+        "H": 4000
+      },
+      "pos": [
+        7035,
+        2015,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "panel-1",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        750,
+        2970,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-2",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        1650,
+        2970,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-3",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        2550,
+        2970,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-4",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        4350,
+        2970,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-5",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        5250,
+        2970,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "panel-6",
+      "component": "control-panel",
+      "params": {
+        "W": 800,
+        "D": 600,
+        "H": 2000
+      },
+      "pos": [
+        6150,
+        2970,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "desk",
+      "component": "table",
+      "params": {
+        "W": 1400,
+        "D": 700,
+        "Ht": 750
+      },
+      "pos": [
+        5550,
+        -800,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "links": [
+    {
+      "a": "wall-S1-1.R",
+      "b": "wall-S1-2.L"
+    },
+    {
+      "a": "wall-S1-2.R",
+      "b": "wall-S1-3.L"
+    },
+    {
+      "a": "wall-S2-1.R",
+      "b": "wall-S2-2.L"
+    },
+    {
+      "a": "wall-S2-2.R",
+      "b": "wall-S2-3.L"
+    },
+    {
+      "a": "wall-W-1.R",
+      "b": "wall-W-2.L"
+    },
+    {
+      "a": "wall-W-2.R",
+      "b": "wall-W-3.L"
+    },
+    {
+      "a": "wall-E-1.R",
+      "b": "wall-E-2.L"
+    },
+    {
+      "a": "wall-E-2.R",
+      "b": "wall-E-3.L"
+    },
+    {
+      "a": "wall-E-3.R",
+      "b": "wall-E-4.L"
+    },
+    {
+      "a": "wall-E-4.R",
+      "b": "wall-E-5.L"
+    }
+  ],
+  "rebarSets": [
+    {
+      "id": "col-1S-cage",
+      "host": "col-1S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-1N-cage",
+      "host": "col-1N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-2S-cage",
+      "host": "col-2S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-2N-cage",
+      "host": "col-2N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-3S-cage",
+      "host": "col-3S",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    },
+    {
+      "id": "col-3N-cage",
+      "host": "col-3N",
+      "template": "column-cage",
+      "minCover": 40,
+      "params": {
+        "cover": 40,
+        "mainDia": 16,
+        "nx": 2,
+        "ny": 2,
+        "tieDia": 8,
+        "tieSpacing": 150
+      }
+    }
+  ]
+}
