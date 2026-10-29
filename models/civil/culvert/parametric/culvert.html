@@ -1,0 +1,152 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Culvert</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 340px;gap:14px;padding:12px 20px 24px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(66vh,600px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range]{width:100%}select{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.info::before{content:"• ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tabs button{width:auto;margin:0;padding:6px 10px;font-size:13px;background:var(--card);color:var(--fg);border:1px solid var(--bd)}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+#dw{display:none;background:#fff;border-radius:8px;overflow:auto;max-height:70vh}#dw svg{display:block;width:100%;height:auto;max-height:66vh}
+.A-PIPE{stroke:#1f5fa8}.A-CL{stroke:#0891b2}.A-BORE{stroke:#6b7280}.A-GRND{stroke:#8a5a2c}.A-ROAD{stroke:#374151}.A-RAIL{stroke:#a21caf}.A-ROW{stroke:#c0392b}.A-PIT{stroke:#b45309}.A-DIM{stroke:#15803d}.A-FRAME{stroke:#111}
+svg text{fill:#111;stroke:none;font-family:Arial,sans-serif}svg line,svg circle{fill:none;stroke-width:1.1;vector-effect:non-scaling-stroke}
+#dw{color:#111}#dw table{border-collapse:collapse;font-size:12px;width:100%}#dw td,#dw th{border:1px solid #cbd5e1;padding:4px;text-align:left;vertical-align:top}</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Culvert under a road embankment – box, pipe, arch</h1><p>EVLab 3D Hub · cells or barrels, headwalls, wingwalls and aprons · hydraulic check (Manning) · 3D, plan, long section, cross section, detail · GLB, OBJ, STL, DXF, SVG</p></header>
+<main><div class="card"><div class="tabs" id="tabs"></div><div id="view" style="height:min(62vh,560px);min-height:300px;overflow:hidden"></div><div id="dw"></div></div>
+<div class="card"><label>Culvert type<select id="ty"></select></label><div id="pars"></div><label><input type="checkbox" id="sv"> Show soil (view only, not exported)</label><ul id="chk"></ul>
+<label>Download<select id="fmt"><option value="zip">ZIP (everything below)</option><option value="glb">3D – GLB (Blender, Revit link, viewers)</option><option value="obj">3D – OBJ (Blender, SketchUp)</option><option value="stl">3D – STL (mesh)</option><option value="dxf3d">3D – DXF 3DFACE (AutoCAD, Civil 3D)</option><option value="dxf">Drawings – DXF sheet</option><option value="svg">Drawings – SVG sheet</option><option value="json">Spec – JSON</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Indicative planning model. Wall and slab thicknesses follow a simple span rule and are not a structural design: reinforcement, loads (fill, traffic, hydraulic), foundation and scour protection must be designed by an engineer. Hydraulics use Manning normal depth in each cell at the bed slope entered (no inlet control, headwater or tailwater). The 80 % depth and 0.6 to 4.0 m/s limits are typical planning values. Drawings are full size in metres; plot plan and long section 1:100, cross section 1:50, detail 1:25. STEP, IFC and FBX are not produced.</small></div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id),r2=x=>(Math.round(x*100)/100).toFixed(2);
+//#PURE-START
+const PAR=[['n','Number of cells / barrels',1,4,1,1,''],['B','Span (box, arch) or pipe diameter',.6,6,.05,2,'m'],['H','Clear height (box, arch)',.6,5,.05,2,'m'],['Q','Design discharge, total',.1,60,.1,8,'m³/s'],['S','Bed slope',.05,3,.05,.5,'%'],['nm','Manning roughness n',.01,.03,.001,.015,''],['car','Road formation width',5,30,1,12,'m'],['fill','Fill above barrel to road surface',.3,6,.1,1.2,'m'],['ss','Embankment side slope (H : 1)',1.5,4,.5,2,''],['mf','Min. fill (authority)',.3,2,.1,.9,'m']];
+const TY={box:'Box culvert (RCC)',pipe:'Pipe culvert (RCP)',arch:'Arch culvert (precast)'};
+const CMP=[['box','Span 0.6–6 m, one to several cells','Cast-in-situ or precast RCC box','Rectangular, good capacity for wide shallow streams, easy to clean','Floor slab needed, scour at ends'],['pipe','0.6–2.4 m diameter, several barrels','Precast RCP on bedding','Cheap and fast, standard sizes, good for small flows','Round shape: check depth, silt in low flows'],['arch','Span 2–12 m','Precast arch on footings','Keeps the natural bed, open bottom','Higher cost, scour at footings']];
+function GEO(p){const k=p.ty,n=p.n,B=p.B,Hh=k=='pipe'?B:k=='arch'?Math.max(p.H,B/2+.3):p.H,t=k=='pipe'?Math.ceil((B/12+.025)*200)/200:k=='arch'?Math.max(.2,Math.ceil(B/12*20)/20):Math.max(.2,Math.ceil(Math.max(B,Hh)/10*20)/20),
+ gap=k=='box'?0:k=='pipe'?Math.max(.6,B/4):1,pitch=B+2*t+gap,Wt=n*(B+2*t)+(n-1)*gap,Htop=Hh+t,Hroad=Htop+p.fill,Lc=p.car+2*p.ss*p.fill,base=p.car+2*p.ss*Hroad,lw=Math.max(2,Hh*1.2+.5),sx=lw*Math.cos(Math.PI/6),sz=lw*Math.sin(Math.PI/6),t0=k=='box'?t:k=='pipe'?t:.5,ap=sx+.5;
+ return{car:p.car,k,n,B,Hh,t,gap,pitch,Wt,Htop,Hroad,Lc,base,lw,sx,sz,t0,ap,hx:Lc/2}}
+function CELL(p,g,c){const k=g.k,B=g.B,t=g.t,H=g.Hh,arc=(cx,cy,r,a0,a1,N)=>[...Array(N+1)].map((_,i)=>{const a=a0+(a1-a0)*i/N;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+ if(k=='box'){const i=[[c-B/2,0],[c+B/2,0],[c+B/2,H],[c-B/2,H],[c-B/2,0]];return{o:[[c-B/2-t,-t],[c+B/2+t,-t],[c+B/2+t,H+t],[c-B/2-t,H+t],[c-B/2-t,-t]],i,h:i}}
+ if(k=='pipe'){const i=arc(c,B/2,B/2,0,2*Math.PI,48);return{o:arc(c,B/2,B/2+t,0,2*Math.PI,48),i,h:i}}
+ const hw=H-B/2,ia=arc(c,hw,B/2,0,Math.PI,24),oa=arc(c,hw,B/2+t,0,Math.PI,24).reverse();
+ return{o:[[c-B/2-t,0],...oa,[c+B/2+t,0],[c+B/2,0],...ia,[c-B/2,0],[c-B/2-t,0]],i:null,h:[[c+B/2,0],...ia,[c-B/2,0],[c+B/2,0]]}}
+const cen=(g,i)=>(i-(g.n-1)/2)*g.pitch;
+function area(P){let a=0;for(let i=1;i<P.length;i++)a+=P[i-1][0]*P[i][1]-P[i][0]*P[i-1][1];return Math.abs(a)/2}
+function HYD(p,g){const k=g.k,B=g.B,H=g.Hh,S=p.S/100,N=200,Qc=p.Q/p.n,wh=k=='pipe'?y=>Math.sqrt(Math.max(0,y*(B-y))):k=='arch'?y=>y<=H-B/2?B/2:Math.sqrt(Math.max(0,B*B/4-(y-(H-B/2))**2)):()=>B/2;
+ let A=0,P=k=='pipe'?0:B,pw=wh(0),yn=null,Qm=0,An=0,wn=0;P=P;const dy=H/N;
+ for(let i=1;i<=N;i++){const y=dy*i,w=wh(y);A+=(w+pw)*dy;P+=2*Math.hypot(dy,w-pw);pw=w;const Q=A*Math.pow(A/P,2/3)*Math.sqrt(S)/p.nm;Qm=Math.max(Qm,Q);if(yn===null&&Q>=Qc){yn=y;An=A;wn=2*w}}
+ const over=yn===null;if(over){yn=H;An=A}return{yn,V:Qc/An,ratio:yn/H,Qm,Qc,over,sw:over?B:wn}}
+function CHK(p,g,hy){const ck=[],c=(ok,t,i)=>ck.push([ok,t,i]);
+ c(!hy.over&&hy.ratio<=.8,hy.over?'Design flow '+r2(hy.Qc)+' m³/s per cell is more than the cell capacity '+r2(hy.Qm)+' m³/s':'Normal depth '+r2(hy.yn)+' m = '+Math.round(hy.ratio*100)+' % of the height (max 80 %)');
+ c(hy.V>=.6&&hy.V<=4,'Velocity '+r2(hy.V)+' m/s (0.6 to 4.0 m/s indicative)');c(p.fill>=p.mf,'Fill above barrel '+p.fill+' m (min '+p.mf+' m)');
+ if(g.k=='pipe')c(g.B>=.6,'Pipe diameter '+g.B+' m (min 0.6 m for maintenance)');if(g.k=='arch')c(p.H>=g.B/2+.3-1e-9,'Arch height '+p.H+' m (at least span / 2 + 0.3 = '+r2(g.B/2+.3)+' m)');
+ const ca=CELL(p,g,0),va=area(ca.o)-(ca.i?area(ca.i):0),ve=g.k=='pipe'?0:g.n*va*g.Lc+2*(.3*g.Wt*(g.Htop+.6+g.t0))+4*(.3*g.lw*g.Htop*.7)+2*g.ap*(g.Wt+2*g.sz)*.3+(g.k=='arch'?g.n*2*g.Lc*(g.t+.6)*.5:0);
+ c(true,'Culvert length '+r2(g.Lc)+' m, width '+r2(g.Wt)+' m, wall / slab '+Math.round(g.t*1000)+' mm'+(g.k=='pipe'?', about '+g.n*Math.ceil(g.Lc/2.5)+' pipes of 2.5 m':', concrete about '+Math.round(ve)+' m³'),1);ck.conc=ve;return ck}
+function B(h){const a=[];a.h=h;a.l=(L,x1,y1,x2,y2)=>{a.push({t:'l',L,a:[x1,y1,x2,y2]});return a};
+ a.pl=(L,P)=>{for(let i=1;i<P.length;i++)a.l(L,P[i-1][0],P[i-1][1],P[i][0],P[i][1]);return a};
+ a.rc=(L,x1,y1,x2,y2)=>a.pl(L,[[x1,y1],[x2,y1],[x2,y2],[x1,y2],[x1,y1]]);
+ a.c=(L,x,y,r)=>{a.push({t:'c',L,a:[x,y,r]});return a};
+ a.t=(s,x,y,al='l',rot=0,hh=h)=>{a.push({t:'t',L:'A-TEXT',a:[x,y,hh,s,al,rot]});return a};
+ a.dash=(L,x1,y1,x2,y2,d)=>{const k=Math.max(1,Math.round(Math.hypot(x2-x1,y2-y1)/(2*d)));for(let i=0;i<k;i++){const u=i/k,v=(i+.6)/k;a.l(L,x1+(x2-x1)*u,y1+(y2-y1)*u,x1+(x2-x1)*v,y1+(y2-y1)*v)}return a};
+ a.dh=(x1,x2,y,s)=>{a.l('A-DIM',x1,y,x2,y).l('A-DIM',x1,y-h/2,x1,y+h/2).l('A-DIM',x2,y-h/2,x2,y+h/2);return a.t(s,(x1+x2)/2,y+h*.4,'m')};
+ a.dv=(x,y1,y2,s,al)=>{a.l('A-DIM',x,y1,x,y2).l('A-DIM',x-h/2,y1,x+h/2,y1).l('A-DIM',x-h/2,y2,x+h/2,y2);return al=='r'?a.t(s,x-h*.6,(y1+y2)/2,'r'):a.t(s,x+h*.6,(y1+y2)/2,'l')};return a}
+function bb(P){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;const e=(x,y)=>{x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y)};
+ for(const q of P){const a=q.a;if(q.t=='l'){e(a[0],a[1]);e(a[2],a[3])}else if(q.t=='c'){e(a[0]-a[2],a[1]-a[2]);e(a[0]+a[2],a[1]+a[2])}else{const w=a[3].length*a[2]*.62,al=a[4],xa=al=='m'?a[0]-w/2:al=='r'?a[0]-w:a[0],xb=xa+w;if(a[5]){const d=al=='r'?-w:0;e(a[0],a[1]+d);e(a[0],a[1]+d+w)}else{e(xa,a[1]);e(xb,a[1]+a[2])}}}return{x0,y0,x1,y1}}
+function vPlan(p,g){const b=B(.3),hx=g.hx,W=g.Wt/2,ze=W+g.sz+5;[g.base/2,-g.base/2].forEach(x=>b.l('A-GRND',x,-ze,x,ze));[g.car/2,-g.car/2].forEach(x=>b.l('A-ROAD',x,-ze,x,ze));b.dash('A-ROAD',0,-ze,0,ze,1);
+ b.rc('A-CULV',-hx,-W,hx,W);for(let i=1;i<g.n;i++){const z=cen(g,i)-g.pitch/2;b.dash('A-CULV',-hx,z,hx,z,.4)}
+ [1,-1].forEach(sx=>{b.rc('A-CULV',sx>0?hx-.3:-hx,-W,sx>0?hx:-hx+.3,W);[1,-1].forEach(sz=>b.l('A-CULV',sx*hx,sz*W,sx*(hx+g.sx),sz*(W+g.sz)));b.rc('A-CULV',sx>0?hx:-hx-g.ap,-(W+g.sz),sx>0?hx+g.ap:-hx,W+g.sz)});
+ b.t('HEADWALL',hx-.15,W+.5,'m').t('WINGWALL 30°',hx+g.sx/2,W+g.sz+.6,'l').t('APRON',hx+g.ap/2,-W-g.sz-.8,'m').t('FLOW →',-hx-g.ap/2,W+g.sz+1,'m').t('ROAD',g.car/2-.3,ze-.8,'r').t('TOE OF EMBANKMENT',g.base/2+.3,ze-.8,'l');
+ b.dh(-hx,hx,-ze-1.5,'CULVERT LENGTH '+r2(g.Lc)).dh(-g.car/2,g.car/2,-ze-4,'ROAD '+r2(p.car)).dv(hx+g.ap+1.5,-W,W,'WIDTH '+r2(g.Wt));return b}
+function vLong(p,g,hy){const b=B(.3),hx=g.hx,H=g.Hh,xe=Math.max(g.base/2,hx+g.ap)+3,ty=-g.t0-1.2;
+ b.l('A-GRND',-xe,0,xe,0).pl('A-GRND',[[-g.base/2,0],[-g.car/2,g.Hroad],[g.car/2,g.Hroad],[g.base/2,0]]).rc('A-ROAD',-g.car/2,g.Hroad-.3,g.car/2,g.Hroad);
+ if(g.k=='box'){b.rc('A-CULV',-hx,-g.t,hx,0).rc('A-CULV',-hx,H,hx,g.Htop)}else if(g.k=='pipe'){b.rc('A-CULV',-hx,-g.t,hx,0).rc('A-CULV',-hx,H,hx,g.Htop)}else{b.rc('A-CULV',-hx,H,hx,g.Htop)}
+ [1,-1].forEach(s=>{b.rc('A-CULV',s>0?hx-.3:-hx,-g.t0,s>0?hx:-hx+.3,g.Htop+.6);b.rc('A-CULV',s>0?hx:-hx-g.ap,-.3,s>0?hx+g.ap:-hx,0)});
+ b.dash('A-WATER',-hx-g.ap,hy.yn,hx+g.ap,hy.yn,.6).t('DESIGN WATER LEVEL +'+r2(hy.yn),-g.car/2+.3,hy.yn+.2,'l',0,.25).t('BED LEVEL ±0.00',-xe+.3,.25,'l').t('ROAD LEVEL +'+r2(g.Hroad),0,g.Hroad+.4,'m').t('FLOW →',-hx-g.ap/2,H+.8,'m').t('BED SLOPE '+p.S+' %',-xe+.3,-1.2,'l');
+ b.dh(-hx,hx,ty,'LENGTH '+r2(g.Lc)).dh(-g.car/2,g.car/2,g.Hroad+1.4,'ROAD '+r2(p.car)).dv(hx+g.ap+.8,0,H,'CLEAR HEIGHT '+r2(H)).dv(-g.car/2+.8,g.Htop,g.Hroad,'FILL '+r2(p.fill));return b}
+function vCross(p,g,hy){const b=B(.15),H=g.Hh,w=g.Wt/2+2.5;
+ b.l('A-GRND',-w,0,w,0).rc('A-GRND',-w,g.Htop,w,g.Hroad-.3).rc('A-ROAD',-w,g.Hroad-.3,w,g.Hroad).t('EMBANKMENT FILL',-w+.2,g.Htop+.15,'l').t('ROAD',-w+.2,g.Hroad+.15,'l').t('GL / BED',w-.2,.15,'r');
+ for(let i=0;i<g.n;i++){const c=cen(g,i),q=CELL(p,g,c);b.pl('A-CULV',q.o);if(q.i)b.pl('A-CULV',q.i);if(g.k=='arch')[-1,1].forEach(s=>b.rc('A-CULV',c+s*(g.B/2+g.t/2)-(g.t+.6)/2,-.5,c+s*(g.B/2+g.t/2)+(g.t+.6)/2,0));
+  const hw=hy.sw/2;b.l('A-WATER',c-hw,hy.yn,c+hw,hy.yn);b.t('CELL '+(i+1),c,H/2,'m')}
+ b.dh(-g.Wt/2,g.Wt/2,-g.t0-1,'WIDTH '+r2(g.Wt)).dv(-w+.5,0,H,'H '+r2(H)).dv(-w+.5,g.Htop,g.Hroad,'FILL '+r2(p.fill)).dh(-g.B/2,g.B/2,H+g.t+.6+(g.n>1?0:0),(g.k=='pipe'?'Ø ':'SPAN ')+r2(g.B));return b}
+function vDet(p,g){const b=B(.08),H=g.Hh,t=g.t,q=CELL(p,g,0),R=g.B/2+t+.4;b.pl('A-CULV',q.o);if(q.i)b.pl('A-CULV',q.i);if(g.k=='arch')[-1,1].forEach(s=>b.rc('A-CULV',s*(g.B/2+t/2)-(t+.6)/2,-.5,s*(g.B/2+t/2)+(t+.6)/2,0));
+ b.rc('A-GRND',-g.B/2-t-.3,-g.t0-.1,g.B/2+t+.3,-g.t0).rc('A-GRND',-g.B/2-t-.5,-g.t0-.4,g.B/2+t+.5,-g.t0-.1);
+ b.t('BLINDING CONCRETE 100 mm',R+.5,-g.t0-.05,'l').t('COMPACTED GRANULAR BASE 300 mm',R+.5,-g.t0-.3,'l').t(g.k=='pipe'?'RCP, WALL '+Math.round(t*1000)+' mm, ON CONCRETE CRADLE':g.k=='arch'?'PRECAST ARCH, t = '+Math.round(t*1000)+' mm, ON STRIP FOOTINGS':'RCC BOX, WALLS AND SLABS t = '+Math.round(t*1000)+' mm',R+.5,H/2+.4,'l').t('WATERPROOFING AND PROTECTION ON TOP',R+.5,H/2,'l').t('BACKFILL IN 300 mm LAYERS BOTH SIDES',R+.5,H/2-.4,'l').t('STRUCTURAL DESIGN AND REINFORCEMENT BY ENGINEER',R+.5,H/2-.8,'l');
+ b.dh(-g.B/2,g.B/2,-g.t0-.9,(g.k=='pipe'?'ID ':'SPAN ')+r2(g.B)).dv(-g.B/2-t-.5,g.k=='pipe'?0:0,H,'CLEAR '+r2(H),'r').dh(g.B/2,g.B/2+t,H+t+.35,'t = '+Math.round(t*1000));return b}
+function VIEWS(p,g,hy){return[['PLAN  1:100',vPlan(p,g),.8],['LONG SECTION A-A (ALONG FLOW)  1:100',vLong(p,g,hy),.8],['CROSS SECTION B-B (ACROSS FLOW, AT ROAD CENTRE)  1:50',vCross(p,g,hy),.4],['TYPICAL CELL DETAIL  1:25',vDet(p,g),.2]].map(([n,b,ts])=>({n,b,ts,box:bb(b)}))}
+function SHEET(V,p,g){const P=[];let y=0,W=0;V.forEach(v=>W=Math.max(W,v.box.x1-v.box.x0));
+ V.forEach(v=>{const dx=-v.box.x0,dy=y-v.box.y1-v.ts*2.5,q=v.b.map(q=>{const a=q.a.slice();if(q.t=='l'){a[0]+=dx;a[1]+=dy;a[2]+=dx;a[3]+=dy}else{a[0]+=dx;a[1]+=dy}return{...q,a}});P.push(...q);P.push({t:'t',L:'A-TEXT',a:[0,y-v.ts*1.2,v.ts,v.n,'l',0]});y=dy+v.box.y0-v.ts*5});
+ ['PROJECT: CULVERT UNDER ROAD - '+TY[p.ty].toUpperCase(),g.n+' x '+(g.k=='pipe'?'Ø'+r2(g.B)+' m':r2(g.B)+' x '+r2(g.Hh)+' m')+', Q = '+p.Q+' m3/s, BED SLOPE '+p.S+' %, UNITS m','ISSUED FOR REVIEW - NOT FOR CONSTRUCTION. STRUCTURAL AND HYDRAULIC DESIGN BY ENGINEER'].forEach((s,i)=>P.push({t:'t',L:'A-TEXT',a:[0,y-i*1.4,.9,s,'l',0]}));const b=bb(P),m=3;P.push(...B(1).rc('A-FRAME',b.x0-m,b.y0-m,b.x1+m,b.y1+m));return P}
+const LC={'A-PIPE':5,'A-CL':4,'A-BORE':8,'A-GRND':30,'A-ROAD':7,'A-RAIL':6,'A-ROW':1,'A-PIT':2,'A-DIM':3,'A-TEXT':7,'A-FRAME':7,'A-CULV':5,'A-WATER':4,PIPE:5,BARREL:5,WING:8,EMB:30,WATER:4,ROAD:7,RAIL:6,GROUND:3};
+const dxfT=s=>String(s).replace(/Ø/g,'%%c').replace(/°/g,'%%d').replace(/→/g,'->').replace(/[^\x20-\x7e]/g,'?'),nf=x=>(+x).toFixed(4);
+function DXF(P,faces){let s='0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLTYPE\n70\n1\n0\nLTYPE\n2\nCONTINUOUS\n70\n0\n3\nSolid line\n72\n65\n73\n0\n40\n0.0\n0\nENDTAB\n0\nTABLE\n2\nLAYER\n70\n'+Object.keys(LC).length+'\n';
+ for(const k in LC)s+='0\nLAYER\n2\n'+k+'\n70\n0\n62\n'+LC[k]+'\n6\nCONTINUOUS\n';s+='0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
+ if(faces)for(const f of faces){const v=f.v;s+='0\n3DFACE\n8\n'+f.l+'\n';[0,1,2,2].forEach((k,i)=>{s+=(10+i)+'\n'+nf(v[k][0])+'\n'+(20+i)+'\n'+nf(v[k][1])+'\n'+(30+i)+'\n'+nf(v[k][2])+'\n'})}
+ else for(const q of P){const a=q.a;s+='0\n'+(q.t=='l'?'LINE':q.t=='c'?'CIRCLE':'TEXT')+'\n8\n'+q.L+'\n';
+  if(q.t=='l')s+='10\n'+nf(a[0])+'\n20\n'+nf(a[1])+'\n30\n0\n11\n'+nf(a[2])+'\n21\n'+nf(a[3])+'\n31\n0\n';
+  else if(q.t=='c')s+='10\n'+nf(a[0])+'\n20\n'+nf(a[1])+'\n30\n0\n40\n'+nf(a[2])+'\n';
+  else{const al=a[4]=='m'?1:a[4]=='r'?2:0;s+='10\n'+nf(a[0])+'\n20\n'+nf(a[1])+'\n30\n0\n40\n'+nf(a[2])+'\n1\n'+dxfT(a[3])+'\n50\n'+a[5]+'\n'+(al?'72\n'+al+'\n11\n'+nf(a[0])+'\n21\n'+nf(a[1])+'\n31\n0\n':'')}}
+ return s+'0\nENDSEC\n0\nEOF\n'}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function SVG(P,pad=2){const b=bb(P),W=b.x1-b.x0+2*pad,H=b.y1-b.y0+2*pad;let s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+[b.x0-pad,-(b.y1+pad),W,H].map(nf).join(' ')+'" width="'+Math.round(W*10)+'" height="'+Math.round(H*10)+'">';
+ for(const q of P){const a=q.a;if(q.t=='l')s+='<line class="'+q.L+'" x1="'+nf(a[0])+'" y1="'+nf(-a[1])+'" x2="'+nf(a[2])+'" y2="'+nf(-a[3])+'"/>';else if(q.t=='c')s+='<circle class="'+q.L+'" cx="'+nf(a[0])+'" cy="'+nf(-a[1])+'" r="'+nf(a[2])+'"/>';
+  else s+='<text x="'+nf(a[0])+'" y="'+nf(-a[1])+'" font-size="'+nf(a[2]*1.25)+'" text-anchor="'+(a[4]=='m'?'middle':a[4]=='r'?'end':'start')+'"'+(a[5]?' transform="rotate('+(-a[5])+' '+nf(a[0])+' '+nf(-a[1])+')"':'')+'>'+esc(a[3])+'</text>'}
+ return s+'</svg>'}
+const SVGCSS='<style>.A-PIPE{stroke:#1f5fa8}.A-CL{stroke:#0891b2}.A-BORE{stroke:#6b7280}.A-GRND{stroke:#8a5a2c}.A-ROAD{stroke:#374151}.A-RAIL{stroke:#a21caf}.A-ROW{stroke:#c0392b}.A-PIT{stroke:#b45309}.A-DIM{stroke:#15803d}.A-FRAME{stroke:#111}.A-CULV{stroke:#1f5fa8}.A-WATER{stroke:#0891b2}line,circle{fill:none;stroke-width:.12}text{font-family:Arial,sans-serif;fill:#111}</style>';
+function SPEC(p,g,ck,hy){return{name:'Culvert',type:TY[p.ty],units:'m',cells:g.n,span_or_diameter_m:g.B,clear_height_m:g.Hh,wall_thickness_mm:Math.round(g.t*1000),length_m:+g.Lc.toFixed(2),total_width_m:+g.Wt.toFixed(2),road:{formation_m:p.car,fill_above_barrel_m:p.fill,road_level_m:+g.Hroad.toFixed(2),side_slope:p.ss},headwall_wingwall:{wing_length_m:+g.lw.toFixed(2),wing_angle_deg:30,apron_m:+g.ap.toFixed(2)},hydraulics:{design_q_m3s:p.Q,q_per_cell:+hy.Qc.toFixed(2),bed_slope_pct:p.S,manning_n:p.nm,normal_depth_m:+hy.yn.toFixed(2),depth_ratio:+hy.ratio.toFixed(2),velocity_ms:+hy.V.toFixed(2),capacity_per_cell_m3s:+hy.Qm.toFixed(2)},concrete_m3_approx:g.k=='pipe'?null:Math.round(ck.conc),checks:ck.map(x=>(x[0]?'OK: ':'FAIL: ')+x[1]),note:'Indicative planning values. Structural and hydraulic design by an engineer.'}}
+//#PURE-END
+function cmpHTML(){let h='<table><tr><th>Type</th><th>Size range</th><th>Construction</th><th>Strength</th><th>Watch for</th><th>With your inputs</th></tr>';
+ for(const r of CMP){const p2={...P0,ty:r[0]},g2=GEO(p2),hy2=HYD(p2,g2),ck=CHK(p2,g2,hy2),f=ck.find(x=>!x[0]);h+='<tr'+(r[0]==P0.ty?' style="background:#dbeafe"':'')+'><td><b>'+TY[r[0]]+'</b></td>'+r.slice(1).map(x=>'<td>'+x+'</td>').join('')+'<td>'+(f?'<span style="color:#c0392b">'+esc(f[1])+'</span>':'<span style="color:#1a7f4b">All checks pass</span>')+'</td></tr>'}return h+'</table><p style="font-size:12px;margin:6px">Typical ranges for planning only.</p>'}
+const tabs=[['3D','3d'],['Plan',0],['Long section',1],['Cross section',2],['Detail',3],['Compare types','cmp']];let cur='3d',P0={},model,soil,V,spec,bad=false;
+$('tabs').innerHTML=tabs.map(t=>'<button data-k="'+t[1]+'">'+t[0]+'</button>').join('');$('ty').innerHTML=Object.keys(TY).map(k=>'<option value="'+k+'">'+TY[k]+'</option>').join('');
+$('pars').innerHTML=PAR.map(a=>'<label>'+a[1]+': <b id="v_'+a[0]+'"></b><input type="range" id="'+a[0]+'" min="'+a[2]+'" max="'+a[3]+'" step="'+a[4]+'" value="'+a[5]+'"></label>').join('');
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,1000);S.add(new THREE.AmbientLight(0xffffff,.7));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(30,60,40);S.add(dl);const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+const M=(c,o=1)=>new THREE.MeshStandardMaterial({color:c,metalness:.15,roughness:.75,transparent:o<1,opacity:o,side:THREE.DoubleSide});
+function build(fit){const p={ty:$('ty').value};PAR.forEach(a=>{p[a[0]]=+$(a[0]).value;$('v_'+a[0]).textContent=p[a[0]]+' '+a[6]});P0=p;const g=GEO(p),hy=HYD(p,g),ck=CHK(p,g,hy);
+ [model,soil].forEach(o=>o&&S.remove(o));model=new THREE.Group();model.name='Culvert';const Z=40,hx=g.hx,W=g.Wt/2;
+ const add=(ge,c,lay,x,y,z,o=1)=>{const m=new THREE.Mesh(ge,M(c,o));m.position.set(x,y,z);m.userData.layer=lay;model.add(m);return m},Bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d),V2=q=>q.map(a=>new THREE.Vector2(a[0],a[1])),cl=q=>V2(q.slice(0,-1)),
+ ext=(sh,d,x0)=>{const ge=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:false});ge.rotateY(Math.PI/2);ge.translate(x0,0,0);return ge};
+ add(Bx(g.base+30,.05,Z),0x6b8f4e,'GROUND',0,-.03,0);const es=new THREE.Shape(V2([[-g.base/2,0],[-g.car/2,g.Hroad],[g.car/2,g.Hroad],[g.base/2,0]])),eg=new THREE.ExtrudeGeometry(es,{depth:Z,bevelEnabled:false});eg.translate(0,0,-Z/2);add(eg,0x8d7b68,'EMB',0,0,0,.3);
+ add(Bx(g.car,.3,Z),0x4a4f55,'ROAD',0,g.Hroad-.15,0);add(Bx(.15,.02,Z),0xf2f2ee,'ROAD',0,g.Hroad+.01,0);
+ for(let i=0;i<g.n;i++){const q=CELL(p,g,cen(g,i)),sh=new THREE.Shape(cl(q.o));if(q.i)sh.holes.push(new THREE.Path(cl(q.i)));add(ext(sh,g.Lc,-hx),0x9aa0a6,'BARREL',0,0,0);
+  if(g.k=='arch')[-1,1].forEach(s=>add(Bx(g.Lc,.5,g.t+.6),0x888888,'BARREL',0,-.25,cen(g,i)+s*(g.B/2+g.t/2)));
+  const sw=HYD(p,g).sw;add(Bx(g.Lc+2*g.ap,.03,sw),0x38bdf8,'WATER',0,HYD(p,g).yn,cen(g,i),.55)}
+ const top=g.Htop+.6,hs=new THREE.Shape(V2([[-W-.3,-g.t0],[W+.3,-g.t0],[W+.3,top],[-W-.3,top]]));for(let i=0;i<g.n;i++)hs.holes.push(new THREE.Path(cl(CELL(p,g,cen(g,i)).h)));
+ add(ext(hs,.3,hx-.3),0xb0b0a8,'WING',0,0,0);add(ext(hs,.3,-hx),0xb0b0a8,'WING',0,0,0);
+ [1,-1].forEach(sx=>[1,-1].forEach(sz=>{const m=add(Bx(g.lw,Math.max(1,g.Htop*.7),.3),0xb0b0a8,'WING',sx*(hx+g.sx/2),Math.max(1,g.Htop*.7)/2,sz*(W+g.sz/2));m.rotation.y=-sx*sz*Math.PI/6}));
+ [1,-1].forEach(sx=>add(Bx(g.ap,.3,g.Wt+2*g.sz),0xa8a8a0,'WING',sx*(hx+g.ap/2),-.15,0));
+ const dp=g.t0+4;soil=new THREE.Mesh(Bx(g.base+30,dp,Z),M(0x7a5c3a,.3));soil.position.set(0,-dp/2-.05,0);soil.visible=$('sv').checked;S.add(model,soil);
+ V=VIEWS(p,g,hy);spec=SPEC(p,g,ck,hy);$('chk').innerHTML=ck.map(x=>'<li'+(x[2]?' class="info"':x[0]?'':' class="bad"')+'>'+x[1]+'</li>').join('');bad=ck.some(x=>!x[0]);$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';draw();
+ if(fit){const b=new THREE.Box3().setFromObject(model),c=b.getCenter(new THREE.Vector3()),d=Math.max(g.base+10,25);C.position.set(c.x+d*.5,d*.45,d*.7);C.lookAt(c);ctl&&ctl.target.copy(c);ctl&&ctl.update()}}
+function draw(){const is3=cur=='3d';$('view').style.display=is3?'':'none';$('dw').style.display=is3?'none':'block';document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.k==cur));if(is3)size();else $('dw').innerHTML=cur=='cmp'?cmpHTML():SVGCSS+SVG(V[+cur].b)}
+function size(){const w=box.clientWidth,h=box.clientHeight;if(w&&h){R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+function tris(){model.updateMatrixWorld(true);const T=[],Zu=v=>[v.x,-v.z,v.y];model.traverse(o=>{if(!o.isMesh)return;const g=o.geometry,Pp=g.attributes.position,ix=g.index,n=ix?ix.count:Pp.count,v=i=>Zu(new THREE.Vector3().fromBufferAttribute(Pp,i).applyMatrix4(o.matrixWorld));for(let i=0;i<n;i+=3){const a=ix?[ix.getX(i),ix.getX(i+1),ix.getX(i+2)]:[i,i+1,i+2];T.push({l:o.userData.layer,v:a.map(v)})}});return T}
+function STL(T){let s='solid HDD_Crossing\n';for(const t of T){const[a,b,c]=t.v,u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],k=Math.hypot(...n)||1;s+='facet normal '+n.map(x=>(x/k).toExponential(5)).join(' ')+'\nouter loop\n'+t.v.map(q=>'vertex '+q.map(x=>x.toExponential(5)).join(' ')).join('\n')+'\nendloop\nendfacet\n'}return s+'endsolid HDD_Crossing\n'}
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0}),crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),Pp=[],Cd=[];let o=0;for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+ const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);Pp.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);return new Blob([...Pp,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{const e=new TextEncoder(),fm=$('fmt').value,all=fm=='zip',n='Culvert',fs=[],W=x=>fm==x||all;model.updateMatrixWorld(true);
+ if(W('glb')){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:n+'.glb',d:new Uint8Array(b)})}
+ if(W('obj'))fs.push({n:n+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});if(W('stl'))fs.push({n:n+'.stl',d:e.encode(STL(tris()))});if(W('dxf3d'))fs.push({n:n+'_3d.dxf',d:e.encode(DXF(0,tris()))});
+ const sh=SHEET(V,P0,GEO(P0));if(W('dxf'))fs.push({n:n+'_drawings.dxf',d:e.encode(DXF(sh))});if(W('svg'))fs.push({n:n+'_drawings.svg',d:e.encode(SVG(sh).replace('>',' >'+SVGCSS))});if(W('json'))fs.push({n:n+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ const one=!all,ext=fs[0].n.split('.').pop(),blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?fs[0].n:n+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded '+fs.length+' file'+(fs.length>1?'s':'')+'.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{cur=b.dataset.k=='3d'||b.dataset.k=='cmp'?b.dataset.k:+b.dataset.k;draw()});
+$('ty').onchange=()=>build(false);PAR.forEach(a=>$(a[0]).oninput=()=>build(false));$('sv').oninput=()=>{soil&&(soil.visible=$('sv').checked)};
+addEventListener('resize',size);size();build(true);loop();
+</script></body></html>

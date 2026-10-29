@@ -1,0 +1,141 @@
+{
+  "stage": "membrane-processes",
+  "calculations": [
+    {
+      "id": "flux-membrane-area",
+      "name": "Design flux and membrane area",
+      "inputs": [
+        "flow",
+        "flux"
+      ],
+      "outputs": [
+        "area",
+        "modules"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "recovery-concentrate",
+      "name": "Recovery and concentrate flow",
+      "inputs": [
+        "flow",
+        "recovery"
+      ],
+      "outputs": [
+        "permeate",
+        "concentrate"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tmp-fouling",
+      "name": "Transmembrane pressure and fouling",
+      "inputs": [
+        "flux",
+        "temperature",
+        "fouling"
+      ],
+      "outputs": [
+        "tmp",
+        "cleaning_interval"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "feed-pressure-energy",
+      "name": "Feed pressure and energy",
+      "inputs": [
+        "pressure",
+        "flow",
+        "efficiency"
+      ],
+      "outputs": [
+        "power_kw",
+        "kwh_per_m3"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "cip-chemicals",
+      "name": "Cleaning-in-place demand",
+      "inputs": [
+        "area",
+        "cleaning_frequency"
+      ],
+      "outputs": [
+        "chemical_volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "scaling-potential",
+      "name": "Scaling potential",
+      "inputs": [
+        "water_chemistry",
+        "recovery"
+      ],
+      "outputs": [
+        "scaling_index",
+        "antiscalant"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "osmotic-pressure-rejection",
+      "name": "Osmotic pressure and salt rejection",
+      "inputs": [
+        "tds",
+        "rejection"
+      ],
+      "outputs": [
+        "osmotic_pressure",
+        "permeate_tds"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "membrane-pretreatment",
+      "name": "Pretreatment (fouling index) requirement",
+      "inputs": [
+        "fouling_index"
+      ],
+      "outputs": [
+        "pretreatment_needed"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "integrity-test-lrv",
+      "name": "Integrity test and log removal value",
+      "inputs": [
+        "test_pressure"
+      ],
+      "outputs": [
+        "lrv"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "concentrate-disposal",
+      "name": "Concentrate volume and disposal route",
+      "inputs": [
+        "concentrate",
+        "tds"
+      ],
+      "outputs": [
+        "disposal_assessment"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

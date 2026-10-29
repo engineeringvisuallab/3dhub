@@ -1,0 +1,175 @@
+{
+  "id": "rapid-mix-and-measurement",
+  "name": "Flow measurement and rapid mixing",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/rapid-mix",
+  "order": 7,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "UTAH66",
+      "loc": "whole report"
+    },
+    {
+      "ref": "ARKON11",
+      "loc": "whole guide"
+    },
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.5 Hydraulic Rapid Mixing"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.6"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.8"
+    }
+  ],
+  "groups": [
+    {
+      "id": "open-channel-measurement",
+      "name": "Open-channel flow measurement",
+      "types": [
+        {
+          "id": "parshall-flume",
+          "name": "Parshall flume",
+          "status": "model3d",
+          "definition": "An open-channel flume with a converging inlet, a short parallel throat whose floor slopes down, and a diverging outlet whose floor rises. The size is named by the throat width W.",
+          "how": "The contraction and floor drop force flow through critical depth in the throat, so discharge follows from the upstream depth Ha alone (free flow) or from Ha and the throat depth Hb (submerged flow).",
+          "suits": [
+            "Measuring open-channel flow with little head loss",
+            "A fixed point in a channel where a hydraulic jump can be used for rapid mixing",
+            "Flow ranges from about 0.03 cfs (3 inch) up to 3,000 cfs (50 ft) in the Utah report"
+          ],
+          "avoid": [
+            "A site with no available fall unless operation under submergence is designed for",
+            "Unscreened flow carrying debris larger than the guide allows",
+            "A position close to a gate or bend that disturbs the approach flow"
+          ],
+          "sources": [
+            {
+              "ref": "UTAH66",
+              "loc": "Dimensions, Tables 1-3, Installation"
+            },
+            {
+              "ref": "ARKON11",
+              "loc": "Sections 1-5"
+            }
+          ],
+          "calcs": [
+            "rapid-mix-and-measurement.parshall-free-flow",
+            "rapid-mix-and-measurement.parshall-size-selection",
+            "rapid-mix-and-measurement.parshall-dimensions",
+            "rapid-mix-and-measurement.parshall-head-loss",
+            "rapid-mix-and-measurement.as-built-throat-correction",
+            "rapid-mix-and-measurement.gauge-point-position"
+          ],
+          "plannedCalcs": [
+            "rapid-mix-and-measurement.parshall-submerged",
+            "rapid-mix-and-measurement.parshall-mixing-jump"
+          ],
+          "gaps": [
+            "Submerged-flow discharge needs the report calibration curves (Figures 6-18), which are charts and have not been digitised",
+            "Hydraulic-jump mixing energy is not calculated yet",
+            "Plan, elevation and section drawings and the exports come from the shared kit and have not been opened in a browser yet",
+            "Fit data covers Utah Table 3 only for the standard sizes 3 in to 8 ft"
+          ],
+          "model": "models/treatment-plant/rapid-mix/parametric/parshall-flume.html",
+          "tests": [
+            "core/tests/parshall.mjs"
+          ],
+          "rules": "core/library/wtp/rules/rapid-mix-and-measurement.json"
+        },
+        {
+          "id": "palmer-bowles-flume",
+          "name": "Palmer-Bowles flume",
+          "status": "listed"
+        },
+        {
+          "id": "rectangular-sharp-crested-weir",
+          "name": "Rectangular sharp-crested weir",
+          "status": "listed"
+        },
+        {
+          "id": "v-notch-weir",
+          "name": "V-notch weir",
+          "status": "listed"
+        },
+        {
+          "id": "ultrasonic-open-channel-meter",
+          "name": "Ultrasonic open-channel meter",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "closed-pipe-measurement",
+      "name": "Closed-pipe flow measurement",
+      "types": [
+        {
+          "id": "electromagnetic-flowmeter",
+          "name": "Electromagnetic flowmeter",
+          "status": "listed"
+        },
+        {
+          "id": "ultrasonic-transit-time-flowmeter",
+          "name": "Ultrasonic transit-time flowmeter",
+          "status": "listed"
+        },
+        {
+          "id": "venturi-meter",
+          "name": "Venturi meter",
+          "status": "listed"
+        },
+        {
+          "id": "orifice-plate-meter",
+          "name": "Orifice plate meter",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "rapid-mixers",
+      "name": "Rapid mixers",
+      "types": [
+        {
+          "id": "hydraulic-jump-mixer",
+          "name": "Hydraulic jump mixer",
+          "status": "listed"
+        },
+        {
+          "id": "weir-mixer",
+          "name": "Weir mixer",
+          "status": "listed"
+        },
+        {
+          "id": "baffled-channel-mixer",
+          "name": "Baffled channel mixer",
+          "status": "listed"
+        },
+        {
+          "id": "in-line-static-mixer",
+          "name": "In-line static mixer",
+          "status": "listed"
+        },
+        {
+          "id": "mechanical-backmix-mixer",
+          "name": "Mechanical back-mix mixer",
+          "status": "listed"
+        },
+        {
+          "id": "pipe-injection-diffuser",
+          "name": "Pipe injection diffuser",
+          "status": "listed"
+        },
+        {
+          "id": "turbulent-pipe-flow-mixer",
+          "name": "Turbulent pipe flow mixer",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

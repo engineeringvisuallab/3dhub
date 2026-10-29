@@ -1,0 +1,97 @@
+{
+  "id": "cost-and-lifecycle",
+  "title": "Cost and life-cycle assessment",
+  "category": "cost",
+  "purpose": "Estimate what the plant costs to build and run.",
+  "calculations": [
+    {
+      "id": "capex-estimate",
+      "name": "Capital cost by unit",
+      "inputs": [
+        "quantities",
+        "unit_rates"
+      ],
+      "outputs": [
+        "capex"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "opex-estimate",
+      "name": "Operating cost (chemicals, power, labour, maintenance)",
+      "inputs": [
+        "rates"
+      ],
+      "outputs": [
+        "opex"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "lifecycle-cost",
+      "name": "Net present value",
+      "inputs": [
+        "capex",
+        "opex",
+        "discount_rate",
+        "life"
+      ],
+      "outputs": [
+        "npv"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "unit-cost-per-m3",
+      "name": "Unit cost per cubic metre",
+      "inputs": [
+        "lifecycle_cost",
+        "volume"
+      ],
+      "outputs": [
+        "cost_per_m3"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "cost-capacity-curve",
+      "name": "Cost against capacity",
+      "inputs": [
+        "flow_range"
+      ],
+      "outputs": [
+        "curve"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "bill-of-quantities",
+      "name": "Bill of quantities from the model",
+      "inputs": [
+        "model"
+      ],
+      "outputs": [
+        "boq"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "option-cost-compare",
+      "name": "Cost comparison of options",
+      "inputs": [
+        "options"
+      ],
+      "outputs": [
+        "ranking"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

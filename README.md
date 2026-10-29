@@ -25,3 +25,5 @@ Not a drafting tool, no CAD software copied, all software text English. Drawing 
 
 ## Drawings and export on every model page
 `models/_shared/evlab-kit.js` gives every model page plan, 4 elevations and 2 sections (A3 sheet) and DXF, SVG, PNG, STL, IFC, CSV, ZIP and a software package (Blender, SketchUp, AutoCAD, Revit). `node tools/check-library.mjs` checks that every model page is in the library (`commerce/catalog/catalog.json`) and has drawings + export.
+
+**Water treatment library:** two models (intake, treatment plant) and a country-independent design library (technology types, calculations, assessments, expert rules, standard profiles) in `core/library/wtp/`. Start with `docs/wtp/STRUCTURE.md`; `node tools/check-wtp.mjs` validates it and prints the coverage ledger.

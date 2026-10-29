@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WTP expert rule (core/library/wtp/rules/<stage>.json)",
+  "description": "One piece of expert reasoning about one type: why use it, when not to, what to check, how to build or run it.",
+  "type": "object",
+  "required": ["id", "type", "kind", "severity", "text", "because", "confidence", "reviewed"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string", "description": "Type key '<stage>.<type>'." },
+    "kind": { "enum": ["why-use", "limitation", "design-check", "installation", "construction", "operation", "selection"] },
+    "severity": { "enum": ["info", "caution", "warning", "critical"] },
+    "when": { "type": "array", "description": "All conditions must hold. Empty means always.", "items": { "$ref": "#/definitions/cond" } },
+    "whenAny": { "type": "array", "description": "At least one must hold.", "items": { "$ref": "#/definitions/cond" } },
+    "text": { "type": "string", "description": "What to do or know, in plain words." },
+    "because": { "type": "string", "description": "The reason." },
+    "source": { "type": "object", "required": ["ref", "loc"] },
+    "confidence": { "enum": ["sourced", "practice-unverified", "owner-experience"], "description": "'sourced' needs source.ref and source.loc." },
+    "reviewed": { "type": "boolean", "description": "False until a named engineer has confirmed the rule." }
+  },
+  "definitions": { "cond": { "type": "object", "required": ["field", "op"], "properties": { "field": { "type": "string" }, "op": { "enum": ["<", "<=", ">", ">=", "==", "!="] }, "value": {}, "ref": { "type": "string", "description": "Name of another context field to compare with. Exactly one of value or ref." } } } }
+}

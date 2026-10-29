@@ -1,0 +1,76 @@
+{
+  "id": "pre-treatment",
+  "name": "Pre-treatment",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/pre-treatment",
+  "order": 5,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.4-6"
+    },
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.3-8 (confirm)"
+    },
+    {
+      "ref": "DELFT-SED",
+      "loc": "5.3 Channel type grit chambers"
+    }
+  ],
+  "groups": [
+    {
+      "id": "sedimentation-and-grit",
+      "name": "Plain sedimentation and grit removal",
+      "types": [
+        {
+          "id": "presedimentation-basin",
+          "name": "Presedimentation basin",
+          "status": "listed"
+        },
+        {
+          "id": "plain-sedimentation-tank",
+          "name": "Plain sedimentation tank",
+          "status": "listed"
+        },
+        {
+          "id": "grit-chamber-horizontal-flow",
+          "name": "Grit chamber, horizontal flow",
+          "status": "listed"
+        },
+        {
+          "id": "grit-chamber-aerated",
+          "name": "Grit chamber, aerated",
+          "status": "listed"
+        },
+        {
+          "id": "grit-chamber-vortex",
+          "name": "Grit chamber, vortex",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "roughing-filtration",
+      "name": "Roughing filtration",
+      "types": [
+        {
+          "id": "roughing-filter-horizontal",
+          "name": "Horizontal-flow roughing filter",
+          "status": "listed"
+        },
+        {
+          "id": "roughing-filter-vertical-upflow",
+          "name": "Vertical upflow roughing filter",
+          "status": "listed"
+        },
+        {
+          "id": "roughing-filter-vertical-downflow",
+          "name": "Vertical downflow roughing filter",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

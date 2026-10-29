@@ -1,0 +1,19 @@
+{
+  "id": "ref-schulz-okun-1984",
+  "name": "Criteria from Schulz and Okun (developing-country practice)",
+  "country": null,
+  "region": null,
+  "units": "SI",
+  "sources": [
+    "SCHULZ84"
+  ],
+  "waterQualityTargets": {},
+  "criteria": {},
+  "drawing": {
+    "sheetSeries": "A",
+    "scale": null,
+    "language": "en"
+  },
+  "currency": null,
+  "notes": "Empty on purpose: criteria are filled one unit at a time, each with a page reference to SCHULZ84."
+}

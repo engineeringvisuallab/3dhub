@@ -33,6 +33,7 @@ save/load (.json), export GLB and OBJ. Details: `app/README.md`.
 |---|---|---|
 | di-pipe, di-pipe-fl, gate-valve, end-suction-pump | water-supply | flange ports, same DN/PN |
 | **generator-room** (DG set room, all facilities, 62.5-1000 kVA) | electrical | `face-v` bottom (B) and roof top (T), `face-h` ends (L / R); see round 8 |
+| **substation** (5 types: pole, kiosk, indoor, AIS, GIS; 11/0.4, 33/11, 132/33 kV) | electrical | `face-v` bottom (B), `face-h` plot ends (L / R); see the substation section below |
 | **door** (rich, 17 designs) | building | `face-h` left/right (frame outer edges); see "Door" below |
 | brick-wall, boundary-wall, window, gate | building | `face-h` left/right; `face-v` top/bottom for walls |
 | rcc-slab | building | `face-v` (sits on a wall top, a wall stands on it) |
@@ -136,6 +137,106 @@ Load `core/examples/pump-station-line.assembly.json` to see a finished line.
 Honest limits: the bend is now a real torus arc in the 3D view (round 7), but its collision shape is still two straight arms; sizes are a generic envelope; walls attach only in a straight line (no corner part yet), so place wall corners by position;
 the pump has flange ports only, so it is placed by position (raise it on a plinth so flanged fittings clear the floor: the conflict checker reports it if not);
 pipe through a wall uses `rcc-wall-opening` (round opening) by position. Next steps are listed below.
+
+## New library item: electrical substation
+New component `substation` (generator component + real mesh, same pattern as the door and the generator room): five substation types in one component, also published as a library page.
+- Types: pole-mounted 11/0.4 kV (single pole or H-pole), compact kiosk 11/0.4 kV (RMU + transformer + LT panel), indoor 11/0.4 kV building (HT room, 1-2 transformer rooms, LT room), outdoor AIS yard 33/11 or 132/33 kV with control building, GIS hall 33/11 or 132/33 kV with outdoor transformers and the same control building.
+- Design: `plan(p)` in `core/engine/gen/substation.js` makes a list of items (each equipment with an envelope, position, yaw) and building shells (walls with real openings by `rectMinus`, partitions, floor holes for trench and soak pit). Collision = the item envelopes (three boxes per 3-phase equipment, one per pole). The mesh (`core/engine/visual/substation.js`) has one builder per item kind (transformer with fins, radiators, conservator, bushings; isolator, breaker, CT, CVT, arrester on stands; lattice gantry and mast; bus on posts; jumpers; RMU, VCB / LT / relay panel lineups; battery bank; GIS bay; SF6 duct; crane; fence with sliding gate; oil pit; fire wall; trench; earth grid).
+- Parameters: type, voltage, transformer rating (snaps to the nearest offered for the type and voltage, a note says so), transformers 1-3 (limit by type), incoming line bays 1-2, outgoing MV feeders 0-12, 12 facility switches (fence, fire wall, oil pit, capacitor bank, trench, crane, masts, lights, earthing, NER, aux room, stay wire), gate / doors open %, wall colour, cutaway (view only).
+- Rules in ONE place (`YARD`, `RULE`, tables `DIST`, `POWER` in `gen/substation.js`), indicative: yard data per voltage (phase spacing 1300 / 3000 mm, bay 8000 / 13500 mm, terminal height 3.8 / 5.2 m, bus 6.1 / 8.0 m, sectional clearance 2.8 / 4.0 m from the Indian-practice tables found in a web search, fence margin), transformer gap 5 / 8 m with fire wall and 10 / 15 m without, oil pit = transformer + 1 m each side sized for 100 % of the oil at 40 % void, indoor clearances 0.9 m to walls and 1.5 m in front of MV panels, panel counts from transformers and feeders.
+- Files new: `core/engine/gen/substation.js`, `core/engine/visual/substation.js`, `core/library/components/substation.json`, `core/tests/substation.mjs` (in `npm test`), `tools/_bundle.mjs`, `tools/build-substation-page.mjs`, `tools/substation-page.template.html`, `models/electrical/substation/` (README, model.json, `parametric/substation.html`).
+- Changed: `core/engine/generate.js`, `core/engine/visual/index.js` (register), `core/library/components/manifest.json`, `core/tests/visual.mjs` (a component may declare `maxSize`, the substation needs 150 m), `core/package.json`, `commerce/catalog/catalog.json`, `site/index.html`, `docs/MODEL-ROADMAP.md`, `docs/STUDIO.md`, `core/README.md`, `tools/README.md`.
+- Tested (Node): `cd core && npm test` passes. `tests/substation.mjs`: 400+ combinations of type x voltage x first/last rating x 1-3 transformers x facilities on/off build (plan, shapes, mesh); soft rules (voltage and rating snap, transformer limit); pole single / H; kiosk compartments; indoor rooms and panel counts and soak pit volume; AIS bay order, heights, clearances, fire wall, oil pit, pit spacing, control building; GIS bays, ducts, hall, crane; facility switches; openings really empty; collision no self conflict; gate moves; ports; mesh 60+ parts; cutaway changes only the mesh. Visual test: winding 100 %.
+- Tested (Node, no browser): the library page script ran with real three.js r128 (stubbed renderer and exporters): switching between all five types, voltage, rating, facilities, gate open, cutaway, and the ZIP download worked without error. The mesh was rendered with a small software renderer for all five types (pole, kiosk, indoor, AIS 33/11, AIS 132/33, GIS) and looked right.
+- NOT tested: a real browser (WebGL, orbit, files opened in Blender) and the Studio UI (properties panel with 22 parameters, drag and drop, speed with 140k triangles).
+- Limits: all sizes are generic and indicative (not a maker's catalogue or a code); single bus only; GIS cable basement not modelled; the collision shapes are boxes and cylinders (a real GIS bay or a lattice gantry is much more complex, a mesh-based collision shape type would be the better way); no drawing sheet; the room is one BOM line (the page spec has a bill of quantities).
+- Delete nothing.
+
+
+## Changes in round 8 (new library item: generator room)
+New component `generator-room` (generator component + real mesh, same pattern as the door): a complete diesel generator room, also published as a library page.
+- What it is: floor slab, walls with REAL openings (wall pieces around doors, louvres, exhaust sleeve, fuel sleeve, so a pipe can pass through), roof with parapet, 1 or 2 DG sets (62.5-1000 kVA) on plinths, exhaust line (bellows, silencer, lagged pipe, sleeve, stack, rain cap; or straight up through the roof), day fuel tank with bund and fuel lines, inlet louvres + discharge louvre, double-leaf door or rolling shutter per set, personnel door, AMF panel, battery rack + charger, cable trench with cover plates and cables, monorail hoist, fire kit, lights, extraction fan, acoustic lining, floor drain.
+- Parameters: set rating, number of sets, room length / width / height (0 = automatic smallest that fits the set, clearances, air and exhaust), wall thickness, exhaust exit, stack height (0 = guideline), day tank hours, 9 facility switches, equipment door type, doors open %, wall / set colour, cutaway (view only: hides roof and front wall, collision unchanged).
+- Rules live in ONE place, `RULE` in `core/engine/gen/genroom.js` (indicative, generic envelopes): 1200 mm side clearance, radiator end 1500, alternator end 1800 (+900 with battery rack), height from the exhaust line (min 3600), air 0.025 m3/s per kVA, inlet louvre 4 m/s on 50 % free area, discharge up to 8 m/s, bund 110 % of the tank, stack 0.2 x sqrt(kVA) m above the roof, hoist = half the set mass. Too-small room sizes are raised to the minimum and a note appears in Details (soft rule, like the door); warnings (for example a stack below the guideline) show in Details and block the download on the library page.
+- Files: `core/engine/gen/genroom.js` (plan(), rules, collision shapes, ports, details), `core/engine/visual/genroom.js` (real mesh), `core/library/components/generator-room.json`, `core/tests/genroom.mjs` (new, in `npm test`), `tools/generator-room-page.template.html` + `tools/build-generator-room-page.mjs` (build the library page by inlining the engine: ONE geometry source), `models/electrical/generator-room/` (README, model.json, `parametric/generator-room.html`).
+- Changed: `core/engine/generate.js` (registers `genroom`), `core/engine/visual/index.js` (registers the builder; builder parts may now carry `opacity`), `core/library/components/manifest.json`, `core/tests/visual.mjs` (flange-face check only for flange ports), `core/package.json`, `commerce/catalog/catalog.json`, `site/index.html`, `docs/MODEL-ROADMAP.md`, `core/README.md`, `tools/README.md`.
+- Ports: B (bottom, `face-v`), T (roof top, `face-v`), L / R (ends, `face-h`). Origin = bottom centre of the outer footprint. The room stands on a slab by its B port.
+- Tested (Node): `cd core && npm test` passes. `tests/genroom.mjs`: all 88 combinations (11 sizes x 1/2 sets x wall/roof exit x door/shutter) build; rule numbers (room size, louvre area, discharge speed, bund 110 %, door size, hoist); openings are really empty and walls beside them solid; doors swing outward; ports; no self-conflict; mesh has 35+ parts and stays under 20 m; cutaway changes only the mesh. `tests/visual.mjs`: triangle winding 100 % for the room.
+- Tested (Node, no browser): the library page script was run with real three.js r128 (stubbed renderer / exporters): it builds, the checks list is filled, rule violations block the download, ZIP download runs without error. The mesh was also rendered with a small software renderer (cutaway, 1 and 2 sets, roof exit, shutter) and looked right.
+- NOT tested: a real browser (WebGL drawing, orbit controls, real GLB / OBJ files opened in Blender) and the Studio UI itself (properties panel with 22 parameters, drag and drop); the Studio draws the same mesh through the same code path as the door and the pump, but this was not clicked through.
+- Limits: sizes are generic envelopes, not a maker's catalogue; air / fuel / stack numbers are rules of thumb (the stack formula is the common DG guideline, check the local rule); the exhaust collision shape is straight pieces (the mesh has real bends); no drawing sheet and no BOM lines for the facilities yet (the room is one BOM line); the room needs 12 m or more for 2 x 1000 kVA, that is expected.
+- Delete nothing.
+
+
+## Changes in round 7 (real shapes: the visual mesh layer, Stage 1 step 1)
+Problem: every Studio part was only a box or a cylinder (a bend was two straight arms, a valve a drum with a box). The owner wants the ORIGINAL shape.
+Now each component has two layers:
+- **Collision layer** (unchanged): the boxes / cylinders in the component json. Conflict check, snap, BOM and the drawing sheet still use them, so nothing that worked before changes.
+- **Visual layer** (new): `core/engine/visual/*.js` builds a real triangle mesh from the SAME parameters and ports. The Studio 3D view and GLB / OBJ export draw this mesh.
+  Components without a builder are drawn from their own solid boxes / cylinders (walls, slabs, columns, beams, door, window, gate, table, plinth), so every component always has a visual mesh.
+
+Parts with a real shape now (15 of 26): DI pipe (hollow barrel), flanged DI pipe, 90 and 45 degree bend (real torus arc), tee, reducer (smooth cone), blind flange,
+dismantling joint (tie rods and nuts), gate valve (body, bonnet, rising stem that follows `open`, handwheel), butterfly valve (gear box, extension spindle, handwheel, disc), swing check valve (cover with bolts, flap),
+ball valve (round body, lever), air valve (flange, body, hood), electromagnetic flow meter, pump set (base frame, casing, motor).
+Every flange is a real EN 1092-2 ring: bore, bolt circle with real bolt holes (count and size by DN and PN), hub. Sizes: `core/engine/visual/flange-data.js` (same numbers as `library/standards/en1092-2-flanges.json`; a test keeps them equal).
+Ports are untouched: `core/tests/visual.mjs` checks that every flange face lies exactly on its port plane, so auto-attach behaves as before.
+
+Files: `core/engine/mesh.js` (mesh builder: box, lathe, tube/sweep, cone, hex ...), `core/engine/visual/index.js` (registry, `visualOf`, `visualItems`), `flange.js`, `flange-data.js`, `pipework.js`, `valves.js`, `pump.js`, `util.js`, `core/engine/colors.js`,
+`core/engine/export.js` (GLB / OBJ take the visual mesh, materials double sided), `app/studio.js` (draws the visual mesh, geometry cached per part), `core/tests/visual.mjs` (in `npm test`).
+How to give a component a real shape: write a builder `function ({ params, ports, color }) -> [{ name, geo, color }]` in `core/engine/visual/`, register it in `BUILDERS` in `visual/index.js` under the component id (or name it in the json: `"visual": "<builder>"`), run `npm test`.
+The builder must keep every end face on its port plane (the test fails otherwise). The generators live in `visual/`, not in `gen/`, because `gen/` already holds the collision generators (door, bend, tee, reducer).
+
+Honest limits (found while doing this):
+- **Pump envelope is wrong for a real pump.** `end-suction-pump.json` puts both flange ports on one horizontal line at 0.8 DN above the floor, the motor box on top, and it is only a generic envelope. A real flange of DN100 is 220 mm wide, so its lower edge sits 30 mm BELOW the base frame.
+  The visual follows the ports (as asked) and shows this. A true end-suction pump (suction on the shaft axis, discharge pointing up, motor beside) needs different ports, so it must be a new component (see the next prompt).
+- Not done in this step: chambers, supports, gasket, bolts (Stage 2); staircase, railing, rebar models are not in the Studio yet; the library page (`models/*/parametric/*.html`) still has its own geometry (Stage 7 joins them).
+- Tee: the branch bore is not cut through the run wall (looks right from outside and through the flange bores, not from deep inside).
+- Butterfly disc is drawn 35 degrees open; a fully open disc reaches past the flange faces.
+- Size of the meshes: about 6 000 triangles per fitting (a flange alone is 2 100). Fine for a pump line; for 500+ objects the Stage 7 job (instancing, level of detail) is needed.
+- Sizes are a generic envelope (face to face, outer diameters from the component tables), not a maker's catalogue.
+- Tested: `cd core && npm test` (120 checks in `visual.mjs`: every component of the manifest has a non-empty mesh and bounding box, finite numbers, winding matches normals, all table sizes and PN10 / PN16, flange faces on ports, bolt hole count and face area, GLB / OBJ).
+  The viewer code was also run in Node with real three.js r128 (BufferGeometry, EdgesGeometry, mesh matrices) and the shapes were rendered to PNG with a software renderer. NOT tested: the Studio page in a real browser (no browser here), speed with many objects.
+
+## Changes in round 6 (bill of materials)
+- New: `core/engine/bom.js`, `core/engine/xlsx.js`, `core/tests/bom.mjs`
+- Changed: `app/index.html` (BOM button, dialog, styles), `app/studio.js` (BOM dialog, CSV / XLSX download, arrow keys ignored while the dialog is open), `core/package.json` (npm test runs bom.mjs), `core/schema/component.schema.json` and `core/export/formats.json` (documentation only), `README.md`, `app/README.md`, `core/README.md`, `docs/STUDIO.md`
+- Changed (one added key each, ids unchanged, old assemblies open as before): `di-bend-90`, `di-bend-45`, `di-tee`, `gate-valve`, `door`, `rcc-column` got `"bom": { "ignore": [...] }`
+- Tested: `cd core && npm test` passes. `tests/bom.mjs` (114 checks): the pump station example gives exactly 12 objects, 11 lines, bend quantity 2, pipes 1.2 / 1.5 / 2 m and 4.7 m total; grouping rules; every library component gives a BOM line; rebar schedule of the column example (6 bars 17.52 m 27.65 kg, 19 stirrups 21.812 m 8.61 kg, total 36.26 kg, checked by hand); CSV (quotes, line breaks, formula-looking names); XLSX (own ZIP reader with CRC check, XML well-formedness, values, second sheet). Also run by hand, outside `npm test`: the XLSX opened in LibreOffice (converted to PDF and CSV) and read with openpyxl, values identical; the real Studio page in headless Chromium (Load example, click BOM, read the dialog, click both download buttons and read the downloaded files, key guard, Escape, empty design message, HTML in the design name).
+- Not tested: Microsoft Excel itself; Safari, Firefox and phones; the browser run used a software renderer and three.js r128 served locally instead of the CDN; very large designs (800 objects were tested in the engine only).
+- Nothing to delete.
+
+## Changes in this update (round 5: pump house parts and easy placement)
+- New: `core/engine/gen/pipefit.js`, `core/tests/pipefit.mjs`, `core/examples/pump-station-line.assembly.json`; components `di-bend-90`, `di-bend-45`, `di-tee`, `di-reducer`, `dismantling-joint`, `check-valve`, `butterfly-valve`, `rcc-beam`, `pump-plinth`
+- Changed: `core/engine/snap.js` (fromPort / toPort, inlet preference, `bind`, `rotateInstance`), `core/engine/generate.js` (registers bend, tee, reducer), `core/rules/port-rules.json` (bearing <-> face-v), `core/package.json` (npm test runs pipefit tests), `app/studio.js` (new ids, port choice, move / turn buttons, arrow keys, "Move with attached parts" on by default), `app/README.md`, `core/README.md`, `docs/STUDIO.md`
+- Tested: `cd core && npm test` = 110 checks (42 new): every size of every new part, all four turns, size adoption, reducer rules, port choice, rotate keeps links, beam on column, a 9-part pump line with no overlap.
+- Not tested in a real browser: the new buttons, the port select, arrow keys, and how bends look in 3D (syntax check only).
+- Nothing to delete.
+
+## Changes in round 4 (open the Studio easily)
+- New: `start-studio.bat` (Windows: starts a local server and opens the Studio)
+- Changed: `site/index.html` ("Open 3D Studio" button + menu link to `../app/index.html`), `app/index.html` (clear red message for `file://` and for three.js load failure, "Getting started" box, three.js is loaded before `studio.js`), `app/studio.js` (hides the Getting started box once a model is placed; names the failing JSON file), `README.md`, `app/README.md`, `docs/STUDIO.md`
+- Nothing to delete, nothing to move. No engine change; `cd core && npm test` still passes.
+- Not tested in a real browser: the new button, banner and start box were checked only by syntax check.
+
+## Changes in round 3 (rich door)
+- New: `core/engine/generate.js` (generator registry), `core/engine/gen/door.js` (door generator), `core/tests/door.mjs` (door tests)
+- Replaced: `core/library/components/door.json` (same id `door`; rich options, see "Door" above)
+- Changed: `core/engine/assembly.js` (choice parameters with `options`, generator components, per-shape `color` / `opacity`, cylinder `rot`),
+  `core/engine/snap.js` (ports come from the generator), `core/engine/export.js` (GLB uses shape colour), `core/schema/component.schema.json`,
+  `core/package.json` (npm test runs the door tests too), `app/studio.js` (choice selects in Properties, Details list, glass colour/opacity),
+  `app/README.md`, `core/README.md`, `docs/STUDIO.md`
+- `manifest.json` already contains `door`, so no id was added.
+- Nothing to delete.
+
+## Changes in round 2
+- New: `core/engine/io.js`, `core/engine/export.js`
+- Changed: `app/index.html`, `app/studio.js` (conflict panel, Save, Load, Export GLB, Export OBJ, design name), `core/tests/run.mjs` (12 new checks),
+  `app/README.md`, `docs/STUDIO.md`, `core/README.md`
+- Nothing to delete.
+
+## Changes in round 1 (earlier)
+- New: `app/index.html`, `app/studio.js`, `app/README.md`, `docs/STUDIO.md`; components brick-wall, boundary-wall, door, window, gate, rcc-slab, end-suction-pump
+- Changed: `core/engine/snap.js` (autoAttach prefers the port facing the selected one), `core/rules/port-rules.json` (face-h, face-v), `README.md`, `core/README.md`
 
 ## Changes in round 8 (new library item: generator room)
 New component `generator-room` (generator component + real mesh, same pattern as the door): a complete diesel generator room, also published as a library page.

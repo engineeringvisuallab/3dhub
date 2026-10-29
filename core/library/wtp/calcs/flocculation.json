@@ -1,0 +1,131 @@
+{
+  "stage": "flocculation",
+  "calculations": [
+    {
+      "id": "floc-detention",
+      "name": "Detention time and volume",
+      "inputs": [
+        "flow",
+        "time"
+      ],
+      "outputs": [
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "floc-G-Gt-taper",
+      "name": "G, Gt and compartment tapering",
+      "inputs": [
+        "power",
+        "volume",
+        "time"
+      ],
+      "outputs": [
+        "G_by_stage"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "baffle-channel-design",
+      "name": "Baffle spacing, channel width and head loss",
+      "inputs": [
+        "flow",
+        "velocity",
+        "turns"
+      ],
+      "outputs": [
+        "channel_geometry",
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "paddle-power",
+      "name": "Paddle area, speed and power",
+      "inputs": [
+        "G",
+        "volume"
+      ],
+      "outputs": [
+        "paddle_area",
+        "rpm",
+        "power"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "turbine-power",
+      "name": "Turbine diameter and power",
+      "inputs": [
+        "G",
+        "volume"
+      ],
+      "outputs": [
+        "diameter",
+        "power"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "jet-orifice-floc",
+      "name": "Jet or orifice flocculator",
+      "inputs": [
+        "flow",
+        "orifice_head"
+      ],
+      "outputs": [
+        "orifice_size",
+        "G"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "gravel-bed-floc",
+      "name": "Gravel-bed flocculator",
+      "inputs": [
+        "flow",
+        "grain_size",
+        "bed_depth"
+      ],
+      "outputs": [
+        "area",
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "transfer-velocity",
+      "name": "Transfer velocity to settling",
+      "inputs": [
+        "flow",
+        "section"
+      ],
+      "outputs": [
+        "velocity_check"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "compartment-count",
+      "name": "Number of compartments",
+      "inputs": [
+        "flow",
+        "G_range"
+      ],
+      "outputs": [
+        "compartments"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

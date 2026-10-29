@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Substation</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:12px 20px 24px;max-width:1280px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(70vh,640px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range],input[type=number]{width:100%;box-sizing:border-box}select,input[type=number]{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}.chips{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;margin-top:6px}.chips label{margin:0;color:var(--fg)}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.note::before{content:"ℹ ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}h3{margin:14px 0 0;font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Electrical substation – parametric</h1><p>EVLab 3D Hub · pole-mounted, compact kiosk, indoor building, outdoor AIS yard and GIS hall · transformers, bays, bus, gantries, control building, fence, oil pits, fire walls, trenches, masts, earthing</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<div class="row"><div><label>Substation type<select id="type"></select></label></div><div><label>Voltage kV<select id="kv"></select></label></div></div>
+<div class="row"><div><label>Transformer rating<select id="rating"></select></label></div><div><label>Transformers<input type="number" id="tx" min="1" max="3" step="1" value="2"></label></div></div>
+<div class="row"><div><label>Incoming line bays<input type="number" id="lines" min="1" max="2" step="1" value="2"></label></div><div><label>Outgoing MV feeders<input type="number" id="feeders" min="0" max="12" step="1" value="4"></label></div><div><label>Wall colour<select id="wallColor"><option value="grey">Grey</option><option value="cream">Cream</option><option value="white">White</option></select></label></div></div>
+<h3>Facilities (grey = not used by this type)</h3>
+<div class="chips" id="fac"></div>
+<label>Gate and doors open: <b id="ov">0 %</b><input type="range" id="open" min="0" max="100" step="10" value="0"></label>
+<label><input type="checkbox" id="cut" checked> Cutaway: hide roofs and front walls (view only)</label>
+<ul id="chk"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json with bill of quantities)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Generic, indicative sizes and clearances from common practice (phase-phase, phase-earth and sectional clearance, bay width, bus and terminal heights, transformer gap, oil pit, fire wall). They are not a maker's catalogue and not a code. Confirm with the utility standard, the equipment makers and the fire authority before construction. Not included: double bus / transfer bus, relay settings, cable and earth-mat calculation, lightning protection zone check.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+/*ENGINE*/
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const FAC=[['fence','Fence + gate'],['fireWall','Fire wall'],['oilPit','Oil soak pit'],['capBank','Capacitor bank'],['trench','Cable trench'],['crane','Crane / hoist'],['mast','Lightning masts'],['flood','Flood lights / lights'],['earth','Earthing'],['ner','Neutral earthing resistor'],['aux','Aux room + AC board'],['stay','Stay wire']];
+const USED={pole:['fence','earth','stay'],kiosk:['fence','earth'],indoor:['fence','oilPit','capBank','trench','crane','earth','flood'],ais:['fence','fireWall','oilPit','capBank','trench','mast','flood','earth','ner','aux'],gis:['fence','fireWall','oilPit','capBank','trench','crane','mast','flood','earth','ner','aux']};
+const BOM={'tx-power':'Power transformer','tx-dist':'Distribution transformer','eq-cb':'Circuit breaker (3-phase)','eq-iso':'Isolator (3-phase)','eq-ct':'Current transformer (3-phase)','eq-pt':'Voltage transformer / CVT (3-phase)','eq-la':'Surge arrester (3-phase)','busbar':'Bus (3-phase)','gantry-col':'Gantry column','gantry-beam':'Gantry beam','mast':'Lightning mast','flood-pole':'Flood light pole','rmu':'Ring main unit','vcb-row':'MV switchgear lineup (panels in opts)','lt-row':'LT panel lineup','relay-row':'Relay / control panel lineup','battery-bank':'Battery bank','charger':'DC charger','capbank-yard':'Capacitor bank (yard)','capbank-panel':'Capacitor bank panel','oil-pit':'Oil soak pit','fire-wall':'Fire wall','ner':'Neutral earthing resistor','gis-bay':'GIS bay','line-tower':'Line tower','crane':'Overhead crane','hoist':'Chain hoist','pole':'Pole','do-fuse':'DO fuse set','la-pole':'Arrester set (pole)','gate':'Sliding gate','earth-pit':'Earth pit'};
+Object.keys(SUB.TYPES).forEach(k=>$('type').add(new Option(SUB.TYPES[k],k)));$('type').value='ais';
+FAC.forEach(([k,l])=>{const d=document.createElement('label');d.id='l_'+k;d.innerHTML='<input type="checkbox" id="'+k+'" checked> '+l;$('fac').appendChild(d)});
+const lab=v=>v>=1000?(v/1000)+' MVA':v+' kVA';
+function fillKv(){const t=$('type').value,old=$('kv').value;$('kv').innerHTML='';Object.keys(SUB.ALLOWED[t]).forEach(k=>$('kv').add(new Option(k+' kV',k)));if([...$('kv').options].some(o=>o.value==old))$('kv').value=old;fillRating()}
+function fillRating(){const t=$('type').value,kv=$('kv').value,old=+$('rating').value||0,l=SUB.ALLOWED[t][kv];$('rating').innerHTML='';l.forEach(v=>$('rating').add(new Option(lab(v),v)));const best=l.reduce((a,b)=>Math.abs(b-old)<Math.abs(a-old)?b:a);$('rating').value=old?best:l[Math.floor(l.length/2)];
+ const mx={pole:1,kiosk:1,indoor:2,ais:3,gis:3}[t];$('tx').max=mx;if(+$('tx').value>mx)$('tx').value=mx;$('lines').disabled=!(t=='ais'||t=='gis');$('feeders').disabled=(t=='pole'||t=='kiosk');
+ FAC.forEach(([k])=>{const u=USED[t].includes(k);$(k).disabled=!u;$('l_'+k).style.opacity=u?1:.4})}
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,2000);S.add(new THREE.AmbientLight(0xffffff,.7));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(30,60,40);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+let model=null,spec={},bad=false;
+function params(){const p={type:$('type').value,kv:$('kv').value,rating:+$('rating').value,tx:+$('tx').value||1,lines:+$('lines').value||1,feeders:+$('feeders').value||0,wallColor:$('wallColor').value,open:+$('open').value,cutaway:$('cut').checked?1:0};
+ FAC.forEach(([k])=>p[k]=($(k).checked&&!$(k).disabled)?1:0);return p}
+function mesh(part){const n=part.geo.pos.length/3,pos=new Float32Array(n*3),nor=new Float32Array(n*3),a=part.geo.pos,b=part.geo.nor;
+ for(let i=0;i<n;i++){pos[3*i]=a[3*i]/1000;pos[3*i+1]=a[3*i+2]/1000;pos[3*i+2]=-a[3*i+1]/1000;nor[3*i]=b[3*i];nor[3*i+1]=b[3*i+2];nor[3*i+2]=-b[3*i+1]}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('normal',new THREE.BufferAttribute(nor,3));g.setIndex(part.geo.idx);
+ const o=part.opacity===undefined?1:part.opacity,m=new THREE.MeshStandardMaterial({color:part.color,metalness:.2,roughness:.65,side:THREE.DoubleSide,transparent:o<1,opacity:o});
+ const me=new THREE.Mesh(g,m);me.name=part.name;return me}
+function build(fit){
+ const p=params(),P=SUB.plan(p);$('ov').textContent=p.open+' %';
+ if(model){S.remove(model);model.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}
+ model=new THREE.Group();model.name='Substation_'+P.type+'_'+P.kv.replace('/','-')+'kV_'+lab(P.rating).replace(' ','');const parts=SUB.substation({params:p});parts.forEach(q=>model.add(mesh(q)));S.add(model);
+ const bb=new THREE.Box3().setFromObject(model),c=bb.getCenter(new THREE.Vector3()),sz=bb.getSize(new THREE.Vector3()),r=Math.max(sz.x,sz.y,sz.z);
+ if(fit&&ctl){ctl.target.copy(c);C.position.set(c.x+r*.9,c.y+r*.8,c.z+r*1.0);C.far=r*20;C.updateProjectionMatrix()}
+ const lines=SUB.describe(p),ck=lines.map(t=>[!/^Warning/.test(t),t]);
+ bad=ck.some(c=>!c[0]);$('chk').innerHTML=ck.map(c=>'<li'+(c[0]?(/^Note/.test(c[1])?' class="note"':''):' class="bad"')+'>'+c[1]+'</li>').join('');$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';
+ const kinds={};P.items.forEach(i=>{if(BOM[i.kind])kinds[BOM[i.kind]]=(kinds[BOM[i.kind]]||0)+(i.kind=='vcb-row'||i.kind=='lt-row'||i.kind=='relay-row'?(i.opts.n||1):1)});
+ spec={name:model.name,units:'mm',type:SUB.TYPES[P.type],parameters:p,voltage:P.kv+' kV',transformer:{count:P.tx,rating_kVA:P.rating},plot_mm:[Math.round(P.Lo),Math.round(P.Wo)],details:lines,
+  bill_of_quantities:kinds,oil_pits:P.extra.pits||[],parts:parts.map(q=>q.name),notes:P.notes,
+  standards:'Generic indicative sizes and clearances. Confirm with the utility standard, the equipment makers and the fire authority.'}}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{
+ const was=$('cut').checked;if(was){$('cut').checked=false;build(false)}   // the download always holds the complete room (roof and all walls)
+ const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];model.updateMatrixWorld(true);
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(was){$('cut').checked=true;build(false)}
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{
+ const was=$('cut').checked;if(was){$('cut').checked=false;build(false)}   // the download always holds the complete room (roof and all walls)
+ const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];model.updateMatrixWorld(true);
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(was){$('cut').checked=true;build(false)}
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['type','kv','rating','tx','lines','feeders','wallColor','cut',...FAC.map(f=>f[0])].forEach(i=>$(i).onchange=()=>{if(i=='type')fillKv();else if(i=='kv')fillRating();build(i=='type'||i=='kv'||i=='rating')});$('open').oninput=()=>build(false);
+addEventListener('resize',size);fillKv();size();build(true);loop();
+</script></body></html>

@@ -39,7 +39,7 @@ for (const id of ids) {
   try { parts = visualOf(c, p); } catch (e) { t(`${id}: visual mesh builds`, false, e.message); continue; }
   const b = partsBounds(parts), s = meshStats(parts), size = b.max.map((v, k) => v - b.min[k]);
   t(`${id}: non-empty visual mesh (${parts.length} parts, ${s.tris} triangles)${BUILDERS[c.visual || id] ? ' [real shape]' : ' [from solid shapes]'}`, parts.length > 0 && s.tris > 0);
-  t(`${id}: valid bounding box`, size.every(v => Number.isFinite(v) && v > 1 && v < 20000), size.map(Math.round).join(' x '));
+  t(`${id}: valid bounding box`, size.every(v => Number.isFinite(v) && v > 1 && v < (c.maxSize || 20000)), size.map(Math.round).join(' x '));
   t(`${id}: finite numbers, unit normals, winding matches normals`, s.nonFinite === 0 && s.unitNormals > 0.999 && s.windingOK > 0.995, `winding ${(s.windingOK * 100).toFixed(1)}%`);
 }
 

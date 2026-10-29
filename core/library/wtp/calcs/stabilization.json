@@ -1,0 +1,85 @@
+{
+  "stage": "stabilization",
+  "calculations": [
+    {
+      "id": "langelier-index",
+      "name": "Langelier saturation index",
+      "inputs": [
+        "ph",
+        "alkalinity",
+        "calcium",
+        "tds",
+        "temperature"
+      ],
+      "outputs": [
+        "lsi"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ryznar-ccpp",
+      "name": "Ryznar index and CCPP",
+      "inputs": [
+        "water_chemistry"
+      ],
+      "outputs": [
+        "ryznar",
+        "ccpp"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "final-ph-target",
+      "name": "Final pH and alkali dose",
+      "inputs": [
+        "lsi_target"
+      ],
+      "outputs": [
+        "alkali_dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "co2-dose",
+      "name": "CO2 dose",
+      "inputs": [
+        "alkalinity",
+        "ph"
+      ],
+      "outputs": [
+        "co2_dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "inhibitor-dose",
+      "name": "Phosphate or silicate inhibitor dose",
+      "inputs": [
+        "water_chemistry",
+        "dose_range"
+      ],
+      "outputs": [
+        "dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "fluoride-dose",
+      "name": "Fluoride dose and feed",
+      "inputs": [
+        "natural_fluoride",
+        "target"
+      ],
+      "outputs": [
+        "chemical_rate"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

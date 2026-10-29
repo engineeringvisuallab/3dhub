@@ -1,0 +1,131 @@
+{
+  "stage": "plant-hydraulics-layout",
+  "calculations": [
+    {
+      "id": "hydraulic-profile",
+      "name": "Hydraulic profile (water levels through the plant)",
+      "inputs": [
+        "flows",
+        "losses"
+      ],
+      "outputs": [
+        "level_profile"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "unit-to-unit-loss",
+      "name": "Head loss between units",
+      "inputs": [
+        "flow",
+        "pipes"
+      ],
+      "outputs": [
+        "losses"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "flow-split-accuracy",
+      "name": "Flow splitting to parallel units",
+      "inputs": [
+        "unit_count",
+        "weirs"
+      ],
+      "outputs": [
+        "split_accuracy"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "bypass-overflow-levels",
+      "name": "Bypass and overflow levels",
+      "inputs": [
+        "profile"
+      ],
+      "outputs": [
+        "levels"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "yard-pipe-sizing",
+      "name": "Yard pipe sizes and velocities",
+      "inputs": [
+        "flows"
+      ],
+      "outputs": [
+        "diameters"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "site-grading-flood",
+      "name": "Site grading and flood level",
+      "inputs": [
+        "topography",
+        "flood"
+      ],
+      "outputs": [
+        "site_levels"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "plant-land-area",
+      "name": "Total land area",
+      "inputs": [
+        "unit_footprints",
+        "spacing"
+      ],
+      "outputs": [
+        "land_area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "layout-fit",
+      "name": "Layout fit against available land",
+      "inputs": [
+        "footprints",
+        "site"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "expansion-allowance",
+      "name": "Space reserved for expansion",
+      "inputs": [
+        "phases"
+      ],
+      "outputs": [
+        "reserved_area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "plant-transient-check",
+      "name": "Start-stop hydraulic check",
+      "inputs": [
+        "operating_modes"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

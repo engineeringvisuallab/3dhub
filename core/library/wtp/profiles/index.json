@@ -1,0 +1,30 @@
+{
+  "profiles": [
+    {
+      "id": "ref-awwa-2005",
+      "file": "ref-awwa-2005.json",
+      "status": "empty-awaiting-criteria"
+    },
+    {
+      "id": "ref-delft-2004",
+      "file": "ref-delft-2004.json",
+      "status": "empty-awaiting-criteria"
+    },
+    {
+      "id": "ref-schulz-okun-1984",
+      "file": "ref-schulz-okun-1984.json",
+      "status": "empty-awaiting-criteria"
+    },
+    {
+      "id": "who-gdwq",
+      "file": null,
+      "status": "needs-reference",
+      "note": "WHO drinking-water guideline values: add the reference before creating this profile."
+    },
+    {
+      "id": "custom-template",
+      "file": "_template.json",
+      "status": "template"
+    }
+  ]
+}

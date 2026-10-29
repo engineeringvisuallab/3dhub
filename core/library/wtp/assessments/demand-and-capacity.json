@@ -1,0 +1,96 @@
+{
+  "id": "demand-and-capacity",
+  "title": "Demand and capacity assessment",
+  "category": "capacity",
+  "purpose": "Fix the design flow, phasing and how the design behaves as capacity changes.",
+  "calculations": [
+    {
+      "id": "population-forecast",
+      "name": "Population forecast methods",
+      "inputs": [
+        "census",
+        "growth_rates"
+      ],
+      "outputs": [
+        "population_series"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "per-capita-demand",
+      "name": "Demand components",
+      "inputs": [
+        "categories"
+      ],
+      "outputs": [
+        "average_demand"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "peaking-factors",
+      "name": "Peak day and peak hour factors",
+      "inputs": [
+        "demand_pattern"
+      ],
+      "outputs": [
+        "peak_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "losses-and-plant-use",
+      "name": "Distribution loss and plant own use (backwash, desludging)",
+      "inputs": [
+        "percentages"
+      ],
+      "outputs": [
+        "gross_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "design-flow-horizon",
+      "name": "Design flow, design period and phasing",
+      "inputs": [
+        "forecasts"
+      ],
+      "outputs": [
+        "design_flow",
+        "phases"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "capacity-scaling",
+      "name": "Behaviour at low and high capacity (what changes if capacity halves or doubles)",
+      "inputs": [
+        "flow_range",
+        "train"
+      ],
+      "outputs": [
+        "type_switch_points",
+        "footprint_curve"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "turn-down",
+      "name": "Turn-down and minimum flow",
+      "inputs": [
+        "minimum_flow"
+      ],
+      "outputs": [
+        "feasible_range"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

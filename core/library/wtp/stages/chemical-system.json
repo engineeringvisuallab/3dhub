@@ -1,0 +1,169 @@
+{
+  "id": "chemical-system",
+  "name": "Chemicals and chemical feeding",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/chemical-house",
+  "order": 15,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.4 Chemicals and Chemical Feeding"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.15 Chemicals and Chemical Handling"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.8"
+    }
+  ],
+  "groups": [
+    {
+      "id": "coagulants",
+      "name": "Coagulants",
+      "types": [
+        {
+          "id": "aluminium-sulfate",
+          "name": "Aluminium sulfate (alum)",
+          "status": "listed"
+        },
+        {
+          "id": "ferric-chloride",
+          "name": "Ferric chloride",
+          "status": "listed"
+        },
+        {
+          "id": "ferric-sulfate",
+          "name": "Ferric sulfate",
+          "status": "listed"
+        },
+        {
+          "id": "polyaluminium-chloride",
+          "name": "Polyaluminium chloride",
+          "status": "listed"
+        },
+        {
+          "id": "ferrous-sulfate-lime",
+          "name": "Ferrous sulfate with lime",
+          "status": "listed"
+        },
+        {
+          "id": "natural-coagulants",
+          "name": "Natural coagulants",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "aids-and-ph",
+      "name": "Coagulant aids and pH control",
+      "types": [
+        {
+          "id": "polyelectrolyte-polymer",
+          "name": "Polyelectrolyte (polymer)",
+          "status": "listed"
+        },
+        {
+          "id": "activated-silica",
+          "name": "Activated silica",
+          "status": "listed"
+        },
+        {
+          "id": "lime",
+          "name": "Lime",
+          "status": "listed"
+        },
+        {
+          "id": "caustic-soda",
+          "name": "Caustic soda",
+          "status": "listed"
+        },
+        {
+          "id": "soda-ash",
+          "name": "Soda ash",
+          "status": "listed"
+        },
+        {
+          "id": "carbon-dioxide",
+          "name": "Carbon dioxide",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Chemical storage",
+      "types": [
+        {
+          "id": "dry-bag-storage",
+          "name": "Dry bag storage",
+          "status": "listed"
+        },
+        {
+          "id": "bulk-liquid-tank",
+          "name": "Bulk liquid tank",
+          "status": "listed"
+        },
+        {
+          "id": "day-tank",
+          "name": "Day tank",
+          "status": "listed"
+        },
+        {
+          "id": "cylinder-ton-container-store",
+          "name": "Chlorine cylinder or ton-container store",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "dry-feed",
+      "name": "Dry feeders",
+      "types": [
+        {
+          "id": "volumetric-dry-feeder",
+          "name": "Volumetric dry feeder",
+          "status": "listed"
+        },
+        {
+          "id": "gravimetric-dry-feeder",
+          "name": "Gravimetric dry feeder",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "solution-feed",
+      "name": "Solution feeders",
+      "types": [
+        {
+          "id": "metering-pump-feeder",
+          "name": "Metering pump feeder",
+          "status": "listed"
+        },
+        {
+          "id": "constant-head-orifice-feeder",
+          "name": "Constant-head orifice feeder",
+          "status": "listed"
+        },
+        {
+          "id": "gravity-pot-feeder",
+          "name": "Gravity pot feeder",
+          "status": "listed"
+        },
+        {
+          "id": "saturated-solution-feeder",
+          "name": "Saturated solution feeder",
+          "status": "listed"
+        },
+        {
+          "id": "injector-eductor",
+          "name": "Injector or eductor",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

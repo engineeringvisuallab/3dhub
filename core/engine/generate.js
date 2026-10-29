@@ -4,8 +4,9 @@
 import * as door from './gen/door.js';
 import * as pipefit from './gen/pipefit.js';
 import * as genroom from './gen/genroom.js';
+import * as substation from './gen/substation.js';
 
-const GEN = { door, bend: pipefit.bend, tee: pipefit.tee, reducer: pipefit.reducer, genroom };
+const GEN = { door, bend: pipefit.bend, tee: pipefit.tee, reducer: pipefit.reducer, genroom, substation };
 const memo = new Map();
 
 export function validateParams(comp, params) {

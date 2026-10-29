@@ -184,6 +184,25 @@
    "desc": "Complete diesel generator room: 62.5 to 1000 kVA, 1 or 2 sets, louvres, exhaust, day tank with bund, panel, battery, cable trench, hoist, fire kit. Room size follows the set and failing designs are blocked."
   },
   {
+   "id": "substation",
+   "name": "Electrical Substation (5 types)",
+   "tier": "free",
+   "category": "Electrical",
+   "path": "models/electrical/substation",
+   "page": "parametric/substation.html",
+   "tags": [
+    "substation",
+    "transformer",
+    "AIS",
+    "GIS",
+    "33 kV",
+    "132 kV",
+    "11 kV",
+    "kiosk"
+   ],
+   "desc": "Pole-mounted, compact kiosk, indoor, outdoor AIS and GIS substation, 11/0.4, 33/11 and 132/33 kV, with transformers, bays, gantries, control building, fence, oil pits, fire walls, masts and earthing."
+  },
+  {
    "id": "hdd-crossing",
    "name": "HDD Highway and Railway Crossing",
    "tier": "free",
@@ -233,6 +252,40 @@
     "road"
    ],
    "desc": "One pipe under a highway by six methods. Casing, pits and cover checks, 3D, plan, long section, cross section, detail, and GLB, OBJ, STL, DXF and SVG downloads."
+  },
+  {
+   "id": "culvert",
+   "name": "Culvert (box, pipe, arch)",
+   "tier": "free",
+   "category": "Civil",
+   "path": "models/civil/culvert",
+   "page": "parametric/culvert.html",
+   "tags": [
+    "culvert",
+    "box culvert",
+    "pipe culvert",
+    "arch",
+    "headwall",
+    "drainage"
+   ],
+   "desc": "Box, pipe or arch culvert under a road embankment with headwalls, wingwalls, aprons, Manning flow check, 3D, plan, long and cross sections, and GLB, OBJ, STL, DXF and SVG downloads."
+  },
+  {
+   "id": "bridge",
+   "name": "Road Bridge (slab, T-girder, PSC, steel)",
+   "tier": "free",
+   "category": "Civil",
+   "path": "models/civil/bridge",
+   "page": "parametric/bridge.html",
+   "tags": [
+    "bridge",
+    "girder",
+    "pier",
+    "abutment",
+    "pile",
+    "river"
+   ],
+   "desc": "Multi-span road bridge over a river with girders, deck, piers, piles and abutments. HFL, scour and freeboard checks, 3D, plan, elevation, sections, and GLB, OBJ, STL, DXF and SVG downloads."
   },
   {
    "id": "ipr-pump-house",
@@ -300,6 +353,22 @@
     "handwheel"
    ],
    "desc": "RCC chamber around one flanged gate valve. Chamber size follows DN and PN, minimum clearances are checked, the valve opens and closes in 3D. Plan, elevations and sections, DXF, IFC and STL."
+  },
+  {
+   "id": "parshall-flume",
+   "name": "Parshall Flume",
+   "tier": "free",
+   "category": "Water treatment",
+   "path": "models/treatment-plant/rapid-mix",
+   "page": "parametric/parshall-flume.html",
+   "tags": [
+    "flow measurement",
+    "rapid mix",
+    "3 in to 8 ft",
+    "Utah EC-323",
+    "Arkon"
+   ],
+   "desc": "Open-channel flow measuring flume, 13 standard sizes from 3 in to 8 ft. Free-flow discharge from Table 3, free or submerged check against the transition submergence, installation levels, rule-based checks, 3D with ON/OFF groups. Plan, elevations and sections, DXF, IFC and STL. Submerged-flow discharge is not calculated yet."
   }
  ]
 }

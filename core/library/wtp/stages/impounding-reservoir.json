@@ -1,0 +1,200 @@
+{
+  "id": "impounding-reservoir",
+  "name": "Impounding reservoir (raw water storage)",
+  "model": "intake",
+  "modelPath": "models/intake/impounding-reservoir",
+  "order": 1,
+  "needsReference": true,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.4 Intake Facilities (reservoir intakes only)"
+    }
+  ],
+  "groups": [
+    {
+      "id": "storage-structure",
+      "name": "Storage structure",
+      "types": [
+        {
+          "id": "earth-fill-dam",
+          "name": "Earth-fill dam",
+          "status": "listed"
+        },
+        {
+          "id": "rockfill-dam",
+          "name": "Rockfill dam",
+          "status": "listed"
+        },
+        {
+          "id": "concrete-gravity-dam",
+          "name": "Concrete gravity dam",
+          "status": "listed"
+        },
+        {
+          "id": "arch-dam",
+          "name": "Arch dam",
+          "status": "listed"
+        },
+        {
+          "id": "buttress-dam",
+          "name": "Buttress dam",
+          "status": "listed"
+        },
+        {
+          "id": "off-stream-storage",
+          "name": "Off-stream (pumped-fill) storage",
+          "status": "listed"
+        },
+        {
+          "id": "balancing-reservoir",
+          "name": "Balancing reservoir",
+          "status": "listed"
+        },
+        {
+          "id": "river-weir-barrage",
+          "name": "River weir or barrage",
+          "status": "listed"
+        },
+        {
+          "id": "check-dam",
+          "name": "Check dam",
+          "status": "listed"
+        },
+        {
+          "id": "subsurface-dam",
+          "name": "Sub-surface dam",
+          "status": "listed"
+        },
+        {
+          "id": "sand-dam",
+          "name": "Sand dam",
+          "status": "listed"
+        },
+        {
+          "id": "natural-lake-storage",
+          "name": "Natural lake storage",
+          "status": "listed"
+        },
+        {
+          "id": "rainwater-catchment",
+          "name": "Rainwater catchment storage",
+          "status": "listed"
+        },
+        {
+          "id": "aquifer-storage-recovery",
+          "name": "Aquifer storage and recovery",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "spillway",
+      "name": "Spillway",
+      "types": [
+        {
+          "id": "ogee-spillway",
+          "name": "Ogee spillway",
+          "status": "listed"
+        },
+        {
+          "id": "chute-spillway",
+          "name": "Chute spillway",
+          "status": "listed"
+        },
+        {
+          "id": "side-channel-spillway",
+          "name": "Side-channel spillway",
+          "status": "listed"
+        },
+        {
+          "id": "morning-glory-spillway",
+          "name": "Morning-glory (shaft) spillway",
+          "status": "listed"
+        },
+        {
+          "id": "labyrinth-spillway",
+          "name": "Labyrinth spillway",
+          "status": "listed"
+        },
+        {
+          "id": "siphon-spillway",
+          "name": "Siphon spillway",
+          "status": "listed"
+        },
+        {
+          "id": "fuse-plug-spillway",
+          "name": "Fuse-plug spillway",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "outlet-works",
+      "name": "Outlet works",
+      "types": [
+        {
+          "id": "intake-tower-outlet",
+          "name": "Intake tower",
+          "status": "listed"
+        },
+        {
+          "id": "sluice-outlet",
+          "name": "Sluice outlet",
+          "status": "listed"
+        },
+        {
+          "id": "selective-multilevel-draw-off",
+          "name": "Selective multi-level draw-off",
+          "status": "listed"
+        },
+        {
+          "id": "bottom-scour-outlet",
+          "name": "Bottom scour outlet",
+          "status": "listed"
+        },
+        {
+          "id": "conduit-through-dam",
+          "name": "Conduit through dam",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "quality-management",
+      "name": "Reservoir quality and sediment management",
+      "types": [
+        {
+          "id": "destratification-mixer",
+          "name": "Destratification by mixer",
+          "status": "listed"
+        },
+        {
+          "id": "destratification-air-diffusion",
+          "name": "Destratification by air diffusion",
+          "status": "listed"
+        },
+        {
+          "id": "algae-control",
+          "name": "Algae control",
+          "status": "listed"
+        },
+        {
+          "id": "catchment-protection",
+          "name": "Catchment protection",
+          "status": "listed"
+        },
+        {
+          "id": "sediment-flushing",
+          "name": "Sediment flushing or sluicing",
+          "status": "listed"
+        },
+        {
+          "id": "fish-pass",
+          "name": "Fish pass",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

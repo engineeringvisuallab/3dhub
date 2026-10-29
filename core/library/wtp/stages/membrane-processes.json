@@ -1,0 +1,89 @@
+{
+  "id": "membrane-processes",
+  "name": "Membrane processes",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/membrane",
+  "order": 13,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.13 Membrane Processes"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.18"
+    }
+  ],
+  "groups": [
+    {
+      "id": "low-pressure",
+      "name": "Low-pressure membranes",
+      "types": [
+        {
+          "id": "microfiltration",
+          "name": "Microfiltration",
+          "status": "listed"
+        },
+        {
+          "id": "ultrafiltration",
+          "name": "Ultrafiltration",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "high-pressure",
+      "name": "High-pressure membranes",
+      "types": [
+        {
+          "id": "nanofiltration",
+          "name": "Nanofiltration",
+          "status": "listed"
+        },
+        {
+          "id": "reverse-osmosis",
+          "name": "Reverse osmosis",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "electrical",
+      "name": "Electrically driven",
+      "types": [
+        {
+          "id": "electrodialysis",
+          "name": "Electrodialysis",
+          "status": "listed"
+        },
+        {
+          "id": "electrodialysis-reversal",
+          "name": "Electrodialysis reversal",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "configuration",
+      "name": "Configuration",
+      "types": [
+        {
+          "id": "pressurized-hollow-fiber",
+          "name": "Pressurized hollow fibre",
+          "status": "listed"
+        },
+        {
+          "id": "submerged-hollow-fiber",
+          "name": "Submerged hollow fibre",
+          "status": "listed"
+        },
+        {
+          "id": "spiral-wound",
+          "name": "Spiral wound",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

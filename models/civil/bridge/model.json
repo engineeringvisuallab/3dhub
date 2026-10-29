@@ -1,0 +1,141 @@
+{
+  "id": "bridge",
+  "name": "Road bridge over a river (slab, T-girder, PSC I-girder, steel girder)",
+  "category": "civil/bridge",
+  "tier": "free",
+  "units": "m",
+  "unitsNote": "all dimensions in metres",
+  "parameters": {
+    "type": [
+      "slab",
+      "tee",
+      "psc",
+      "steel"
+    ],
+    "n": {
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    "Ls": {
+      "unit": "m",
+      "min": 6,
+      "max": 60,
+      "step": 1,
+      "default": 25
+    },
+    "car": {
+      "unit": "m",
+      "min": 3.5,
+      "max": 16,
+      "step": 0.5,
+      "default": 7.5
+    },
+    "fp": {
+      "unit": "m",
+      "min": 0,
+      "max": 3,
+      "step": 0.25,
+      "default": 1.5
+    },
+    "Hr": {
+      "unit": "m",
+      "min": 3,
+      "max": 25,
+      "step": 0.5,
+      "default": 9
+    },
+    "hfl": {
+      "unit": "m",
+      "min": 1,
+      "max": 20,
+      "step": 0.5,
+      "default": 6
+    },
+    "Hb": {
+      "unit": "m",
+      "min": 1,
+      "max": 8,
+      "step": 0.5,
+      "default": 3
+    },
+    "sc": {
+      "unit": "m",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "default": 3
+    },
+    "Lp": {
+      "unit": "m",
+      "min": 6,
+      "max": 45,
+      "step": 1,
+      "default": 20
+    },
+    "pd": {
+      "unit": "m",
+      "min": 0.6,
+      "max": 2,
+      "step": 0.1,
+      "default": 1
+    },
+    "sp": {
+      "unit": "m",
+      "min": 1.8,
+      "max": 3.6,
+      "step": 0.1,
+      "default": 2.5
+    },
+    "fb": {
+      "unit": "m",
+      "min": 0.3,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.2
+    }
+  },
+  "rules": {
+    "freeboard": "soffit - HFL >= minimum freeboard",
+    "span": "indicative max span: slab 12, T-girder 25, PSC I 45, steel 60 m",
+    "pile": "pile embedment below scour level (length + 2 m) >= 10 x diameter (indicative)",
+    "bed": "bed width between bank toes >= 5 m",
+    "depth": "girder depth: T L/12 (min 1.0), PSC L/18 (min 1.2), steel L/22 (min 0.9); slab thickness L/20 (min 0.3)"
+  },
+  "ports": [],
+  "clearance": [],
+  "groups": [
+    "DECK",
+    "GIRDER",
+    "PIER",
+    "ABUT",
+    "PILE",
+    "BEARING",
+    "RAILING",
+    "WATER",
+    "ROAD",
+    "GROUND"
+  ],
+  "animations": [],
+  "drawings": [
+    "plan",
+    "elevation",
+    "cross section at mid-span",
+    "cross section at pier",
+    "typical deck / girder detail"
+  ],
+  "exports": [
+    "glb",
+    "obj",
+    "stl",
+    "dxf 3DFACE",
+    "dxf drawings",
+    "svg drawings",
+    "spec.json",
+    "zip"
+  ],
+  "files": {
+    "parametric": "parametric/bridge.html"
+  }
+}

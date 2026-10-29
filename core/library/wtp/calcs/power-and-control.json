@@ -1,0 +1,131 @@
+{
+  "stage": "power-and-control",
+  "calculations": [
+    {
+      "id": "connected-load",
+      "name": "Connected load and maximum demand",
+      "inputs": [
+        "equipment_list"
+      ],
+      "outputs": [
+        "kw",
+        "kva"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "transformer-sizing",
+      "name": "Transformer rating",
+      "inputs": [
+        "kva",
+        "diversity"
+      ],
+      "outputs": [
+        "rating"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "dg-set-sizing",
+      "name": "DG set sizing for essential loads",
+      "inputs": [
+        "essential_load",
+        "starting"
+      ],
+      "outputs": [
+        "kva"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "cable-sizing",
+      "name": "Cable size and voltage drop",
+      "inputs": [
+        "current",
+        "length"
+      ],
+      "outputs": [
+        "cable",
+        "voltage_drop"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "power-factor-correction",
+      "name": "Power factor correction",
+      "inputs": [
+        "kw",
+        "power_factor"
+      ],
+      "outputs": [
+        "kvar"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "earthing-lightning",
+      "name": "Earthing and lightning protection",
+      "inputs": [
+        "site"
+      ],
+      "outputs": [
+        "spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "instrument-schedule",
+      "name": "Instrument list and ranges",
+      "inputs": [
+        "process"
+      ],
+      "outputs": [
+        "instrument_schedule"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "control-loops",
+      "name": "Control loops (dose pacing, level, filter control)",
+      "inputs": [
+        "process"
+      ],
+      "outputs": [
+        "loop_spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "scada-io",
+      "name": "I/O count and architecture",
+      "inputs": [
+        "instruments"
+      ],
+      "outputs": [
+        "io_list"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "energy-per-m3",
+      "name": "Whole-plant energy per cubic metre",
+      "inputs": [
+        "loads"
+      ],
+      "outputs": [
+        "kwh_per_m3"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "stage": "buildings-and-site",
+  "calculations": [
+    {
+      "id": "room-area-schedule",
+      "name": "Room areas and schedule",
+      "inputs": [
+        "functions",
+        "staff"
+      ],
+      "outputs": [
+        "area_schedule"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "structural-grid",
+      "name": "Structural grid and spans",
+      "inputs": [
+        "layout"
+      ],
+      "outputs": [
+        "grid"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ventilation-daylight",
+      "name": "Ventilation and daylight",
+      "inputs": [
+        "rooms"
+      ],
+      "outputs": [
+        "openings"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "crane-lifting",
+      "name": "Crane and lifting arrangements",
+      "inputs": [
+        "heaviest_item"
+      ],
+      "outputs": [
+        "crane_spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "road-geometry",
+      "name": "Road width and turning",
+      "inputs": [
+        "vehicles"
+      ],
+      "outputs": [
+        "geometry"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "stormwater-sizing",
+      "name": "Storm drainage sizing",
+      "inputs": [
+        "rainfall",
+        "area"
+      ],
+      "outputs": [
+        "drain_sizes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "fire-protection-design",
+      "name": "Fire water and extinguishers",
+      "inputs": [
+        "buildings"
+      ],
+      "outputs": [
+        "spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "perimeter-security",
+      "name": "Perimeter and security",
+      "inputs": [
+        "site"
+      ],
+      "outputs": [
+        "spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "staff-sanitation",
+      "name": "Sanitation and water for staff",
+      "inputs": [
+        "staff"
+      ],
+      "outputs": [
+        "demand"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

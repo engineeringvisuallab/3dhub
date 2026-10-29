@@ -1,0 +1,107 @@
+{
+  "id": "process-selection",
+  "title": "Treatment train selection assessment",
+  "category": "process",
+  "purpose": "Choose and justify the treatment train from source quality, capacity, land, skill and cost.",
+  "calculations": [
+    {
+      "id": "source-to-train",
+      "name": "Candidate trains from the source class",
+      "inputs": [
+        "source_class"
+      ],
+      "outputs": [
+        "trains"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "contaminant-to-process",
+      "name": "Process per target contaminant",
+      "inputs": [
+        "contaminants"
+      ],
+      "outputs": [
+        "processes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "barrier-count",
+      "name": "Multi-barrier check",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "treatability-test-plan",
+      "name": "Jar test, settling column and pilot plan",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "test_plan"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "option-scoring",
+      "name": "Multi-criteria scoring",
+      "inputs": [
+        "criteria",
+        "weights"
+      ],
+      "outputs": [
+        "ranked_options"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "selection-sensitivity",
+      "name": "What changes the ranking",
+      "inputs": [
+        "scores"
+      ],
+      "outputs": [
+        "switch_points"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "land-constrained-selection",
+      "name": "Compact train choice when land is limited",
+      "inputs": [
+        "land_area",
+        "flow"
+      ],
+      "outputs": [
+        "compact_trains"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "skill-constrained-selection",
+      "name": "Simple train choice when skill or power is limited",
+      "inputs": [
+        "skill_level",
+        "power_supply"
+      ],
+      "outputs": [
+        "simple_trains"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

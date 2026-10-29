@@ -1,0 +1,129 @@
+{
+  "id": "chemical-process-assessment",
+  "title": "Chemical process assessment",
+  "category": "chemical-process",
+  "purpose": "Check the chemistry of dosing, reactions, residuals and by-products.",
+  "calculations": [
+    {
+      "id": "coagulation-window",
+      "name": "Coagulation window (pH against dose)",
+      "inputs": [
+        "jar_data"
+      ],
+      "outputs": [
+        "window"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "alkalinity-consumption",
+      "name": "Alkalinity consumption and pH drop",
+      "inputs": [
+        "dose"
+      ],
+      "outputs": [
+        "ph"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "dose-ranges",
+      "name": "Dose range for minimum, average and maximum quality",
+      "inputs": [
+        "quality_range"
+      ],
+      "outputs": [
+        "dose_range"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "compatibility-matrix",
+      "name": "Chemical compatibility",
+      "inputs": [
+        "chemicals"
+      ],
+      "outputs": [
+        "matrix"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chlorine-speciation",
+      "name": "Free chlorine speciation by pH and temperature",
+      "inputs": [
+        "ph",
+        "temperature"
+      ],
+      "outputs": [
+        "hocl_fraction"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "residual-targets",
+      "name": "Residual targets at plant exit and in the network",
+      "inputs": [
+        "targets"
+      ],
+      "outputs": [
+        "dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-inventory",
+      "name": "Inventory and delivery",
+      "inputs": [
+        "use"
+      ],
+      "outputs": [
+        "storage"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "hazard-classification",
+      "name": "Chemical hazard classes",
+      "inputs": [
+        "chemicals"
+      ],
+      "outputs": [
+        "hazard_class"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "byproduct-formation",
+      "name": "Chlorination and ozone by-products",
+      "inputs": [
+        "precursors"
+      ],
+      "outputs": [
+        "byproducts"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "finished-water-stability",
+      "name": "Finished-water stability",
+      "inputs": [
+        "chemistry"
+      ],
+      "outputs": [
+        "indices"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

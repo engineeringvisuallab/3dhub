@@ -1,0 +1,122 @@
+{
+  "id": "oxidation-and-disinfection",
+  "name": "Oxidation and disinfection",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/disinfection",
+  "order": 11,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.10 Oxidation and Disinfection, ch.29 Ultraviolet Disinfection"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.12"
+    },
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.4 Disinfection"
+    }
+  ],
+  "groups": [
+    {
+      "id": "disinfectants",
+      "name": "Disinfectants",
+      "types": [
+        {
+          "id": "chlorine-gas",
+          "name": "Chlorine gas",
+          "status": "listed"
+        },
+        {
+          "id": "sodium-hypochlorite",
+          "name": "Sodium hypochlorite",
+          "status": "listed"
+        },
+        {
+          "id": "calcium-hypochlorite",
+          "name": "Calcium hypochlorite (bleaching powder)",
+          "status": "listed"
+        },
+        {
+          "id": "onsite-electrochlorination",
+          "name": "On-site electrochlorination",
+          "status": "listed"
+        },
+        {
+          "id": "chloramination",
+          "name": "Chloramination",
+          "status": "listed"
+        },
+        {
+          "id": "chlorine-dioxide",
+          "name": "Chlorine dioxide",
+          "status": "listed"
+        },
+        {
+          "id": "ozone",
+          "name": "Ozone",
+          "status": "listed"
+        },
+        {
+          "id": "ultraviolet",
+          "name": "Ultraviolet",
+          "status": "listed"
+        },
+        {
+          "id": "solar-disinfection",
+          "name": "Solar disinfection",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "chemical-oxidants",
+      "name": "Chemical oxidants",
+      "types": [
+        {
+          "id": "potassium-permanganate",
+          "name": "Potassium permanganate",
+          "status": "listed"
+        },
+        {
+          "id": "hydrogen-peroxide-oxidation",
+          "name": "Hydrogen peroxide",
+          "status": "listed"
+        },
+        {
+          "id": "advanced-oxidation",
+          "name": "Advanced oxidation (ozone-peroxide, UV-peroxide)",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "contact-and-feed",
+      "name": "Contact tanks and feed equipment",
+      "types": [
+        {
+          "id": "baffled-serpentine-contact-tank",
+          "name": "Baffled serpentine contact tank",
+          "status": "listed"
+        },
+        {
+          "id": "pipe-contact",
+          "name": "Pipe contact",
+          "status": "listed"
+        },
+        {
+          "id": "vacuum-solution-chlorinator",
+          "name": "Vacuum solution-feed chlorinator",
+          "status": "listed"
+        },
+        {
+          "id": "direct-gas-feed-chlorinator",
+          "name": "Direct gas-feed chlorinator",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

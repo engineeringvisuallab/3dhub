@@ -1,0 +1,114 @@
+{
+  "id": "buildings-and-site",
+  "name": "Buildings and site works",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/site-works",
+  "order": 22,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.18 Architectural Design, ch.23 Site Selection and Plant Arrangement, ch.30 Water Treatment Plant Security"
+    }
+  ],
+  "groups": [
+    {
+      "id": "process-buildings",
+      "name": "Process buildings",
+      "types": [
+        {
+          "id": "filter-gallery-building",
+          "name": "Filter gallery building",
+          "status": "listed"
+        },
+        {
+          "id": "chemical-house-building",
+          "name": "Chemical house",
+          "status": "listed"
+        },
+        {
+          "id": "pump-house-building",
+          "name": "Pump house",
+          "status": "listed"
+        },
+        {
+          "id": "control-room-building",
+          "name": "Control room",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "support-buildings",
+      "name": "Support buildings",
+      "types": [
+        {
+          "id": "laboratory-building",
+          "name": "Laboratory",
+          "status": "listed"
+        },
+        {
+          "id": "administration-building",
+          "name": "Administration building",
+          "status": "listed"
+        },
+        {
+          "id": "workshop-store",
+          "name": "Workshop and store",
+          "status": "listed"
+        },
+        {
+          "id": "guard-house",
+          "name": "Guard house",
+          "status": "listed"
+        },
+        {
+          "id": "staff-quarters",
+          "name": "Staff quarters",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "site-works",
+      "name": "Site works",
+      "types": [
+        {
+          "id": "internal-roads",
+          "name": "Internal roads",
+          "status": "listed"
+        },
+        {
+          "id": "stormwater-drainage",
+          "name": "Stormwater drainage",
+          "status": "listed"
+        },
+        {
+          "id": "boundary-wall-and-gate",
+          "name": "Boundary wall and gate",
+          "status": "listed"
+        },
+        {
+          "id": "fire-protection",
+          "name": "Fire protection",
+          "status": "listed"
+        },
+        {
+          "id": "site-lighting",
+          "name": "Site lighting",
+          "status": "listed"
+        },
+        {
+          "id": "landscaping",
+          "name": "Landscaping",
+          "status": "listed"
+        },
+        {
+          "id": "security-system",
+          "name": "Security system",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "stage": "intake-structure",
+  "calculations": [
+    {
+      "id": "intake-design-flow",
+      "name": "Intake design flow and redundancy",
+      "inputs": [
+        "plant_flow",
+        "losses",
+        "reliability"
+      ],
+      "outputs": [
+        "intake_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "water-level-set",
+      "name": "Minimum, normal and flood water levels",
+      "inputs": [
+        "stage_record",
+        "return_period"
+      ],
+      "outputs": [
+        "level_set"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "intake-port-sizing",
+      "name": "Intake port or screen sizing",
+      "inputs": [
+        "intake_flow",
+        "approach_velocity",
+        "open_area_ratio"
+      ],
+      "outputs": [
+        "port_area",
+        "port_count"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "approach-velocity-check",
+      "name": "Approach and through-screen velocity check",
+      "inputs": [
+        "flow",
+        "area",
+        "debris"
+      ],
+      "outputs": [
+        "velocity",
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "submergence-vortex",
+      "name": "Minimum submergence and vortex check",
+      "inputs": [
+        "flow",
+        "pipe_diameter"
+      ],
+      "outputs": [
+        "min_submergence"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "wet-well-sizing",
+      "name": "Intake sump or wet-well sizing",
+      "inputs": [
+        "flow",
+        "pump_cycle_time"
+      ],
+      "outputs": [
+        "volume",
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "well-yield-drawdown",
+      "name": "Well yield and drawdown",
+      "inputs": [
+        "transmissivity",
+        "storativity",
+        "pumping_rate",
+        "time"
+      ],
+      "outputs": [
+        "drawdown",
+        "specific_capacity"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "well-interference",
+      "name": "Well spacing and interference",
+      "inputs": [
+        "well_positions",
+        "aquifer_parameters"
+      ],
+      "outputs": [
+        "combined_drawdown"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "gallery-length",
+      "name": "Infiltration gallery length",
+      "inputs": [
+        "yield",
+        "permeability",
+        "head"
+      ],
+      "outputs": [
+        "gallery_length"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "sediment-exclusion",
+      "name": "Sediment exclusion and flushing",
+      "inputs": [
+        "sediment_concentration",
+        "velocity"
+      ],
+      "outputs": [
+        "settling_chamber",
+        "flush_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "intake-head-loss",
+      "name": "Intake head loss and level",
+      "inputs": [
+        "flow",
+        "geometry"
+      ],
+      "outputs": [
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "seawater-entrainment-screen",
+      "name": "Entrainment and impingement screening",
+      "inputs": [
+        "velocity",
+        "slot_width"
+      ],
+      "outputs": [
+        "entrainment_risk"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

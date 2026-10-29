@@ -1,0 +1,73 @@
+{
+  "stage": "screening",
+  "calculations": [
+    {
+      "id": "screen-opening",
+      "name": "Bar spacing and open area",
+      "inputs": [
+        "debris_class",
+        "flow"
+      ],
+      "outputs": [
+        "spacing",
+        "open_area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "screen-head-loss",
+      "name": "Clean and clogged head loss",
+      "inputs": [
+        "velocity",
+        "bar_shape",
+        "blockage"
+      ],
+      "outputs": [
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "screen-channel-size",
+      "name": "Screen channel size",
+      "inputs": [
+        "flow",
+        "velocity"
+      ],
+      "outputs": [
+        "width",
+        "depth"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "screenings-quantity",
+      "name": "Screenings quantity and handling",
+      "inputs": [
+        "flow",
+        "screen_opening"
+      ],
+      "outputs": [
+        "volume_per_day"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "cleaning-drive-duty",
+      "name": "Rake or drive duty",
+      "inputs": [
+        "screen_area",
+        "debris_load"
+      ],
+      "outputs": [
+        "drive_power"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

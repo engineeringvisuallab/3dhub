@@ -1,0 +1,119 @@
+{
+  "id": "residuals",
+  "name": "Residuals and washwater management",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/residuals",
+  "order": 19,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.17 Process Residuals"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.14 Residuals Management"
+    }
+  ],
+  "groups": [
+    {
+      "id": "thickening",
+      "name": "Thickening",
+      "types": [
+        {
+          "id": "gravity-thickener",
+          "name": "Gravity thickener",
+          "status": "listed"
+        },
+        {
+          "id": "dissolved-air-thickener",
+          "name": "Dissolved air thickener",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "dewatering",
+      "name": "Dewatering",
+      "types": [
+        {
+          "id": "sand-drying-bed",
+          "name": "Sand drying bed",
+          "status": "listed"
+        },
+        {
+          "id": "sludge-lagoon",
+          "name": "Sludge lagoon",
+          "status": "listed"
+        },
+        {
+          "id": "belt-filter-press",
+          "name": "Belt filter press",
+          "status": "listed"
+        },
+        {
+          "id": "centrifuge",
+          "name": "Centrifuge",
+          "status": "listed"
+        },
+        {
+          "id": "plate-filter-press",
+          "name": "Plate filter press",
+          "status": "listed"
+        },
+        {
+          "id": "screw-press",
+          "name": "Screw press",
+          "status": "listed"
+        },
+        {
+          "id": "geotextile-tube",
+          "name": "Geotextile tube",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "washwater",
+      "name": "Washwater",
+      "types": [
+        {
+          "id": "washwater-equalization-tank",
+          "name": "Washwater equalization tank",
+          "status": "listed"
+        },
+        {
+          "id": "washwater-recycle",
+          "name": "Washwater recycle",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "disposal",
+      "name": "Disposal and reuse",
+      "types": [
+        {
+          "id": "landfill-disposal",
+          "name": "Landfill",
+          "status": "listed"
+        },
+        {
+          "id": "land-application",
+          "name": "Land application",
+          "status": "listed"
+        },
+        {
+          "id": "sewer-discharge",
+          "name": "Sewer discharge",
+          "status": "listed"
+        },
+        {
+          "id": "beneficial-reuse",
+          "name": "Beneficial reuse",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

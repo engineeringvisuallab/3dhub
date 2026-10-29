@@ -1,0 +1,188 @@
+{
+  "stage": "oxidation-and-disinfection",
+  "calculations": [
+    {
+      "id": "ct-log-inactivation",
+      "name": "CT value and log inactivation",
+      "inputs": [
+        "residual",
+        "contact_time",
+        "temperature",
+        "ph"
+      ],
+      "outputs": [
+        "ct",
+        "log_inactivation"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chlorine-demand-dose",
+      "name": "Chlorine demand and dose",
+      "inputs": [
+        "demand",
+        "residual_target"
+      ],
+      "outputs": [
+        "dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chlorine-feed-rate",
+      "name": "Feed rate and chemical consumption",
+      "inputs": [
+        "flow",
+        "dose"
+      ],
+      "outputs": [
+        "kg_per_day",
+        "storage_days"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "baffling-factor-t10",
+      "name": "Contact time with baffling factor",
+      "inputs": [
+        "volume",
+        "flow",
+        "baffle_factor"
+      ],
+      "outputs": [
+        "t10"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "contact-tank-sizing",
+      "name": "Contact tank size",
+      "inputs": [
+        "t10",
+        "flow",
+        "baffle_factor"
+      ],
+      "outputs": [
+        "volume",
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chloramine-ratio",
+      "name": "Chlorine-to-ammonia ratio",
+      "inputs": [
+        "free_chlorine",
+        "ammonia"
+      ],
+      "outputs": [
+        "dose_ratio"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chlorine-dioxide-dose",
+      "name": "ClO2 dose and by-product check",
+      "inputs": [
+        "demand",
+        "chlorite_limit"
+      ],
+      "outputs": [
+        "dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ozone-dose-contactor",
+      "name": "Ozone dose and contactor",
+      "inputs": [
+        "demand",
+        "ct"
+      ],
+      "outputs": [
+        "dose",
+        "contactor_volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "uv-dose-reactor",
+      "name": "UV dose, transmittance and reactors",
+      "inputs": [
+        "flow",
+        "uv_transmittance",
+        "target_dose"
+      ],
+      "outputs": [
+        "lamps",
+        "reactors",
+        "power"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "dbp-screening",
+      "name": "Disinfection by-product screening",
+      "inputs": [
+        "toc",
+        "dose",
+        "time"
+      ],
+      "outputs": [
+        "dbp_estimate"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "hypochlorite-decay",
+      "name": "Hypochlorite strength decay and storage",
+      "inputs": [
+        "strength",
+        "temperature",
+        "days"
+      ],
+      "outputs": [
+        "usable_strength"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "electrochlorination-power",
+      "name": "Salt and power for on-site chlorination",
+      "inputs": [
+        "chlorine_need"
+      ],
+      "outputs": [
+        "salt",
+        "kwh"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chlorine-room-safety",
+      "name": "Chlorine room ventilation and scrubber",
+      "inputs": [
+        "inventory",
+        "room"
+      ],
+      "outputs": [
+        "air_changes",
+        "scrubber_size"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

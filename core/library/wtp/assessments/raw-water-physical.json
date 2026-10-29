@@ -1,0 +1,121 @@
+{
+  "id": "raw-water-physical",
+  "title": "Raw water physical assessment",
+  "category": "physical",
+  "purpose": "Characterise the physical quality of the source and what it means for treatment.",
+  "calculations": [
+    {
+      "id": "turbidity-statistics",
+      "name": "Turbidity and suspended solids statistics (mean, percentiles, peaks)",
+      "inputs": [
+        "turbidity_series"
+      ],
+      "outputs": [
+        "statistics"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "turbidity-vs-flow",
+      "name": "Seasonal and storm turbidity relation",
+      "inputs": [
+        "turbidity_series",
+        "flow_series"
+      ],
+      "outputs": [
+        "design_peak_turbidity"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "particle-size-settling",
+      "name": "Particle size distribution and settling-column result",
+      "inputs": [
+        "particle_size_distribution",
+        "settling_test"
+      ],
+      "outputs": [
+        "removal_curve"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "colour-uv254",
+      "name": "Colour and UV254",
+      "inputs": [
+        "colour",
+        "uv254"
+      ],
+      "outputs": [
+        "organic_matter_indicator"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "temperature-effect",
+      "name": "Temperature effect on viscosity and settling",
+      "inputs": [
+        "temperature_series"
+      ],
+      "outputs": [
+        "viscosity",
+        "design_temperature"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "conductivity-tds",
+      "name": "Conductivity and TDS",
+      "inputs": [
+        "conductivity"
+      ],
+      "outputs": [
+        "tds"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "odour-taste-screen",
+      "name": "Odour and taste screening",
+      "inputs": [
+        "threshold_odour_number"
+      ],
+      "outputs": [
+        "control_needed"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "floating-debris-load",
+      "name": "Floating material and debris load",
+      "inputs": [
+        "debris_survey"
+      ],
+      "outputs": [
+        "screening_class"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "source-physical-class",
+      "name": "Source quality class from the physical record",
+      "inputs": [
+        "statistics",
+        "profile"
+      ],
+      "outputs": [
+        "source_class"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

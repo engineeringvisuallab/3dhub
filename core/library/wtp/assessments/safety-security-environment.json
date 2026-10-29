@@ -1,0 +1,117 @@
+{
+  "id": "safety-security-environment",
+  "title": "Safety, security and environmental assessment",
+  "category": "safety",
+  "purpose": "Identify hazards to people, neighbours and the environment.",
+  "calculations": [
+    {
+      "id": "chlorine-release-consequence",
+      "name": "Chlorine release consequence screening",
+      "inputs": [
+        "inventory"
+      ],
+      "outputs": [
+        "affected_zone"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "confined-space-access",
+      "name": "Confined space and access",
+      "inputs": [
+        "structures"
+      ],
+      "outputs": [
+        "hazards"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "fire-explosion",
+      "name": "Chemical and electrical fire risk",
+      "inputs": [
+        "chemicals",
+        "electrical"
+      ],
+      "outputs": [
+        "risk"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "noise-vibration",
+      "name": "Noise and vibration",
+      "inputs": [
+        "equipment"
+      ],
+      "outputs": [
+        "levels"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "discharge-sludge-impact",
+      "name": "Discharge and sludge environmental impact",
+      "inputs": [
+        "residuals"
+      ],
+      "outputs": [
+        "impact"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "eia-screening",
+      "name": "Environmental impact screening",
+      "inputs": [
+        "project"
+      ],
+      "outputs": [
+        "category"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "land-take",
+      "name": "Land take and resettlement",
+      "inputs": [
+        "footprint"
+      ],
+      "outputs": [
+        "area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "security-vulnerability",
+      "name": "Security vulnerability",
+      "inputs": [
+        "site"
+      ],
+      "outputs": [
+        "findings"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "climate-risk",
+      "name": "Flood, drought, heat and power risk",
+      "inputs": [
+        "hazards"
+      ],
+      "outputs": [
+        "risk"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

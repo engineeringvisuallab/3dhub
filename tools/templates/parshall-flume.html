@@ -1,0 +1,109 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Parshall Flume</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--wn:#b45309;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--wn:#f0a24b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--wn:#f0a24b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}
+main{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:12px 20px 24px;max-width:1240px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(62vh,560px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range],input[type=number]{width:100%;box-sizing:border-box}select,input[type=number]{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}.chips{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px}.chips label{margin:0;color:var(--fg)}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}#res li::before{content:"• ";color:var(--ac)}#chk li::before{content:"✔ ";color:var(--ok)}#chk li.w::before{content:"▲ ";color:var(--wn)}#chk li.w{color:var(--wn)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}h2{font-size:14px;margin:14px 0 0}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Parshall Flume – parametric</h1><p>EVLab 3D Hub · treatment plant, flow measurement and rapid mixing · sizes 3 in to 8 ft (Utah EC-323) with the Arkon prefabricated series as a cross-check</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<label>Throat width W<select id="sz"></select></label>
+<label>Design flow Q: <b id="Qv"></b><input type="range" id="Q"></label>
+<label>Downstream depth above crest (used as Hb): <b id="Hdv"></b><input type="range" id="Hd"></label>
+<div class="row"><div><label>Channel width: <b id="Wcv"></b><input type="range" id="Wc"></label></div></div>
+<label>Straight approach length: <b id="apv"></b><input type="range" id="ap" min="4" max="40" step="1" value="15"></label>
+<div class="row"><div><label>Largest debris (mm)<input type="number" id="deb" value="10" min="0" step="5"></label></div><div><label>Built throat width (mm, optional)<input type="number" id="bw" min="0" step="1" placeholder="as specified"></label></div></div>
+<label><input type="checkbox" id="gate"> Flume is close to a gate</label>
+<h2>Groups (view ON / OFF)</h2><div class="chips" id="grps"></div>
+<h2>Results</h2><ul id="res"></ul>
+<h2>Checks</h2><ul id="chk"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Free-flow discharge is Table 3 of Utah EC-323 (power-law fit of the printed table, within about two units of its last digit). Water surface is schematic. Submerged-flow discharge needs the report's calibration curves and is not calculated yet. Concrete thickness is indicative, not structural design. Confirm with the references before construction.</small>
+</div></main>
+<script>
+/*@ENGINE*/
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+const $=id=>document.getElementById(id),FT=0.3048,CFS=0.028316846592;
+PF_DATA.utah.sizes.forEach(s=>$('sz').add(new Option(s.W_in<12?s.W_in+' in':s.W_in/12+' ft',s.id)));$('sz').value='24in';
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.05,400);S.add(new THREE.AmbientLight(0xffffff,.7));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;let model=null,spec={},groups={};
+const hidden={};let lastSize=null;
+function mat(c,tr){return new THREE.MeshStandardMaterial({color:c,metalness:.1,roughness:.75,transparent:!!tr,opacity:tr?.55:1,depthWrite:!tr,side:THREE.DoubleSide})}
+function build(fit){
+ const id=$('sz').value,dm=pfDimensions(PF_DATA,id),d={};for(const k in dm)d[k]=dm[k]*1000;const W=d.W;
+ const lo=pfFreeFlow(PF_DATA,id,pfSize(PF_DATA,id).free.Ha_min_ft*FT).Q_m3s*1000,hi=pfFreeFlow(PF_DATA,id,pfSize(PF_DATA,id).free.Ha_max_ft*FT).Q_m3s*1000;
+ const q=$('Q');if(lastSize!==id){q.min=lo;q.max=hi;q.step=(hi-lo)/400;q.value=lo+(hi-lo)*.5;$('Wc').min=Math.ceil(d.A/10)*10;$('Wc').max=Math.round(W*6/10)*10;$('Wc').value=Math.max(Math.round(W*2.5/10)*10,$('Wc').min);lastSize=id}
+ const Q=+q.value/1000,HaM=pfHeadForFlow(PF_DATA,id,Q),Ha=HaM*1000,hd=$('Hd');hd.min=0;hd.max=Math.round(Ha);hd.step=1;if(fit||+hd.value>Ha)hd.value=Math.round(Ha*.4);
+ const Hd=Math.min(+hd.value,Ha),Wc=+$('Wc').value,apW=+$('ap').value,t=d.G<=600?100:d.G<=1000?150:200;
+ $('Qv').textContent=(Q*1000).toFixed(1)+' L/s ('+(Q/CFS).toFixed(2)+' cfs)';$('Hdv').textContent=Math.round(Hd)+' mm';$('Wcv').textContent=Wc+' mm';$('apv').textContent=apW+' × W = '+Math.round(apW*W)+' mm';
+ const r=pfBuild(d,{channelW:Wc,approachLen:apW*W,tailLen:Math.max(600,2*W),wall:t,slab:t,Ha,Hd,withWater:true});
+ if(model){model.traverse(o=>{o.geometry&&o.geometry.dispose()});S.remove(model)}
+ const g=model=new THREE.Group();g.name='ParshallFlume_'+id;g.scale.setScalar(.001);S.add(g);groups={};
+ for(const s of r.solids){let gr=groups[s.group];if(!gr){gr=groups[s.group]=new THREE.Group();gr.name=s.group.replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');g.add(gr)}
+  const m=pfMesh(s),geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(m.v.flat(),3));geo.setIndex(m.idx);const ng=geo.toNonIndexed();ng.computeVertexNormals();
+  const o=new THREE.Mesh(ng,mat(s.color,s.transparent));o.name=s.name.replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');gr.add(o)}
+ for(const n in groups)groups[n].visible=hidden[n]!==true;
+ // results and checks
+ const reg=pfRegime(PF_DATA,id,HaM,Hd/1000),ins=pfInstallation(PF_DATA,id,Q),bw=+$('bw').value,fac=bw>0?pfAsBuiltFactor(W,bw):1,sz=pfSize(PF_DATA,id),qf=pfFreeFlow(PF_DATA,id,HaM);
+ const ark=pfArkonForWidth(PF_DATA,W/10),res=[];
+ res.push('Upstream head Ha = '+Ha.toFixed(0)+' mm (Table 3 range '+(qf.Ha_min_m*1000).toFixed(0)+' to '+(qf.Ha_max_m*1000).toFixed(0)+' mm)');
+ res.push('Free-flow discharge at Ha: '+(Q*1000*fac).toFixed(1)+' L/s'+(fac!==1?' (corrected × '+fac.toFixed(3)+' for built width)':''));
+ res.push('Submergence Hb/Ha = '+(reg.submergence*100).toFixed(0)+' % against transition '+(reg.transition*100).toFixed(0)+' %: '+(reg.submerged?'SUBMERGED':'free flow'));
+ res.push('Installation (free flow): crest floor at most '+(ins.crestBelowHighWater_m*1000).toFixed(0)+' mm below the high water line; water rises '+(ins.afflux_m*1000).toFixed(0)+' mm upstream');
+ res.push('Ha gauge at 2/3 C = '+(dm.C23*1000).toFixed(0)+' mm up the wall from the crest; Hb tap X = '+(dm.X*1000).toFixed(0)+' mm, Y = '+(dm.Y*1000).toFixed(0)+' mm (Table 1)');
+ res.push('Table 1 free-flow range: '+sz.table1_Q_min_cfs+' to '+sz.table1_Q_max_cfs+' cfs ('+(sz.table1_Q_min_cfs*CFS*1000).toFixed(1)+' to '+(sz.table1_Q_max_cfs*CFS*1000).toFixed(0)+' L/s)');
+ if(ark){const a=pfArkonDischarge(PF_DATA,ark,HaM);res.push('Arkon '+ark+' of the same width at this head: '+(a*1000).toFixed(1)+' L/s ('+((a*1000/(Q*1000)-1)*100).toFixed(1)+' % against Utah; gauge point and geometry differ, up to about 12 % is expected)')}
+ $('res').innerHTML=res.map(x=>'<li>'+x+'</li>').join('');
+ const ck=[],ctx={Ha_m:HaM,Hb_m:Hd/1000,distanceFromBend_W:apW,nearGate:$('gate').checked,debris_m:(+$('deb').value)/1000,channelWidth_m:Wc/1000};
+ const f=pfChecks(PF_DATA,id,ctx);for(const c of f)ck.push([c.text,1]);
+ if(!qf.inRange)ck.push(['Ha is outside the printed Table 3 range for this size; the discharge is an extrapolation.',1]);
+ if(HaM*1000>d.G*.9)ck.push(['Ha is within 10 % of the wall depth G ('+Math.round(d.G)+' mm); add freeboard.',1]);
+ if(reg.submerged)ck.push(['Submerged-flow discharge is not calculated here: use the Utah calibration curves with Ha and Hb.',1]);
+ if(!ck.length)ck.push(['No rule raised a flag for these inputs (see the expert rules in core/library/wtp).',0]);
+ ck.push(['Wall and slab '+t+' mm: indicative only.',0]);
+ $('chk').innerHTML=ck.map(c=>'<li'+(c[1]?' class="w"':'')+'>'+c[0]+'</li>').join('');
+ const gl=$('grps');if(!gl.dataset.done||gl.dataset.n!=Object.keys(groups).join('|')){gl.dataset.done=1;gl.dataset.n=Object.keys(groups).join('|');gl.innerHTML=Object.keys(groups).map(n=>'<label><input type="checkbox" data-g="'+n+'"'+(hidden[n]?'':' checked')+'> '+n+'</label>').join('');gl.querySelectorAll('input').forEach(i=>i.onchange=()=>{hidden[i.dataset.g]=!i.checked;groups[i.dataset.g]&&(groups[i.dataset.g].visible=i.checked)})}
+ spec={name:g.name,units:'mm',throat_width:id,dimensions_mm:Object.fromEntries(Object.keys(d).map(k=>[k,+d[k].toFixed(1)])),design_flow_Ls:+(Q*1000).toFixed(2),Ha_mm:+Ha.toFixed(1),Hb_used_mm:+Hd.toFixed(1),submergence:+reg.submergence.toFixed(3),transition_submergence:reg.transition,regime:reg.submerged?'submerged':'free',crest_below_high_water_mm:+(ins.crestBelowHighWater_m*1000).toFixed(0),afflux_mm:+(ins.afflux_m*1000).toFixed(0),approach:{straight_length_mm:Math.round(apW*W),channel_width_mm:Wc,transition_mm:Math.round(r.approach.transitionLen)},wall_and_slab_mm:t,groups:Object.keys(groups),sources:['UTAH66 Tables 1-3, Installation','ARKON11'],notes:['Water surface is schematic','Concrete thickness is indicative, not structural design','Submerged-flow discharge is not calculated']};
+ if(fit){const b=r.bbox,e=Math.max(b.x1-b.x0,b.z1-b.z0)/1000,cx=(b.x0+b.x1)/2000,cy=(b.y0+b.y1)/2000,cz=(b.z0+b.z1)/2000;C.position.set(cx+e*.45,cy+e*.5,cz+e*.75);C.lookAt(cx,cy,cz);ctl&&ctl.target.set(cx,cy,cz);ctl&&ctl.update()}
+}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');try{model.updateMatrixWorld(true);const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+$('sz').onchange=()=>{lastSize=null;build(true)};['Q','Wc','ap','deb','bw','gate'].forEach(i=>$(i).oninput=()=>build(false));$('Hd').oninput=()=>build(false);
+addEventListener('resize',size);size();build(true);loop();
+</script><script>window.EV_KIT={groundLabel:'Crest level ±0.000'};</script>
+<script src="../../../_shared/evlab-kit.js"></script>
+</body></html>

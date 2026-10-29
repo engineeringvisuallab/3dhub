@@ -1,0 +1,130 @@
+{
+  "id": "physical-process-assessment",
+  "title": "Physical process assessment",
+  "category": "physical-process",
+  "purpose": "Check every unit against loading, detention, velocity and mixing limits.",
+  "calculations": [
+    {
+      "id": "loading-rate-check",
+      "name": "Loading rate of every unit against profile limits",
+      "inputs": [
+        "design",
+        "profile"
+      ],
+      "outputs": [
+        "pass_fail_list"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "detention-check",
+      "name": "Detention times against limits",
+      "inputs": [
+        "volumes",
+        "flow"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "velocity-check",
+      "name": "Channel and pipe velocities against limits",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "mixing-intensity-check",
+      "name": "G and Gt against range",
+      "inputs": [
+        "power"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "removal-estimate",
+      "name": "Per-unit removal against requirement",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "predicted_quality"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "residence-time-distribution",
+      "name": "Short-circuiting and residence time distribution",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "baffle_factor"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "mass-balance",
+      "name": "Water and solids mass balance",
+      "inputs": [
+        "flows"
+      ],
+      "outputs": [
+        "balance"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "footprint-estimate",
+      "name": "Footprint per unit and total",
+      "inputs": [
+        "designs"
+      ],
+      "outputs": [
+        "area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "head-loss-budget",
+      "name": "Head budget against available head",
+      "inputs": [
+        "profile"
+      ],
+      "outputs": [
+        "margin"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "performance-vs-flow",
+      "name": "Performance at 50, 100 and 120 percent flow",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "performance_curve"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

@@ -1,0 +1,292 @@
+{
+  "stage": "rapid-mix-and-measurement",
+  "rules": [
+    {
+      "id": "PF-WHY-001",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "why-use",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "Use a Parshall flume when flow must be measured in an open channel with little head loss.",
+      "because": "Head loss is much smaller than for a weir (the Arkon guide puts it at three to four times smaller), and accuracy of 2 to 5 percent is reported under normal conditions.",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 1"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-WHY-002",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "why-use",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "The flume keeps solids moving, so it does not silt up the way a weir pool can.",
+      "because": "Velocity through the flume is high enough to prevent suspended solids settling.",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 1"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-WHY-003",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "why-use",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "A flume tolerates a high downstream water level before its calibration stops applying.",
+      "because": "Free flow holds up to a transition submergence of 56 to 78 percent depending on size, so downstream conditions can vary widely.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Table 2; Definition of free and submerged flow"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-NOT-001",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "limitation",
+      "severity": "caution",
+      "when": [],
+      "whenAny": [],
+      "text": "Do not choose a flume where the channel has very little fall unless submerged operation is designed for.",
+      "because": "With a very flat grade the crest cannot be set high enough for free flow, and then both Ha and Hb must be measured.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Installation of Parshall flumes"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-001",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "warning",
+      "when": [
+        {
+          "field": "Hb_over_Ha",
+          "op": ">",
+          "ref": "transition_submergence"
+        }
+      ],
+      "whenAny": [],
+      "text": "The flow is submerged: the free-flow table no longer applies. Read both Ha and Hb and use the submerged-flow calibration.",
+      "because": "Submergence Hb/Ha is above the transition value for this flume size.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Table 2; Submerged flow calibrations"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-002",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "warning",
+      "when": [
+        {
+          "field": "Hb_over_Ha",
+          "op": ">",
+          "value": 0.7
+        }
+      ],
+      "whenAny": [],
+      "text": "Submergence is above 0.7, the upper limit named in the Arkon guide; the discharge equation has to be adjusted.",
+      "because": "The guide lists the maximum submergence ratio per size (0.6 for P1-P5, 0.7 for P6-P9).",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 3 table; Section 4"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-003",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "warning",
+      "when": [
+        {
+          "field": "distance_from_bend_in_W",
+          "op": "<",
+          "value": 12
+        }
+      ],
+      "whenAny": [],
+      "text": "The flume is too close to a bend or drop. Move it so the approach flow is smooth and evenly distributed.",
+      "because": "Arkon asks for at least 12 W from the end of a curve (and at least 30 W after a drop wall, depending on depth and floor shape).",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 4"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-004",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "caution",
+      "when": [
+        {
+          "field": "near_gate",
+          "op": "==",
+          "value": true
+        }
+      ],
+      "whenAny": [],
+      "text": "The flume sits too near a gate. Gate operation causes unbalanced flow and surging at the flume.",
+      "because": "The Utah report says not to place a flume too near a gate.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Installation of Parshall flumes"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-005",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "warning",
+      "when": [
+        {
+          "field": "debris_size_over_W",
+          "op": ">",
+          "value": 0.8
+        }
+      ],
+      "whenAny": [],
+      "text": "Debris is larger than the throat can pass. Add a screen upstream.",
+      "because": "The Arkon guide limits freely passing debris to 0.8 times the throat width W.",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 5"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-006",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "caution",
+      "when": [],
+      "whenAny": [
+        {
+          "field": "throat_over_channel_width",
+          "op": "<",
+          "value": 0.3333
+        },
+        {
+          "field": "throat_over_channel_width",
+          "op": ">",
+          "value": 0.5
+        }
+      ],
+      "text": "Throat width is outside the usual one-third to one-half of the channel width. Recheck the size selection.",
+      "because": "The Utah report says the throat is normally one-third to one-half of the channel width.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Installation of Parshall flumes"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CHK-007",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "design-check",
+      "severity": "warning",
+      "when": [
+        {
+          "field": "water_temperature",
+          "op": ">",
+          "value": 80
+        }
+      ],
+      "whenAny": [],
+      "text": "Water temperature is above the 80 degC maximum stated for the polypropylene flume.",
+      "because": "Operating limit in the Arkon guide; the water must also never be allowed to freeze.",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 5"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-INS-001",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "installation",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "Build to the table dimensions, especially the entrance and throat. The converging floor must be level in both directions, and the crest straight and level.",
+      "because": "The calibration only holds for the standard geometry and a level approach floor.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Installation of Parshall flumes"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-CON-001",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "construction",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "If the built throat width differs from the specified width, scale the table discharge by built width divided by specified width.",
+      "because": "Worked example: a 2 ft flume built at 2.10 ft gives a factor of 1.05.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Example 5"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-OPS-001",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "operation",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "Check the entrance floor level a few months after start-up and again each year. Remove moss and debris and clean encrustation.",
+      "because": "Flumes settle, and a tilted or settled flume reads wrong; settlement at the exit is the most common case.",
+      "source": {
+        "ref": "UTAH66",
+        "loc": "Maintenance pages; Figures 21-23"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    },
+    {
+      "id": "PF-OPS-002",
+      "type": "rapid-mix-and-measurement.parshall-flume",
+      "kind": "operation",
+      "severity": "info",
+      "when": [],
+      "whenAny": [],
+      "text": "Clean the flume surface, float shaft and connecting pipe once a year, and clean an ultrasonic probe within six months.",
+      "because": "Incrustation and impurities degrade the reading.",
+      "source": {
+        "ref": "ARKON11",
+        "loc": "Section 5"
+      },
+      "confidence": "sourced",
+      "reviewed": false
+    }
+  ]
+}

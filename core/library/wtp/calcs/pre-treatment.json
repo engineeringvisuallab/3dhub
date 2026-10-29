@@ -1,0 +1,102 @@
+{
+  "stage": "pre-treatment",
+  "calculations": [
+    {
+      "id": "presedimentation-area",
+      "name": "Surface overflow rate and plan area",
+      "inputs": [
+        "flow",
+        "settling_velocity"
+      ],
+      "outputs": [
+        "area",
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "detention-volume",
+      "name": "Detention time and volume",
+      "inputs": [
+        "flow",
+        "detention_time"
+      ],
+      "outputs": [
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "grit-velocity-scour",
+      "name": "Horizontal velocity and scour check",
+      "inputs": [
+        "flow",
+        "section"
+      ],
+      "outputs": [
+        "velocity",
+        "scour_margin"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "grit-quantity",
+      "name": "Grit volume and removal frequency",
+      "inputs": [
+        "flow",
+        "grit_rate"
+      ],
+      "outputs": [
+        "volume_per_day",
+        "cleaning_interval"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "roughing-filter-sizing",
+      "name": "Roughing filter area and length",
+      "inputs": [
+        "flow",
+        "filtration_rate",
+        "media_grades"
+      ],
+      "outputs": [
+        "area",
+        "length"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "roughing-filter-cleaning",
+      "name": "Hydraulic cleaning flow",
+      "inputs": [
+        "area",
+        "drain_rate"
+      ],
+      "outputs": [
+        "drain_flow",
+        "duration"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pretreatment-removal-estimate",
+      "name": "Expected solids and turbidity removal",
+      "inputs": [
+        "influent_solids",
+        "type"
+      ],
+      "outputs": [
+        "effluent_solids"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

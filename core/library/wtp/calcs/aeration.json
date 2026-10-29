@@ -1,0 +1,117 @@
+{
+  "stage": "aeration",
+  "calculations": [
+    {
+      "id": "gas-transfer-requirement",
+      "name": "Oxygen or gas transfer requirement",
+      "inputs": [
+        "flow",
+        "temperature",
+        "target_concentration"
+      ],
+      "outputs": [
+        "transfer_requirement"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "cascade-geometry",
+      "name": "Cascade steps and height",
+      "inputs": [
+        "flow",
+        "height",
+        "steps"
+      ],
+      "outputs": [
+        "step_dimensions",
+        "transfer"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "spray-nozzle-count",
+      "name": "Spray nozzle count and head",
+      "inputs": [
+        "flow",
+        "nozzle_flow"
+      ],
+      "outputs": [
+        "nozzle_count",
+        "pressure"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tray-area",
+      "name": "Tray area and loading",
+      "inputs": [
+        "flow",
+        "loading"
+      ],
+      "outputs": [
+        "area",
+        "tray_count"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "air-water-ratio",
+      "name": "Air-to-water ratio for stripping",
+      "inputs": [
+        "contaminant",
+        "henry_constant",
+        "target_removal"
+      ],
+      "outputs": [
+        "air_water_ratio"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "packed-tower-size",
+      "name": "Packed tower diameter and height",
+      "inputs": [
+        "flow",
+        "air_water_ratio",
+        "packing"
+      ],
+      "outputs": [
+        "diameter",
+        "height"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "blower-power",
+      "name": "Blower sizing",
+      "inputs": [
+        "air_flow",
+        "pressure"
+      ],
+      "outputs": [
+        "power"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "co2-stripping-ph",
+      "name": "CO2 stripping and pH shift",
+      "inputs": [
+        "alkalinity",
+        "co2"
+      ],
+      "outputs": [
+        "ph_after"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

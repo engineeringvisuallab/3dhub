@@ -1,0 +1,72 @@
+{
+  "id": "clear-water-storage",
+  "name": "Clear water storage",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/clear-water-tank",
+  "order": 17,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "QASIM",
+      "loc": "ch.13"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.19 Structural Design"
+    }
+  ],
+  "groups": [
+    {
+      "id": "clearwell",
+      "name": "Clearwell",
+      "types": [
+        {
+          "id": "ground-rcc-clearwell",
+          "name": "Ground-level RCC clearwell",
+          "status": "listed"
+        },
+        {
+          "id": "baffled-contact-clearwell",
+          "name": "Baffled contact clearwell",
+          "status": "listed"
+        },
+        {
+          "id": "steel-tank",
+          "name": "Steel tank",
+          "status": "listed"
+        },
+        {
+          "id": "prestressed-concrete-tank",
+          "name": "Prestressed concrete tank",
+          "status": "listed"
+        },
+        {
+          "id": "underground-reservoir",
+          "name": "Underground reservoir",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "elevated",
+      "name": "Elevated storage",
+      "types": [
+        {
+          "id": "elevated-rcc-tank",
+          "name": "Elevated RCC tank",
+          "status": "listed"
+        },
+        {
+          "id": "elevated-steel-tank",
+          "name": "Elevated steel tank",
+          "status": "listed"
+        },
+        {
+          "id": "standpipe",
+          "name": "Standpipe",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

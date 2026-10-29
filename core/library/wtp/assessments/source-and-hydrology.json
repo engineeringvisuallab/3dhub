@@ -1,0 +1,82 @@
+{
+  "id": "source-and-hydrology",
+  "title": "Source and yield assessment",
+  "category": "source",
+  "purpose": "Check that the source can supply the plant reliably and safely.",
+  "calculations": [
+    {
+      "id": "source-yield-reliability",
+      "name": "Yield against demand reliability (drought)",
+      "inputs": [
+        "flow_series",
+        "demand"
+      ],
+      "outputs": [
+        "reliability"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "low-flow-abstraction",
+      "name": "Low-flow intake level and abstraction limit",
+      "inputs": [
+        "flow_series",
+        "environmental_flow"
+      ],
+      "outputs": [
+        "safe_abstraction"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "flood-erosion-levels",
+      "name": "Flood level and erosion at the intake",
+      "inputs": [
+        "flood_record"
+      ],
+      "outputs": [
+        "design_levels"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "groundwater-capacity",
+      "name": "Aquifer yield and recharge",
+      "inputs": [
+        "hydrogeology"
+      ],
+      "outputs": [
+        "sustainable_yield"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "climate-adjustment",
+      "name": "Climate and trend adjustment",
+      "inputs": [
+        "scenarios"
+      ],
+      "outputs": [
+        "adjusted_yield"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "competing-use",
+      "name": "Competing use and abstraction rights",
+      "inputs": [
+        "users"
+      ],
+      "outputs": [
+        "availability"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

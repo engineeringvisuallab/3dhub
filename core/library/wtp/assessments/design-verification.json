@@ -1,0 +1,81 @@
+{
+  "id": "design-verification",
+  "title": "Design verification assessment",
+  "category": "verification",
+  "purpose": "Let a reviewer check a design against criteria with sources.",
+  "calculations": [
+    {
+      "id": "input-sanity",
+      "name": "Sanity check of inputs",
+      "inputs": [
+        "inputs"
+      ],
+      "outputs": [
+        "flags"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "dimension-to-criteria",
+      "name": "Dimensions against criteria, with the source of each criterion",
+      "inputs": [
+        "design",
+        "profile"
+      ],
+      "outputs": [
+        "pass_fail_with_sources"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "worked-example-reproduction",
+      "name": "Reproduce a published worked example to validate the engine",
+      "inputs": [
+        "examples"
+      ],
+      "outputs": [
+        "match"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "reviewer-report",
+      "name": "Senior-reviewer style report",
+      "inputs": [
+        "results"
+      ],
+      "outputs": [
+        "report"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "assumptions-register",
+      "name": "Assumption list and uncertainty",
+      "inputs": [
+        "results"
+      ],
+      "outputs": [
+        "register"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "uncertainty-ranges",
+      "name": "Uncertainty ranges on key results",
+      "inputs": [
+        "inputs"
+      ],
+      "outputs": [
+        "ranges"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "id": "raw-water-conveyance",
+  "name": "Raw water pumping and conveyance",
+  "model": "intake",
+  "modelPath": "models/intake/raw-water-pumping",
+  "order": 4,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "QASIM",
+      "loc": "ch.7 Water Conveyance, Flow Measurement, and Pumping"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.16 Hydraulics"
+    }
+  ],
+  "groups": [
+    {
+      "id": "pumps",
+      "name": "Raw water pumps",
+      "types": [
+        {
+          "id": "horizontal-centrifugal-pump",
+          "name": "Horizontal centrifugal pump",
+          "status": "listed"
+        },
+        {
+          "id": "vertical-turbine-pump",
+          "name": "Vertical turbine pump",
+          "status": "listed"
+        },
+        {
+          "id": "submersible-pump",
+          "name": "Submersible pump",
+          "status": "listed"
+        },
+        {
+          "id": "axial-flow-pump",
+          "name": "Axial-flow pump",
+          "status": "listed"
+        },
+        {
+          "id": "screw-pump",
+          "name": "Screw (Archimedes) pump",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "conveyance",
+      "name": "Conveyance",
+      "types": [
+        {
+          "id": "gravity-pipeline",
+          "name": "Gravity pipeline",
+          "status": "listed"
+        },
+        {
+          "id": "rising-main",
+          "name": "Rising main",
+          "status": "listed"
+        },
+        {
+          "id": "open-channel-conveyance",
+          "name": "Open channel",
+          "status": "listed"
+        },
+        {
+          "id": "tunnel-aqueduct",
+          "name": "Tunnel or aqueduct",
+          "status": "listed"
+        },
+        {
+          "id": "inverted-siphon",
+          "name": "Inverted siphon",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "surge-protection",
+      "name": "Surge protection",
+      "types": [
+        {
+          "id": "surge-tank",
+          "name": "Surge tank",
+          "status": "listed"
+        },
+        {
+          "id": "air-vessel",
+          "name": "Air vessel",
+          "status": "listed"
+        },
+        {
+          "id": "pressure-relief-valve",
+          "name": "Pressure relief valve",
+          "status": "listed"
+        },
+        {
+          "id": "flywheel",
+          "name": "Flywheel",
+          "status": "listed"
+        },
+        {
+          "id": "controlled-valve-closure",
+          "name": "Controlled valve closure",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

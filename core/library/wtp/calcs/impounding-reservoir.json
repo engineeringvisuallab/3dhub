@@ -1,0 +1,178 @@
+{
+  "stage": "impounding-reservoir",
+  "calculations": [
+    {
+      "id": "rainfall-runoff",
+      "name": "Catchment runoff and inflow series",
+      "inputs": [
+        "catchment_area",
+        "rainfall_series",
+        "runoff_coefficient"
+      ],
+      "outputs": [
+        "inflow_series"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "storage-yield",
+      "name": "Storage-yield (mass curve) analysis",
+      "inputs": [
+        "inflow_series",
+        "demand",
+        "evaporation"
+      ],
+      "outputs": [
+        "required_storage",
+        "yield"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "evaporation-seepage-loss",
+      "name": "Evaporation and seepage loss",
+      "inputs": [
+        "surface_area",
+        "evaporation_rate",
+        "seepage_rate"
+      ],
+      "outputs": [
+        "loss_series"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "sediment-dead-storage",
+      "name": "Sediment inflow and dead storage",
+      "inputs": [
+        "catchment_area",
+        "sediment_yield",
+        "design_life"
+      ],
+      "outputs": [
+        "dead_storage"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "flood-routing",
+      "name": "Flood routing through the reservoir",
+      "inputs": [
+        "design_flood",
+        "storage_curve",
+        "spillway_rating"
+      ],
+      "outputs": [
+        "peak_outflow",
+        "max_level"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "spillway-capacity",
+      "name": "Spillway capacity and crest level",
+      "inputs": [
+        "peak_outflow",
+        "spillway_type",
+        "head"
+      ],
+      "outputs": [
+        "crest_length",
+        "crest_level"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "freeboard-wave-runup",
+      "name": "Freeboard and wave run-up",
+      "inputs": [
+        "fetch",
+        "wind_speed",
+        "max_level"
+      ],
+      "outputs": [
+        "freeboard",
+        "crest_level"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "embankment-stability-screen",
+      "name": "Embankment stability screening",
+      "inputs": [
+        "section",
+        "soil_parameters",
+        "drawdown"
+      ],
+      "outputs": [
+        "factor_of_safety"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "seepage-piping-check",
+      "name": "Seepage and piping check",
+      "inputs": [
+        "section",
+        "permeability"
+      ],
+      "outputs": [
+        "seepage_flow",
+        "exit_gradient"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "outlet-capacity",
+      "name": "Outlet and scour capacity",
+      "inputs": [
+        "outlet_type",
+        "head",
+        "demand"
+      ],
+      "outputs": [
+        "outlet_size",
+        "discharge"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "stratification-mixing",
+      "name": "Stratification and mixing duty",
+      "inputs": [
+        "depth",
+        "temperature_profile"
+      ],
+      "outputs": [
+        "stratification_index",
+        "mixer_duty"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "reservoir-quality-screen",
+      "name": "Reservoir water-quality screening",
+      "inputs": [
+        "nutrient_load",
+        "volume",
+        "depth"
+      ],
+      "outputs": [
+        "trophic_indicator"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

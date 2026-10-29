@@ -1,0 +1,247 @@
+{
+  "stage": "clarification",
+  "calculations": [
+    {
+      "id": "settling-velocity",
+      "name": "Particle and design settling velocity",
+      "inputs": [
+        "particle_size",
+        "density",
+        "temperature"
+      ],
+      "outputs": [
+        "settling_velocity"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "surface-overflow-rate",
+      "name": "Surface overflow rate and plan area",
+      "inputs": [
+        "flow",
+        "overflow_rate"
+      ],
+      "outputs": [
+        "area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "detention-depth",
+      "name": "Detention time, depth and volume",
+      "inputs": [
+        "flow",
+        "time",
+        "depth"
+      ],
+      "outputs": [
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "horizontal-velocity-scour",
+      "name": "Horizontal velocity and scour",
+      "inputs": [
+        "flow",
+        "section",
+        "scour_velocity"
+      ],
+      "outputs": [
+        "velocity",
+        "scour_margin"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "reynolds-froude",
+      "name": "Reynolds and Froude check",
+      "inputs": [
+        "velocity",
+        "hydraulic_radius"
+      ],
+      "outputs": [
+        "Re",
+        "Fr"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "weir-loading",
+      "name": "Weir loading and launder layout",
+      "inputs": [
+        "flow",
+        "weir_length"
+      ],
+      "outputs": [
+        "loading",
+        "launder_layout"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "inlet-distribution",
+      "name": "Inlet baffle and port design",
+      "inputs": [
+        "flow",
+        "port_velocity"
+      ],
+      "outputs": [
+        "ports",
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tube-lamella-sizing",
+      "name": "Tube or plate settler area and angle",
+      "inputs": [
+        "flow",
+        "angle",
+        "spacing",
+        "length"
+      ],
+      "outputs": [
+        "module_area",
+        "loading"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tube-flow-regime",
+      "name": "Laminar flow in tubes check",
+      "inputs": [
+        "flow",
+        "tube_geometry"
+      ],
+      "outputs": [
+        "Re",
+        "entrance_length"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "solids-contact-sizing",
+      "name": "Upflow clarifier rise rate and blanket",
+      "inputs": [
+        "flow",
+        "rise_rate",
+        "solids"
+      ],
+      "outputs": [
+        "area",
+        "blanket_depth"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ballasted-sizing",
+      "name": "Ballasted flocculation sizing",
+      "inputs": [
+        "flow",
+        "microsand_dose"
+      ],
+      "outputs": [
+        "tank_volumes",
+        "sand_loop"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "daf-sizing",
+      "name": "DAF tank, recycle ratio and saturator",
+      "inputs": [
+        "flow",
+        "recycle",
+        "pressure",
+        "solids_loading"
+      ],
+      "outputs": [
+        "area",
+        "recycle_flow",
+        "saturator"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "clarifier-sludge",
+      "name": "Sludge mass and volume",
+      "inputs": [
+        "turbidity",
+        "coagulant_dose"
+      ],
+      "outputs": [
+        "dry_solids",
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "sludge-removal-duty",
+      "name": "Scraper or header duty",
+      "inputs": [
+        "tank_geometry",
+        "sludge_rate"
+      ],
+      "outputs": [
+        "drive_power",
+        "flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "hopper-floor-slope",
+      "name": "Hopper volume and floor slope",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "volume",
+        "slope"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "short-circuit-efficiency",
+      "name": "Efficiency estimate with short-circuiting",
+      "inputs": [
+        "geometry",
+        "baffle_factor"
+      ],
+      "outputs": [
+        "removal_estimate"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "retrofit-capacity-uplift",
+      "name": "Capacity uplift when tube or plate settlers are added to an existing tank",
+      "inputs": [
+        "existing_tank",
+        "module_parameters"
+      ],
+      "outputs": [
+        "uplift_factor",
+        "new_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

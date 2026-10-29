@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WTP stage (core/library/wtp/stages/<id>.json)",
+  "description": "One process stage and every technology type that can fill it. Enforced by core/engine/wtp/registry.js validate().",
+  "type": "object",
+  "required": ["id", "name", "model", "modelPath", "order", "refs", "groups"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "model": { "enum": ["intake", "treatment-plant"], "description": "Which of the two models this stage belongs to." },
+    "modelPath": { "type": "string", "description": "Folder under models/ where the 3D pages for this stage live." },
+    "order": { "type": "integer" },
+    "needsReference": { "type": "boolean", "description": "True when no supplied reference covers this stage yet." },
+    "refs": { "type": "array", "items": { "type": "object", "required": ["ref"], "properties": { "ref": { "type": "string" }, "loc": { "type": "string" } } } },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "name", "types"],
+        "properties": {
+          "id": { "type": "string" }, "name": { "type": "string" },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "object", "required": ["id", "name", "status"],
+              "properties": {
+                "id": { "type": "string", "description": "Unique across all stages." },
+                "name": { "type": "string" },
+                "status": { "enum": ["listed", "data", "calc", "model3d", "drawings", "tested"] },
+                "definition": { "type": "string", "description": "Required from status 'data' upward." },
+                "how": { "type": "string", "description": "How it works. Required from 'data'." },
+                "suits": { "type": "array", "items": { "type": "string" }, "description": "Where it is a good choice. Required from 'data'." },
+                "avoid": { "type": "array", "items": { "type": "string" }, "description": "Where it is a poor choice. Required from 'data'." },
+                "sources": { "type": "array", "items": { "type": "object", "required": ["ref", "loc"] }, "description": "Required from 'data'." },
+                "calcs": { "type": "array", "items": { "type": "string" }, "description": "Keys '<stage>.<calc id>'." },
+                "rules": { "type": "string" },
+                "model": { "type": "string", "description": "Path of the 3D page once it exists (status model3d)." }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

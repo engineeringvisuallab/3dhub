@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WTP calculation (core/library/wtp/calcs/<stage>.json and assessments/<id>.json)",
+  "type": "object",
+  "required": ["id", "name", "inputs", "outputs", "status", "sources"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "inputs": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Parameter names. Values are always passed in SI; core/engine/wtp/units.js converts reference units." },
+    "outputs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "status": { "enum": ["planned", "implemented", "tested"] },
+    "sources": { "type": "array", "items": { "type": "object", "required": ["ref", "loc"] }, "description": "Where the method or criterion comes from. Empty means 'to be sourced'; nothing may be marked implemented without a source." }
+  }
+}

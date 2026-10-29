@@ -27,7 +27,7 @@ core/
   rules/         conflict-rules.json, port-rules.json (which ports mate, what must match)
   export/        formats.json  (what each export needs)
   examples/      sample assemblies
-  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet) + bom.mjs (bill of materials, CSV, XLSX) + visual.mjs + genroom.mjs (generator room) (real shapes: every component has a valid mesh, flange faces on ports)   -> npm test
+  tests/         run.mjs (engine) + door.mjs (rich door) + pipefit.mjs (pump house parts) + library.mjs (every component in manifest.json) + drawing.mjs (drawing sheet) + bom.mjs (bill of materials, CSV, XLSX) + visual.mjs + genroom.mjs (generator room) + substation.mjs (real shapes: every component has a valid mesh, flange faces on ports)   -> npm test
 app/             interface skeleton (panels spec) - built in a later step
 ```
 
@@ -50,7 +50,7 @@ finds a free compatible port on the selected object, adopts DN/PN, rotates/trans
 and records a link. Examples in tests: pipe + gate valve (both ends), rotated pipe, third valve rejected (no free port).
 
 ## Components added for the Studio
-brick-wall, boundary-wall, door, window, gate, rcc-slab (ports `face-h` / `face-v`, origin = bottom centre) and end-suction-pump (flange ports DN/PN) and generator-room (generator component `gen/genroom.js` + real mesh `visual/genroom.js`: DG set room with all facilities; ports B / T `face-v`, L / R `face-h`).
+brick-wall, boundary-wall, door, window, gate, rcc-slab (ports `face-h` / `face-v`, origin = bottom centre) and end-suction-pump (flange ports DN/PN) and substation (five types: pole, kiosk, indoor, AIS, GIS; `gen/substation.js` + `visual/substation.js`; ports B `face-v`, L / R `face-h`) and generator-room (generator component `gen/genroom.js` + real mesh `visual/genroom.js`: DG set room with all facilities; ports B / T `face-v`, L / R `face-h`).
 See `docs/STUDIO.md` for how to add a component. `autoAttach` now prefers the port that faces the selected one.
 
 ## Generator components (door)

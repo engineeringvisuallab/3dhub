@@ -1,0 +1,129 @@
+{
+  "id": "engineering-assessment",
+  "title": "Water treatment plant engineering assessment",
+  "category": "engineering",
+  "purpose": "Overall engineering judgement of a design or an existing plant.",
+  "calculations": [
+    {
+      "id": "design-basis-summary",
+      "name": "Design basis summary",
+      "inputs": [
+        "inputs"
+      ],
+      "outputs": [
+        "summary"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "unit-compliance-summary",
+      "name": "Compliance summary for all units",
+      "inputs": [
+        "results"
+      ],
+      "outputs": [
+        "score"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "finished-water-prediction",
+      "name": "Predicted finished water against the standard",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "redundancy-performance",
+      "name": "Performance with one unit out of service",
+      "inputs": [
+        "units"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "bottleneck-analysis",
+      "name": "Limiting unit and maximum plant flow",
+      "inputs": [
+        "capacities"
+      ],
+      "outputs": [
+        "limiting_unit",
+        "max_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "existing-plant-rating",
+      "name": "Rating of an existing plant (flow it can treat)",
+      "inputs": [
+        "as_built"
+      ],
+      "outputs": [
+        "rated_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "retrofit-options",
+      "name": "Upgrade options and capacity uplift",
+      "inputs": [
+        "existing_plant"
+      ],
+      "outputs": [
+        "options"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "design-error-checklist",
+      "name": "Common design error checklist",
+      "inputs": [
+        "design"
+      ],
+      "outputs": [
+        "flags"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "interface-check",
+      "name": "Unit-to-unit interface check",
+      "inputs": [
+        "adjacent_units"
+      ],
+      "outputs": [
+        "mismatches"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "constructability-phasing",
+      "name": "Constructability and phasing",
+      "inputs": [
+        "design"
+      ],
+      "outputs": [
+        "notes"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

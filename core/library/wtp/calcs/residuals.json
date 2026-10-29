@@ -1,0 +1,138 @@
+{
+  "stage": "residuals",
+  "calculations": [
+    {
+      "id": "solids-balance",
+      "name": "Plant solids and sludge mass balance",
+      "inputs": [
+        "influent",
+        "doses"
+      ],
+      "outputs": [
+        "dry_solids"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "sludge-volume",
+      "name": "Sludge volume at solids concentration",
+      "inputs": [
+        "dry_solids",
+        "concentration"
+      ],
+      "outputs": [
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "thickener-sizing",
+      "name": "Thickener area and solids loading",
+      "inputs": [
+        "solids",
+        "loading"
+      ],
+      "outputs": [
+        "area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "drying-bed-area",
+      "name": "Drying bed area and cycle",
+      "inputs": [
+        "volume",
+        "cycle",
+        "climate"
+      ],
+      "outputs": [
+        "area",
+        "beds"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "lagoon-sizing",
+      "name": "Lagoon volume and cycles",
+      "inputs": [
+        "volume",
+        "cycle"
+      ],
+      "outputs": [
+        "lagoon_volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "dewatering-machine-capacity",
+      "name": "Dewatering machine capacity",
+      "inputs": [
+        "dry_solids",
+        "hours"
+      ],
+      "outputs": [
+        "machine_size"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "washwater-balance",
+      "name": "Washwater volume and recycle",
+      "inputs": [
+        "filters",
+        "backwash"
+      ],
+      "outputs": [
+        "volume",
+        "flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "recycle-impact",
+      "name": "Recycle stream quality impact",
+      "inputs": [
+        "recycle_stream"
+      ],
+      "outputs": [
+        "impact"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "disposal-route-haul",
+      "name": "Disposal route and haul",
+      "inputs": [
+        "cake_volume",
+        "distance"
+      ],
+      "outputs": [
+        "haul_volume",
+        "route"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "discharge-compliance",
+      "name": "Discharge quality against permit",
+      "inputs": [
+        "discharge_quality",
+        "permit"
+      ],
+      "outputs": [
+        "compliance"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

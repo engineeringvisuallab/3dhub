@@ -1,0 +1,190 @@
+{
+  "id": "clarification",
+  "name": "Clarification (sedimentation and flotation)",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/clarifier",
+  "order": 9,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "DELFT-SED",
+      "loc": "whole"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.7 Clarification"
+    },
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.7 (confirm)"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.9"
+    }
+  ],
+  "groups": [
+    {
+      "id": "tank-type",
+      "name": "Tank type",
+      "types": [
+        {
+          "id": "horizontal-flow-rectangular",
+          "name": "Horizontal-flow rectangular tank",
+          "status": "listed"
+        },
+        {
+          "id": "radial-flow-circular",
+          "name": "Radial-flow circular tank",
+          "status": "listed"
+        },
+        {
+          "id": "vertical-flow-tank",
+          "name": "Vertical-flow tank",
+          "status": "listed"
+        },
+        {
+          "id": "hopper-bottom-tank",
+          "name": "Hopper-bottom tank",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "solids-contact",
+      "name": "Solids-contact clarifiers",
+      "types": [
+        {
+          "id": "upflow-sludge-blanket",
+          "name": "Upflow sludge-blanket clarifier",
+          "status": "listed"
+        },
+        {
+          "id": "upflow-slurry-recirculation",
+          "name": "Upflow slurry-recirculation clarifier",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "enhanced-settling",
+      "name": "Enhanced settling",
+      "types": [
+        {
+          "id": "tube-settler",
+          "name": "Tube settler",
+          "status": "listed"
+        },
+        {
+          "id": "lamella-inclined-plate-settler",
+          "name": "Lamella (inclined plate) settler",
+          "status": "listed"
+        },
+        {
+          "id": "ballasted-flocculation",
+          "name": "Ballasted flocculation-sedimentation",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "flotation",
+      "name": "Flotation",
+      "types": [
+        {
+          "id": "dissolved-air-flotation",
+          "name": "Dissolved air flotation",
+          "status": "listed"
+        },
+        {
+          "id": "dispersed-air-flotation",
+          "name": "Dispersed air flotation",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "combined-and-package",
+      "name": "Combined and package units",
+      "types": [
+        {
+          "id": "flocculator-clarifier-combined",
+          "name": "Combined flocculator-clarifier",
+          "status": "listed"
+        },
+        {
+          "id": "package-clarifier",
+          "name": "Package clarifier",
+          "status": "listed"
+        },
+        {
+          "id": "imhoff-tank",
+          "name": "Imhoff tank",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "sludge-removal",
+      "name": "Sludge removal",
+      "types": [
+        {
+          "id": "scraper-chain-flight",
+          "name": "Chain-and-flight scraper",
+          "status": "listed"
+        },
+        {
+          "id": "scraper-travelling-bridge",
+          "name": "Travelling-bridge scraper",
+          "status": "listed"
+        },
+        {
+          "id": "rotating-rake-circular",
+          "name": "Rotating rake (circular)",
+          "status": "listed"
+        },
+        {
+          "id": "suction-header-siphon",
+          "name": "Suction header or siphon",
+          "status": "listed"
+        },
+        {
+          "id": "hydraulic-sludge-flushing",
+          "name": "Hydraulic sludge flushing",
+          "status": "listed"
+        },
+        {
+          "id": "manual-drain-down",
+          "name": "Manual drain-down",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "inlet-outlet",
+      "name": "Inlet and outlet",
+      "types": [
+        {
+          "id": "perforated-baffle-inlet",
+          "name": "Perforated baffle inlet",
+          "status": "listed"
+        },
+        {
+          "id": "inlet-channel-with-ports",
+          "name": "Inlet channel with ports",
+          "status": "listed"
+        },
+        {
+          "id": "launder-v-notch-weir",
+          "name": "Launder with V-notch weir",
+          "status": "listed"
+        },
+        {
+          "id": "submerged-orifice-launder",
+          "name": "Submerged orifice launder",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

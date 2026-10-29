@@ -30,6 +30,7 @@
   "rcc-wall",
   "rcc-slab-openings",
   "control-panel",
-  "vertical-inline-pump"
+  "vertical-inline-pump",
+  "substation"
  ]
 }

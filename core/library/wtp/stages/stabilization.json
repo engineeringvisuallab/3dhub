@@ -1,0 +1,98 @@
+{
+  "id": "stabilization",
+  "name": "Stabilization, corrosion control and fluoridation",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/stabilization",
+  "order": 16,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "QASIM",
+      "loc": "ch.13 Water Stability, Clearwell, High-service Pumps"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.12 Fluoridation"
+    }
+  ],
+  "groups": [
+    {
+      "id": "ph-alkalinity",
+      "name": "pH and alkalinity adjustment",
+      "types": [
+        {
+          "id": "lime-adjustment",
+          "name": "Lime",
+          "status": "listed"
+        },
+        {
+          "id": "soda-ash-adjustment",
+          "name": "Soda ash",
+          "status": "listed"
+        },
+        {
+          "id": "caustic-soda-adjustment",
+          "name": "Caustic soda",
+          "status": "listed"
+        },
+        {
+          "id": "co2-recarbonation",
+          "name": "CO2 recarbonation",
+          "status": "listed"
+        },
+        {
+          "id": "aeration-decarbonation",
+          "name": "Aeration decarbonation",
+          "status": "listed"
+        },
+        {
+          "id": "calcite-contactor",
+          "name": "Calcite contactor",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "inhibitors",
+      "name": "Corrosion inhibitors",
+      "types": [
+        {
+          "id": "orthophosphate-inhibitor",
+          "name": "Orthophosphate",
+          "status": "listed"
+        },
+        {
+          "id": "polyphosphate-inhibitor",
+          "name": "Polyphosphate",
+          "status": "listed"
+        },
+        {
+          "id": "silicate-inhibitor",
+          "name": "Silicate",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "fluoridation",
+      "name": "Fluoridation",
+      "types": [
+        {
+          "id": "sodium-fluoride",
+          "name": "Sodium fluoride",
+          "status": "listed"
+        },
+        {
+          "id": "sodium-silicofluoride",
+          "name": "Sodium silicofluoride",
+          "status": "listed"
+        },
+        {
+          "id": "fluorosilicic-acid",
+          "name": "Fluorosilicic acid",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

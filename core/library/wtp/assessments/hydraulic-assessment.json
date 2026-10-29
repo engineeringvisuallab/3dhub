@@ -1,0 +1,106 @@
+{
+  "id": "hydraulic-assessment",
+  "title": "Hydraulic assessment",
+  "category": "hydraulic",
+  "purpose": "Verify the water can actually flow through the plant at all operating flows.",
+  "calculations": [
+    {
+      "id": "hydraulic-grade-line",
+      "name": "Hydraulic grade line through the plant",
+      "inputs": [
+        "levels",
+        "losses"
+      ],
+      "outputs": [
+        "hgl"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pipe-channel-losses",
+      "name": "Pipe, channel and fitting losses",
+      "inputs": [
+        "flows"
+      ],
+      "outputs": [
+        "losses"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "weir-orifice-gate",
+      "name": "Weir, orifice and gate relations",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "head",
+        "flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "plant-transients",
+      "name": "Plant transient review",
+      "inputs": [
+        "operating_modes"
+      ],
+      "outputs": [
+        "surge"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "flow-distribution-uniformity",
+      "name": "Distribution to parallel units",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "maldistribution"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "energy-dissipation",
+      "name": "Cascades and drops",
+      "inputs": [
+        "head"
+      ],
+      "outputs": [
+        "dissipation"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tailwater-submergence",
+      "name": "Tailwater and submergence effects (for example on a flume)",
+      "inputs": [
+        "levels"
+      ],
+      "outputs": [
+        "check"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "overflow-freeboard",
+      "name": "Flood levels and freeboard",
+      "inputs": [
+        "profile"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

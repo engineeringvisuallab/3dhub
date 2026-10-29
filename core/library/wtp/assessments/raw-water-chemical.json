@@ -1,0 +1,149 @@
+{
+  "id": "raw-water-chemical",
+  "title": "Raw water chemical assessment",
+  "category": "chemical",
+  "purpose": "Characterise the chemical quality of the source and what must be removed or controlled.",
+  "calculations": [
+    {
+      "id": "ph-alkalinity-hardness",
+      "name": "pH, alkalinity, hardness and buffer capacity",
+      "inputs": [
+        "analysis"
+      ],
+      "outputs": [
+        "buffer_capacity"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ion-balance",
+      "name": "Ion balance check of the analysis",
+      "inputs": [
+        "ions"
+      ],
+      "outputs": [
+        "balance_error"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "iron-manganese-screen",
+      "name": "Iron and manganese risk",
+      "inputs": [
+        "iron",
+        "manganese",
+        "dissolved_oxygen"
+      ],
+      "outputs": [
+        "removal_needed"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "arsenic-fluoride-nitrate-screen",
+      "name": "Arsenic, fluoride and nitrate against limits",
+      "inputs": [
+        "values",
+        "profile"
+      ],
+      "outputs": [
+        "exceedance_flags"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "organics-nom",
+      "name": "TOC, DOC, COD and by-product precursor screen",
+      "inputs": [
+        "toc"
+      ],
+      "outputs": [
+        "dbp_risk"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ammonia-nitrogen",
+      "name": "Ammonia and nitrogen species",
+      "inputs": [
+        "ammonia",
+        "nitrite",
+        "nitrate"
+      ],
+      "outputs": [
+        "chlorine_demand_flag"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "salinity-chloride-sulfate",
+      "name": "Salinity, chloride and sulfate",
+      "inputs": [
+        "chloride",
+        "sulfate",
+        "tds"
+      ],
+      "outputs": [
+        "desalination_flag",
+        "corrosion_flag"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "micropollutants-metals",
+      "name": "Pesticides, micro-pollutants and heavy metals",
+      "inputs": [
+        "substance_list"
+      ],
+      "outputs": [
+        "flags"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "algal-toxin-risk",
+      "name": "Cyanotoxin and algal-product risk",
+      "inputs": [
+        "chlorophyll",
+        "cell_counts"
+      ],
+      "outputs": [
+        "pac_or_oxidation_flag"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "detection-limit-check",
+      "name": "Analysis quality and detection limits",
+      "inputs": [
+        "data"
+      ],
+      "outputs": [
+        "data_confidence"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "raw-scaling-corrosion",
+      "name": "Raw-water scaling and corrosion indices",
+      "inputs": [
+        "water_chemistry"
+      ],
+      "outputs": [
+        "lsi"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

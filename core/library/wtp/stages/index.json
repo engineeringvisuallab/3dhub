@@ -1,0 +1,34 @@
+{
+  "stages": [
+    "impounding-reservoir",
+    "intake-structure",
+    "screening",
+    "raw-water-conveyance",
+    "pre-treatment",
+    "aeration",
+    "rapid-mix-and-measurement",
+    "flocculation",
+    "clarification",
+    "filtration",
+    "oxidation-and-disinfection",
+    "adsorption",
+    "membrane-processes",
+    "special-removal",
+    "chemical-system",
+    "stabilization",
+    "clear-water-storage",
+    "delivery",
+    "residuals",
+    "plant-hydraulics-layout",
+    "power-and-control",
+    "buildings-and-site"
+  ],
+  "statusLevels": [
+    "listed",
+    "data",
+    "calc",
+    "model3d",
+    "drawings",
+    "tested"
+  ]
+}

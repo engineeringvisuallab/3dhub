@@ -1,0 +1,113 @@
+{
+  "id": "plant-hydraulics-layout",
+  "name": "Plant hydraulics, layout and package plants",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/site-layout",
+  "order": 20,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "QASIM",
+      "loc": "ch.15 Plant Siting, Layout, Yard Piping, and Hydraulic Profile"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.16, ch.23"
+    },
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.9 Modular and Package Designs"
+    }
+  ],
+  "groups": [
+    {
+      "id": "hydraulic-arrangement",
+      "name": "Hydraulic arrangement",
+      "types": [
+        {
+          "id": "gravity-flow-profile",
+          "name": "Gravity flow profile",
+          "status": "listed"
+        },
+        {
+          "id": "pumped-intermediate-profile",
+          "name": "Pumped intermediate profile",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "flow-distribution",
+      "name": "Flow distribution",
+      "types": [
+        {
+          "id": "flow-splitter-weir",
+          "name": "Flow splitter weir",
+          "status": "listed"
+        },
+        {
+          "id": "distribution-channel",
+          "name": "Distribution channel",
+          "status": "listed"
+        },
+        {
+          "id": "bypass-arrangement",
+          "name": "Bypass arrangement",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "layout-type",
+      "name": "Layout type",
+      "types": [
+        {
+          "id": "linear-layout",
+          "name": "Linear layout",
+          "status": "listed"
+        },
+        {
+          "id": "compact-stacked-layout",
+          "name": "Compact stacked layout",
+          "status": "listed"
+        },
+        {
+          "id": "clustered-layout",
+          "name": "Clustered layout",
+          "status": "listed"
+        },
+        {
+          "id": "package-plant",
+          "name": "Package plant",
+          "status": "listed"
+        },
+        {
+          "id": "modular-plant",
+          "name": "Modular plant",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "yard-piping",
+      "name": "Yard piping",
+      "types": [
+        {
+          "id": "gravity-yard-pipe",
+          "name": "Gravity yard pipe",
+          "status": "listed"
+        },
+        {
+          "id": "pressure-yard-pipe",
+          "name": "Pressure yard pipe",
+          "status": "listed"
+        },
+        {
+          "id": "drain-and-overflow-pipe",
+          "name": "Drain and overflow pipe",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

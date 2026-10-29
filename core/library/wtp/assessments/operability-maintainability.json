@@ -1,0 +1,106 @@
+{
+  "id": "operability-maintainability",
+  "title": "Operability and maintainability assessment",
+  "category": "operability",
+  "purpose": "Judge whether the people available can run and maintain the plant.",
+  "calculations": [
+    {
+      "id": "operator-skill-fit",
+      "name": "Skill required against skill available",
+      "inputs": [
+        "skill",
+        "train"
+      ],
+      "outputs": [
+        "fit"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "staffing-estimate",
+      "name": "Staff numbers",
+      "inputs": [
+        "units"
+      ],
+      "outputs": [
+        "staff"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "maintenance-access",
+      "name": "Access and clearance",
+      "inputs": [
+        "layout"
+      ],
+      "outputs": [
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "spare-parts-availability",
+      "name": "Local availability of spare parts",
+      "inputs": [
+        "equipment",
+        "country"
+      ],
+      "outputs": [
+        "risk"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "operation-maintenance-hours",
+      "name": "Operation and maintenance hours",
+      "inputs": [
+        "units"
+      ],
+      "outputs": [
+        "hours"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "training-need",
+      "name": "Training need",
+      "inputs": [
+        "process"
+      ],
+      "outputs": [
+        "plan"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "sampling-lab-plan",
+      "name": "Sampling and laboratory plan",
+      "inputs": [
+        "process"
+      ],
+      "outputs": [
+        "plan"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "commissioning-plan",
+      "name": "Start-up and commissioning plan",
+      "inputs": [
+        "units"
+      ],
+      "outputs": [
+        "plan"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

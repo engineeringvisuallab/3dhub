@@ -1,0 +1,416 @@
+{
+ "id": "substation",
+ "name": "Electrical substation (pole, kiosk, indoor, outdoor AIS, GIS)",
+ "category": "electrical/substation",
+ "kind": "parametric",
+ "generator": "substation",
+ "visual": "substation",
+ "tags": [
+  "electrical",
+  "substation"
+ ],
+ "bom": {
+  "ignore": [
+   "open",
+   "cutaway"
+  ]
+ },
+ "units": "mm",
+ "description": "Electrical substation in five types: pole-mounted, compact kiosk, indoor building (11/0.4 kV), outdoor AIS yard and GIS hall (33/11 or 132/33 kV) with control building. Transformers, bays, gantries, bus, switchgear, fence, oil pits, fire walls, trenches, masts, earthing. Generic indicative sizes and clearances, confirm with the utility standard. Generator: core/engine/gen/substation.js; real mesh: core/engine/visual/substation.js.",
+ "parameters": {
+  "type": {
+   "label": "Substation type",
+   "short": "Type",
+   "options": [
+    {
+     "v": "pole",
+     "label": "Pole-mounted 11/0.4 kV"
+    },
+    {
+     "v": "kiosk",
+     "label": "Compact kiosk 11/0.4 kV"
+    },
+    {
+     "v": "indoor",
+     "label": "Indoor building 11/0.4 kV"
+    },
+    {
+     "v": "ais",
+     "label": "Outdoor AIS yard (33/11 or 132/33 kV)"
+    },
+    {
+     "v": "gis",
+     "label": "GIS hall + outdoor transformers (33/11 or 132/33 kV)"
+    }
+   ],
+   "default": "ais"
+  },
+  "kv": {
+   "label": "Voltage (kV)",
+   "short": "kV",
+   "options": [
+    {
+     "v": "11/0.4",
+     "label": "11 / 0.4 kV"
+    },
+    {
+     "v": "33/11",
+     "label": "33 / 11 kV"
+    },
+    {
+     "v": "132/33",
+     "label": "132 / 33 kV"
+    }
+   ],
+   "default": "33/11"
+  },
+  "rating": {
+   "label": "Transformer rating (nearest offered for the type)",
+   "short": "Rating",
+   "options": [
+    {
+     "v": 25,
+     "label": "25 kVA"
+    },
+    {
+     "v": 50,
+     "label": "50 kVA"
+    },
+    {
+     "v": 63,
+     "label": "63 kVA"
+    },
+    {
+     "v": 100,
+     "label": "100 kVA"
+    },
+    {
+     "v": 200,
+     "label": "200 kVA"
+    },
+    {
+     "v": 315,
+     "label": "315 kVA"
+    },
+    {
+     "v": 500,
+     "label": "500 kVA"
+    },
+    {
+     "v": 630,
+     "label": "630 kVA"
+    },
+    {
+     "v": 800,
+     "label": "800 kVA"
+    },
+    {
+     "v": 1000,
+     "label": "1 MVA"
+    },
+    {
+     "v": 1250,
+     "label": "1.25 MVA"
+    },
+    {
+     "v": 1600,
+     "label": "1.6 MVA"
+    },
+    {
+     "v": 2000,
+     "label": "2 MVA"
+    },
+    {
+     "v": 5000,
+     "label": "5 MVA"
+    },
+    {
+     "v": 8000,
+     "label": "8 MVA"
+    },
+    {
+     "v": 10000,
+     "label": "10 MVA"
+    },
+    {
+     "v": 16000,
+     "label": "16 MVA"
+    },
+    {
+     "v": 20000,
+     "label": "20 MVA"
+    },
+    {
+     "v": 31500,
+     "label": "31.5 MVA"
+    },
+    {
+     "v": 40000,
+     "label": "40 MVA"
+    },
+    {
+     "v": 50000,
+     "label": "50 MVA"
+    },
+    {
+     "v": 63000,
+     "label": "63 MVA"
+    }
+   ],
+   "default": 10000
+  },
+  "tx": {
+   "label": "Number of transformers",
+   "short": "Trafos",
+   "min": 1,
+   "max": 3,
+   "step": 1,
+   "default": 2,
+   "unit": ""
+  },
+  "lines": {
+   "label": "Incoming line bays (AIS / GIS)",
+   "short": "Lines",
+   "min": 1,
+   "max": 2,
+   "step": 1,
+   "default": 2,
+   "unit": ""
+  },
+  "feeders": {
+   "label": "Outgoing MV feeders",
+   "short": "Feeders",
+   "min": 0,
+   "max": 12,
+   "step": 1,
+   "default": 4,
+   "unit": ""
+  },
+  "fence": {
+   "label": "Boundary fence with gate",
+   "short": "Fence",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "fireWall": {
+   "label": "Fire wall between transformers",
+   "short": "Fire wall",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "oilPit": {
+   "label": "Oil soak pit under transformers",
+   "short": "Oil pit",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "capBank": {
+   "label": "Capacitor bank",
+   "short": "Cap bank",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "trench": {
+   "label": "Cable trench",
+   "short": "Trench",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "crane": {
+   "label": "Crane / hoist (indoor, GIS)",
+   "short": "Crane",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "mast": {
+   "label": "Lightning masts",
+   "short": "Masts",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "flood": {
+   "label": "Flood lights / lights",
+   "short": "Lights",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "earth": {
+   "label": "Earthing (pits, grid, strips)",
+   "short": "Earthing",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "ner": {
+   "label": "Neutral earthing resistor",
+   "short": "NER",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "aux": {
+   "label": "Auxiliary room with AC board (AIS / GIS)",
+   "short": "Aux room",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "stay": {
+   "label": "Stay wire (pole type)",
+   "short": "Stay",
+   "options": [
+    {
+     "v": 1,
+     "label": "Yes"
+    },
+    {
+     "v": 0,
+     "label": "No"
+    }
+   ],
+   "default": 1
+  },
+  "open": {
+   "label": "Gate and doors open (0 closed, 100 fully open)",
+   "short": "Open %",
+   "min": 0,
+   "max": 100,
+   "step": 10,
+   "default": 0,
+   "unit": "%"
+  },
+  "wallColor": {
+   "label": "Wall colour",
+   "short": "Wall",
+   "options": [
+    {
+     "v": "grey",
+     "label": "Grey"
+    },
+    {
+     "v": "cream",
+     "label": "Cream"
+    },
+    {
+     "v": "white",
+     "label": "White"
+    }
+   ],
+   "default": "grey"
+  },
+  "cutaway": {
+   "label": "Cutaway: hide roofs and front walls (view only)",
+   "short": "Cutaway",
+   "options": [
+    {
+     "v": 0,
+     "label": "No"
+    },
+    {
+     "v": 1,
+     "label": "Yes"
+    }
+   ],
+   "default": 0
+  }
+ },
+ "shapes": [],
+ "ports": [],
+ "maxSize": 150000
+}

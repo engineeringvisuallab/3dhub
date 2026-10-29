@@ -1,0 +1,129 @@
+{
+  "id": "structural-assessment",
+  "title": "Structural assessment (indicative)",
+  "category": "structural",
+  "purpose": "Indicative structural sizing. Final structural design belongs to a licensed structural engineer.",
+  "calculations": [
+    {
+      "id": "load-cases",
+      "name": "Dead, live, water, soil, seismic and wind loads",
+      "inputs": [
+        "site"
+      ],
+      "outputs": [
+        "load_set"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tank-wall-thickness",
+      "name": "Wall moments and thickness",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "thickness"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "base-slab-uplift",
+      "name": "Base slab and uplift",
+      "inputs": [
+        "loads"
+      ],
+      "outputs": [
+        "thickness",
+        "flotation_factor"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "crack-watertightness",
+      "name": "Crack control and water-tightness",
+      "inputs": [
+        "design"
+      ],
+      "outputs": [
+        "limits"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "settlement-bearing",
+      "name": "Bearing and settlement",
+      "inputs": [
+        "soil"
+      ],
+      "outputs": [
+        "allowable_bearing"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "roof-columns",
+      "name": "Roof, beams and columns",
+      "inputs": [
+        "spans"
+      ],
+      "outputs": [
+        "sizes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "reinforcement-quantity",
+      "name": "Indicative reinforcement quantity",
+      "inputs": [
+        "members"
+      ],
+      "outputs": [
+        "kg"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "concrete-quantity",
+      "name": "Concrete and formwork quantity",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "volumes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "joints-waterstops",
+      "name": "Joints and waterstops",
+      "inputs": [
+        "length"
+      ],
+      "outputs": [
+        "joint_spacing"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "seismic-screen",
+      "name": "Seismic screen",
+      "inputs": [
+        "zone"
+      ],
+      "outputs": [
+        "factor"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

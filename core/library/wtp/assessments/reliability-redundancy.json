@@ -1,0 +1,94 @@
+{
+  "id": "reliability-redundancy",
+  "title": "Reliability and redundancy assessment",
+  "category": "reliability",
+  "purpose": "Find single points of failure and what happens when something stops.",
+  "calculations": [
+    {
+      "id": "unit-availability",
+      "name": "Availability of a single unit",
+      "inputs": [
+        "mtbf",
+        "mttr"
+      ],
+      "outputs": [
+        "availability"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "n-plus-one-capacity",
+      "name": "Capacity with one unit out",
+      "inputs": [
+        "units"
+      ],
+      "outputs": [
+        "flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "single-point-failure",
+      "name": "Single points of failure",
+      "inputs": [
+        "system"
+      ],
+      "outputs": [
+        "list"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "power-failure-mode",
+      "name": "Plant behaviour on power loss",
+      "inputs": [
+        "system"
+      ],
+      "outputs": [
+        "outcomes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-stock-out",
+      "name": "Days of chemical supply at risk",
+      "inputs": [
+        "storage",
+        "use"
+      ],
+      "outputs": [
+        "days"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "emergency-bypass",
+      "name": "Emergency bypass or disinfection-only mode",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "procedure"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "risk-register",
+      "name": "Risk scoring register",
+      "inputs": [
+        "hazards"
+      ],
+      "outputs": [
+        "register"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

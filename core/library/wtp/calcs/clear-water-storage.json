@@ -1,0 +1,119 @@
+{
+  "stage": "clear-water-storage",
+  "calculations": [
+    {
+      "id": "storage-volume",
+      "name": "Clear water storage volume (balancing plus reserve)",
+      "inputs": [
+        "demand_pattern",
+        "reserve"
+      ],
+      "outputs": [
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "clearwell-baffling",
+      "name": "Baffle factor and contact",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "baffle_factor",
+        "t10"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tank-dimensions",
+      "name": "Tank dimensions and freeboard",
+      "inputs": [
+        "volume",
+        "depth"
+      ],
+      "outputs": [
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "turnover-water-age",
+      "name": "Turnover and water age",
+      "inputs": [
+        "volume",
+        "demand"
+      ],
+      "outputs": [
+        "age"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "overflow-drain-vent",
+      "name": "Overflow, drain and vent sizing",
+      "inputs": [
+        "flow"
+      ],
+      "outputs": [
+        "pipe_sizes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tank-levels-hgl",
+      "name": "Levels and hydraulic grade",
+      "inputs": [
+        "hgl"
+      ],
+      "outputs": [
+        "level_set"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tank-thickness-indicative",
+      "name": "Indicative wall and slab thickness",
+      "inputs": [
+        "geometry",
+        "loads"
+      ],
+      "outputs": [
+        "thickness"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "uplift-check",
+      "name": "Flotation and uplift check",
+      "inputs": [
+        "groundwater_level",
+        "weights"
+      ],
+      "outputs": [
+        "factor_of_safety"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "roof-access-ventilation",
+      "name": "Roof, manholes and ventilation",
+      "inputs": [
+        "geometry"
+      ],
+      "outputs": [
+        "spec"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

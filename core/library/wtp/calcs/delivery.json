@@ -1,0 +1,172 @@
+{
+  "stage": "delivery",
+  "calculations": [
+    {
+      "id": "peak-delivery-flow",
+      "name": "Peak delivery flow and duty",
+      "inputs": [
+        "design_flow",
+        "peak_factor"
+      ],
+      "outputs": [
+        "peak_flow"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "delivery-pipe-sizing",
+      "name": "Pipe size and velocity",
+      "inputs": [
+        "flow",
+        "length"
+      ],
+      "outputs": [
+        "diameter",
+        "velocity"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "delivery-head-loss",
+      "name": "Friction and fitting loss",
+      "inputs": [
+        "flow",
+        "diameter"
+      ],
+      "outputs": [
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "delivery-pump-duty",
+      "name": "Pump duty head and curves",
+      "inputs": [
+        "static_head",
+        "losses",
+        "residual_pressure"
+      ],
+      "outputs": [
+        "duty_point"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "parallel-pumps",
+      "name": "Pumps in parallel",
+      "inputs": [
+        "curves"
+      ],
+      "outputs": [
+        "operating_points"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "vfd-energy",
+      "name": "VFD energy comparison",
+      "inputs": [
+        "demand_profile"
+      ],
+      "outputs": [
+        "kwh"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "delivery-surge",
+      "name": "Water hammer and protection",
+      "inputs": [
+        "profile",
+        "velocity"
+      ],
+      "outputs": [
+        "surge",
+        "protection"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pipe-class-pressure",
+      "name": "Pressure class and wall thickness",
+      "inputs": [
+        "max_pressure",
+        "surge"
+      ],
+      "outputs": [
+        "pressure_class"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "thrust-anchorage",
+      "name": "Thrust and anchorage",
+      "inputs": [
+        "pressure",
+        "fittings"
+      ],
+      "outputs": [
+        "thrust"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "air-valve-placement",
+      "name": "Air valve placement",
+      "inputs": [
+        "profile"
+      ],
+      "outputs": [
+        "locations",
+        "sizes"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "meter-chamber-layout",
+      "name": "Flow-meter chamber layout",
+      "inputs": [
+        "diameter"
+      ],
+      "outputs": [
+        "chamber_dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "boundary-tie-in",
+      "name": "Connection at the plant boundary",
+      "inputs": [
+        "levels"
+      ],
+      "outputs": [
+        "tie_in_level"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pump-house-sizing",
+      "name": "Pump house floor area and crane",
+      "inputs": [
+        "pumps"
+      ],
+      "outputs": [
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

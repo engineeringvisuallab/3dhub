@@ -1,0 +1,19 @@
+{
+  "id": "ref-delft-2004",
+  "name": "Criteria from the TU Delft 2004 notes",
+  "country": null,
+  "region": null,
+  "units": "SI",
+  "sources": [
+    "DELFT-SED"
+  ],
+  "waterQualityTargets": {},
+  "criteria": {},
+  "drawing": {
+    "sheetSeries": "A",
+    "scale": null,
+    "language": "en"
+  },
+  "currency": null,
+  "notes": "Empty on purpose: criteria are filled one unit at a time, each with a page reference to DELFT-SED."
+}

@@ -1,0 +1,73 @@
+{
+  "id": "aeration",
+  "name": "Aeration and gas transfer",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/aeration",
+  "order": 6,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.5 Aeration and Air Stripping"
+    }
+  ],
+  "groups": [
+    {
+      "id": "aerators",
+      "name": "Aerators",
+      "types": [
+        {
+          "id": "cascade-aerator",
+          "name": "Cascade aerator",
+          "status": "listed"
+        },
+        {
+          "id": "spray-aerator",
+          "name": "Spray aerator",
+          "status": "listed"
+        },
+        {
+          "id": "tray-aerator",
+          "name": "Tray aerator",
+          "status": "listed"
+        },
+        {
+          "id": "diffused-air-aerator",
+          "name": "Diffused-air aerator",
+          "status": "listed"
+        },
+        {
+          "id": "mechanical-surface-aerator",
+          "name": "Mechanical surface aerator",
+          "status": "listed"
+        },
+        {
+          "id": "venturi-injector-aerator",
+          "name": "Venturi injector aerator",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "strippers",
+      "name": "Strippers and degasifiers",
+      "types": [
+        {
+          "id": "packed-tower-air-stripper",
+          "name": "Packed tower air stripper",
+          "status": "listed"
+        },
+        {
+          "id": "low-profile-tray-stripper",
+          "name": "Low-profile tray stripper",
+          "status": "listed"
+        },
+        {
+          "id": "vacuum-deaerator",
+          "name": "Vacuum deaerator",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

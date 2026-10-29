@@ -1,0 +1,165 @@
+{
+  "id": "delivery",
+  "name": "High-lift pumping and delivery main",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/delivery",
+  "order": 18,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "QASIM",
+      "loc": "ch.13 High-service Pumping"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.16 Hydraulics"
+    }
+  ],
+  "groups": [
+    {
+      "id": "pumps",
+      "name": "High-lift pumps",
+      "types": [
+        {
+          "id": "horizontal-split-case-pump",
+          "name": "Horizontal split-case pump",
+          "status": "listed"
+        },
+        {
+          "id": "end-suction-pump",
+          "name": "End-suction pump",
+          "status": "listed"
+        },
+        {
+          "id": "vertical-turbine-pump-hl",
+          "name": "Vertical turbine pump",
+          "status": "listed"
+        },
+        {
+          "id": "vertical-inline-pump",
+          "name": "Vertical in-line pump",
+          "status": "listed"
+        },
+        {
+          "id": "submersible-pump-hl",
+          "name": "Submersible pump",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "station",
+      "name": "Pump station type",
+      "types": [
+        {
+          "id": "wet-well-station",
+          "name": "Wet-well station",
+          "status": "listed"
+        },
+        {
+          "id": "dry-well-station",
+          "name": "Dry-well station",
+          "status": "listed"
+        },
+        {
+          "id": "packaged-pump-station",
+          "name": "Packaged pump station",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "drive",
+      "name": "Drive",
+      "types": [
+        {
+          "id": "constant-speed-drive",
+          "name": "Constant-speed drive",
+          "status": "listed"
+        },
+        {
+          "id": "variable-frequency-drive",
+          "name": "Variable-frequency drive",
+          "status": "listed"
+        },
+        {
+          "id": "engine-drive",
+          "name": "Engine drive",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "main-pipe",
+      "name": "Delivery main pipe",
+      "types": [
+        {
+          "id": "di-delivery-main",
+          "name": "Ductile iron",
+          "status": "listed"
+        },
+        {
+          "id": "steel-delivery-main",
+          "name": "Steel",
+          "status": "listed"
+        },
+        {
+          "id": "hdpe-delivery-main",
+          "name": "HDPE",
+          "status": "listed"
+        },
+        {
+          "id": "pvc-delivery-main",
+          "name": "PVC",
+          "status": "listed"
+        },
+        {
+          "id": "grp-delivery-main",
+          "name": "GRP",
+          "status": "listed"
+        },
+        {
+          "id": "prestressed-concrete-main",
+          "name": "Prestressed concrete",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "appurtenances",
+      "name": "Appurtenances",
+      "types": [
+        {
+          "id": "isolation-valve",
+          "name": "Isolation valve",
+          "status": "listed"
+        },
+        {
+          "id": "check-valve-delivery",
+          "name": "Check valve",
+          "status": "listed"
+        },
+        {
+          "id": "air-valve-delivery",
+          "name": "Air valve",
+          "status": "listed"
+        },
+        {
+          "id": "flow-meter-chamber",
+          "name": "Flow-meter chamber",
+          "status": "listed"
+        },
+        {
+          "id": "thrust-block",
+          "name": "Thrust block",
+          "status": "listed"
+        },
+        {
+          "id": "surge-protection-delivery",
+          "name": "Surge protection",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

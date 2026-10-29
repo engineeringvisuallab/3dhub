@@ -1,0 +1,134 @@
+{
+  "id": "power-and-control",
+  "name": "Power, instrumentation and control",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/power-control",
+  "order": 21,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.20 Process Instrumentation and Controls, ch.21 Electrical Systems"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.16 Process Control"
+    }
+  ],
+  "groups": [
+    {
+      "id": "power-supply",
+      "name": "Power supply",
+      "types": [
+        {
+          "id": "grid-connection-transformer",
+          "name": "Grid connection and transformer",
+          "status": "listed"
+        },
+        {
+          "id": "diesel-generator-set",
+          "name": "Diesel generator set",
+          "status": "listed"
+        },
+        {
+          "id": "solar-pv-hybrid",
+          "name": "Solar PV hybrid",
+          "status": "listed"
+        },
+        {
+          "id": "ups-battery",
+          "name": "UPS and battery",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "distribution",
+      "name": "Distribution",
+      "types": [
+        {
+          "id": "motor-control-centre",
+          "name": "Motor control centre",
+          "status": "listed"
+        },
+        {
+          "id": "switchgear",
+          "name": "Switchgear",
+          "status": "listed"
+        },
+        {
+          "id": "cable-and-earthing",
+          "name": "Cable and earthing",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "instruments",
+      "name": "Instruments",
+      "types": [
+        {
+          "id": "flow-instruments",
+          "name": "Flow instruments",
+          "status": "listed"
+        },
+        {
+          "id": "level-instruments",
+          "name": "Level instruments",
+          "status": "listed"
+        },
+        {
+          "id": "turbidity-analyzer",
+          "name": "Turbidity analyser",
+          "status": "listed"
+        },
+        {
+          "id": "chlorine-analyzer",
+          "name": "Chlorine analyser",
+          "status": "listed"
+        },
+        {
+          "id": "ph-analyzer",
+          "name": "pH analyser",
+          "status": "listed"
+        },
+        {
+          "id": "streaming-current-detector",
+          "name": "Streaming current detector",
+          "status": "listed"
+        },
+        {
+          "id": "particle-counter",
+          "name": "Particle counter",
+          "status": "listed"
+        },
+        {
+          "id": "headloss-transmitter",
+          "name": "Head-loss transmitter",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "control",
+      "name": "Control level",
+      "types": [
+        {
+          "id": "manual-local-control",
+          "name": "Manual local control",
+          "status": "listed"
+        },
+        {
+          "id": "plc-control",
+          "name": "PLC control",
+          "status": "listed"
+        },
+        {
+          "id": "scada-system",
+          "name": "SCADA system",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

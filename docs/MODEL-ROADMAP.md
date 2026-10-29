@@ -56,5 +56,8 @@ Every model: named groups, ON/OFF where it has moving parts, engineering rules t
 39. Footbridge
 40. Road cross-section with kerb and drain
 41. HDD highway and railway crossing (HDPE) with plan, long section, cross sections - DONE
-42. Railway crossing methods (microtunnelling, pipe jacking, auger boring, pipe ramming, box jacking, open cut) - DONE. Next: culvert, bridge, utility crossing
+42. Railway crossing methods (microtunnelling, pipe jacking, auger boring, pipe ramming, box jacking, open cut) - DONE. Next: utility crossing
 43. Road crossing methods (same six methods under a highway) - DONE
+44. Culvert under road embankment (box, pipe, arch) with Manning check - DONE
+45. Road bridge over a river (slab, T-girder, PSC I-girder, steel) - DONE
+46. Electrical substation (pole, kiosk, indoor, outdoor AIS, GIS; 11/0.4, 33/11, 132/33 kV) - DONE (library page + Studio component)

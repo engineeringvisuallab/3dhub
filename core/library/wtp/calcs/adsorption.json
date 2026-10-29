@@ -1,0 +1,100 @@
+{
+  "stage": "adsorption",
+  "calculations": [
+    {
+      "id": "gac-ebct",
+      "name": "EBCT and contactor volume",
+      "inputs": [
+        "flow",
+        "ebct"
+      ],
+      "outputs": [
+        "volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "gac-bed-life",
+      "name": "Bed life and breakthrough estimate",
+      "inputs": [
+        "influent",
+        "isotherm"
+      ],
+      "outputs": [
+        "run_time"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "gac-hydraulics",
+      "name": "Head loss and backwash",
+      "inputs": [
+        "rate",
+        "media"
+      ],
+      "outputs": [
+        "head_loss",
+        "backwash"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pac-dose",
+      "name": "PAC dose and contact",
+      "inputs": [
+        "contaminant",
+        "dose_response"
+      ],
+      "outputs": [
+        "dose",
+        "feed_rate"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pac-residuals",
+      "name": "PAC-added sludge",
+      "inputs": [
+        "dose",
+        "flow"
+      ],
+      "outputs": [
+        "solids"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "adsorbent-capacity",
+      "name": "Activated alumina or bone char capacity",
+      "inputs": [
+        "influent",
+        "capacity"
+      ],
+      "outputs": [
+        "bed_volume",
+        "run_length"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "regeneration-cycle",
+      "name": "Regeneration or replacement cycle",
+      "inputs": [
+        "bed",
+        "capacity"
+      ],
+      "outputs": [
+        "frequency",
+        "chemical"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

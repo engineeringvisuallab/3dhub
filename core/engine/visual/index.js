@@ -14,12 +14,13 @@ import * as vv from './valves.js';
 import { pump } from './pump.js';
 import { inlinePump } from './pump-inline.js';
 import { genRoom } from './genroom.js';
+import { substation } from './substation.js';
 
 export const BUILDERS = {
   'di-pipe': pw.pipe, 'di-pipe-fl': pw.pipeFl, 'di-bend-90': pw.bend, 'di-bend-45': pw.bend, 'di-tee': pw.tee, 'di-reducer': pw.reducer,
   'blind-flange': pw.blindFlange, 'dismantling-joint': pw.dismantlingJoint,
   'gate-valve': vv.gateValve, 'butterfly-valve': vv.butterflyValve, 'check-valve': vv.checkValve, 'ball-valve': vv.ballValve, 'air-valve': vv.airValve, 'flow-meter': vv.flowMeter,
-  'end-suction-pump': pump, 'vertical-inline-pump': inlinePump, 'generator-room': genRoom
+  'end-suction-pump': pump, 'vertical-inline-pump': inlinePump, 'generator-room': genRoom, substation
 };
 const AXIS_ROT = { z: [1, 0, 0, 0, 1, 0, 0, 0, 1], x: [0, 0, -1, 0, 1, 0, 1, 0, 0], y: [1, 0, 0, 0, 0, -1, 0, 1, 0] };
 const memo = new Map();

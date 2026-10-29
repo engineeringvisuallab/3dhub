@@ -1,0 +1,72 @@
+{
+  "id": "screening",
+  "name": "Screening and debris removal",
+  "model": "intake",
+  "modelPath": "models/intake/screening",
+  "order": 3,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.4 Intake Facilities"
+    },
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.3-8 (confirm)"
+    }
+  ],
+  "groups": [
+    {
+      "id": "coarse",
+      "name": "Coarse screening",
+      "types": [
+        {
+          "id": "trash-rack",
+          "name": "Trash rack",
+          "status": "listed"
+        },
+        {
+          "id": "coarse-bar-screen-manual",
+          "name": "Coarse bar screen, manual cleaning",
+          "status": "listed"
+        },
+        {
+          "id": "coarse-bar-screen-mechanical",
+          "name": "Coarse bar screen, mechanical cleaning",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "fine",
+      "name": "Fine screening",
+      "types": [
+        {
+          "id": "fine-screen-fixed",
+          "name": "Fixed fine screen",
+          "status": "listed"
+        },
+        {
+          "id": "traveling-band-screen",
+          "name": "Traveling band screen",
+          "status": "listed"
+        },
+        {
+          "id": "drum-screen",
+          "name": "Drum screen",
+          "status": "listed"
+        },
+        {
+          "id": "microstrainer",
+          "name": "Microstrainer",
+          "status": "listed"
+        },
+        {
+          "id": "fish-screen-wedge-wire",
+          "name": "Wedge-wire (fish) screen",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

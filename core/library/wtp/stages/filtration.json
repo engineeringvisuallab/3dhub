@@ -1,0 +1,206 @@
+{
+  "id": "filtration",
+  "name": "Filtration",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/filter",
+  "order": 10,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "DELFT-RF",
+      "loc": "whole"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.8 High-Rate Granular Media Filtration, ch.9 Slow Sand and Diatomaceous Earth Filtration"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.10 Filtration"
+    }
+  ],
+  "groups": [
+    {
+      "id": "slow-and-special",
+      "name": "Slow sand and special filters",
+      "types": [
+        {
+          "id": "slow-sand-filter",
+          "name": "Slow sand filter",
+          "status": "listed"
+        },
+        {
+          "id": "slow-sand-with-roughing-prefilter",
+          "name": "Slow sand with roughing pre-filter",
+          "status": "listed"
+        },
+        {
+          "id": "biosand-household-filter",
+          "name": "Biosand household filter",
+          "status": "listed"
+        },
+        {
+          "id": "diatomaceous-earth-filter",
+          "name": "Diatomaceous earth filter",
+          "status": "listed"
+        },
+        {
+          "id": "cartridge-bag-filter",
+          "name": "Cartridge or bag filter",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "rapid-gravity",
+      "name": "Rapid gravity filters",
+      "types": [
+        {
+          "id": "rapid-gravity-single-medium",
+          "name": "Rapid gravity, single medium",
+          "status": "listed"
+        },
+        {
+          "id": "rapid-gravity-dual-media",
+          "name": "Rapid gravity, dual media",
+          "status": "listed"
+        },
+        {
+          "id": "rapid-gravity-multi-media",
+          "name": "Rapid gravity, multi-media",
+          "status": "listed"
+        },
+        {
+          "id": "deep-bed-monomedium",
+          "name": "Deep-bed mono-medium",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "pressure",
+      "name": "Pressure filters",
+      "types": [
+        {
+          "id": "pressure-filter-vertical",
+          "name": "Pressure filter, vertical",
+          "status": "listed"
+        },
+        {
+          "id": "pressure-filter-horizontal",
+          "name": "Pressure filter, horizontal",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "upflow-and-other",
+      "name": "Upflow and other configurations",
+      "types": [
+        {
+          "id": "upflow-coarse-to-fine",
+          "name": "Upflow coarse-to-fine filter",
+          "status": "listed"
+        },
+        {
+          "id": "biflow-filter",
+          "name": "Biflow filter",
+          "status": "listed"
+        },
+        {
+          "id": "self-backwash-filter",
+          "name": "Self-backwash (valveless) filter",
+          "status": "listed"
+        },
+        {
+          "id": "dry-filtration",
+          "name": "Dry filtration",
+          "status": "listed"
+        },
+        {
+          "id": "travelling-bridge-filter",
+          "name": "Travelling-bridge filter",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "operation-mode",
+      "name": "Operation mode",
+      "types": [
+        {
+          "id": "constant-rate-filtration",
+          "name": "Constant-rate filtration",
+          "status": "listed"
+        },
+        {
+          "id": "declining-rate-filtration",
+          "name": "Declining-rate filtration",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "backwash",
+      "name": "Backwash system",
+      "types": [
+        {
+          "id": "water-only-backwash",
+          "name": "Water-only backwash",
+          "status": "listed"
+        },
+        {
+          "id": "air-then-water-backwash",
+          "name": "Air then water backwash",
+          "status": "listed"
+        },
+        {
+          "id": "combined-air-water-backwash",
+          "name": "Combined air and water backwash",
+          "status": "listed"
+        },
+        {
+          "id": "surface-wash",
+          "name": "Surface wash",
+          "status": "listed"
+        },
+        {
+          "id": "rotary-arm-wash",
+          "name": "Rotary-arm wash",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "media-support",
+      "name": "Media support and underdrain",
+      "types": [
+        {
+          "id": "perforated-lateral-underdrain",
+          "name": "Perforated lateral underdrain",
+          "status": "listed"
+        },
+        {
+          "id": "porous-plate-underdrain",
+          "name": "Porous plate underdrain",
+          "status": "listed"
+        },
+        {
+          "id": "strainer-nozzle-false-bottom",
+          "name": "Strainer nozzle false bottom",
+          "status": "listed"
+        },
+        {
+          "id": "leopold-block-underdrain",
+          "name": "Block-type underdrain",
+          "status": "listed"
+        },
+        {
+          "id": "graded-gravel-support",
+          "name": "Graded gravel support",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

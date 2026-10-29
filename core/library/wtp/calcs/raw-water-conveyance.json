@@ -1,0 +1,164 @@
+{
+  "stage": "raw-water-conveyance",
+  "calculations": [
+    {
+      "id": "pipe-diameter-velocity",
+      "name": "Pipe diameter and velocity",
+      "inputs": [
+        "flow",
+        "length",
+        "material"
+      ],
+      "outputs": [
+        "diameter",
+        "velocity"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "friction-minor-loss",
+      "name": "Friction and minor head loss",
+      "inputs": [
+        "flow",
+        "diameter",
+        "roughness",
+        "fittings"
+      ],
+      "outputs": [
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "system-curve",
+      "name": "Static head and system curve",
+      "inputs": [
+        "levels",
+        "losses"
+      ],
+      "outputs": [
+        "system_curve"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pump-duty-point",
+      "name": "Pump duty point and selection",
+      "inputs": [
+        "system_curve",
+        "pump_curve"
+      ],
+      "outputs": [
+        "duty_point",
+        "efficiency"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "npsh-check",
+      "name": "NPSH available versus required",
+      "inputs": [
+        "suction_conditions",
+        "vapour_pressure"
+      ],
+      "outputs": [
+        "npsh_available",
+        "margin"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pump-power-energy",
+      "name": "Power and energy use",
+      "inputs": [
+        "flow",
+        "head",
+        "efficiency",
+        "hours"
+      ],
+      "outputs": [
+        "power_kw",
+        "kwh_per_m3"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pump-wet-well",
+      "name": "Wet-well volume and layout",
+      "inputs": [
+        "flow",
+        "starts_per_hour"
+      ],
+      "outputs": [
+        "volume",
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "surge-screening",
+      "name": "Water hammer screening",
+      "inputs": [
+        "length",
+        "velocity",
+        "wave_speed"
+      ],
+      "outputs": [
+        "surge_pressure",
+        "protection_need"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "bend-thrust",
+      "name": "Thrust at bends and ends",
+      "inputs": [
+        "pressure",
+        "diameter",
+        "angle"
+      ],
+      "outputs": [
+        "thrust_force",
+        "block_size"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "duty-standby-count",
+      "name": "Duty and standby pump count",
+      "inputs": [
+        "flow",
+        "reliability"
+      ],
+      "outputs": [
+        "pump_count"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "open-channel-hydraulics",
+      "name": "Channel or aqueduct hydraulics",
+      "inputs": [
+        "flow",
+        "slope",
+        "roughness"
+      ],
+      "outputs": [
+        "depth",
+        "velocity"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "assessments": [
+    "raw-water-physical",
+    "raw-water-chemical",
+    "raw-water-biological",
+    "source-and-hydrology",
+    "demand-and-capacity",
+    "process-selection",
+    "hydraulic-assessment",
+    "chemical-process-assessment",
+    "physical-process-assessment",
+    "engineering-assessment",
+    "structural-assessment",
+    "geotechnical-site",
+    "electrical-energy",
+    "reliability-redundancy",
+    "operability-maintainability",
+    "safety-security-environment",
+    "cost-and-lifecycle",
+    "design-verification"
+  ]
+}

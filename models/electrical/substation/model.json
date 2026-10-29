@@ -1,0 +1,122 @@
+{
+  "id": "substation",
+  "name": "Electrical substation (pole, kiosk, indoor, outdoor AIS, GIS)",
+  "category": "electrical/substation",
+  "tier": "free",
+  "units": "mm",
+  "types": {
+    "pole": "Pole-mounted 11/0.4 kV, 25-200 kVA (single pole up to 63 kVA, H-pole from 100 kVA)",
+    "kiosk": "Compact kiosk 11/0.4 kV, 200-1600 kVA (RMU + transformer + LT panel)",
+    "indoor": "Indoor building 11/0.4 kV, 500-2000 kVA, 1 or 2 transformer rooms",
+    "ais": "Outdoor air-insulated yard 33/11 kV (5-20 MVA) or 132/33 kV (20-63 MVA) with control building",
+    "gis": "Indoor GIS hall 33/11 or 132/33 kV + outdoor transformers + control building"
+  },
+  "parameters": {
+    "type": [
+      "pole",
+      "kiosk",
+      "indoor",
+      "ais",
+      "gis"
+    ],
+    "kv": [
+      "11/0.4",
+      "33/11",
+      "132/33"
+    ],
+    "rating_kVA": [
+      25,
+      50,
+      63,
+      100,
+      200,
+      315,
+      500,
+      630,
+      800,
+      1000,
+      1250,
+      1600,
+      2000,
+      5000,
+      8000,
+      10000,
+      16000,
+      20000,
+      31500,
+      40000,
+      50000,
+      63000
+    ],
+    "transformers": "1-3 (type limits: pole 1, kiosk 1, indoor 2)",
+    "incoming_line_bays": "1-2 (AIS, GIS)",
+    "outgoing_MV_feeders": "0-12",
+    "facilities": [
+      "fence",
+      "fireWall",
+      "oilPit",
+      "capBank",
+      "trench",
+      "crane",
+      "mast",
+      "flood",
+      "earth",
+      "ner",
+      "aux",
+      "stay"
+    ],
+    "open_percent": "0-100 (gate and doors)",
+    "wallColor": [
+      "grey",
+      "cream",
+      "white"
+    ],
+    "cutaway": "view only"
+  },
+  "rules": {
+    "yard_33_11": {
+      "phase_spacing_mm": 1300,
+      "bay_mm": 8000,
+      "terminal_height_mm": 3800,
+      "bus_mm": 6100,
+      "gantry_mm": 8000,
+      "phase_phase_mm": 430,
+      "phase_earth_mm": 500,
+      "sectional_mm": 2800,
+      "fence_margin_mm": 3800
+    },
+    "yard_132_33": {
+      "phase_spacing_mm": 3000,
+      "bay_mm": 13500,
+      "terminal_height_mm": 5200,
+      "bus_mm": 8000,
+      "gantry_mm": 11000,
+      "phase_phase_mm": 1300,
+      "phase_earth_mm": 1300,
+      "sectional_mm": 4000,
+      "fence_margin_mm": 5000
+    },
+    "transformer_gap": "with fire wall 5 m (33/11) / 8 m (132/33); without 10 m / 15 m",
+    "oil_pit": "transformer plan + 1 m each side, depth from 100 % of the oil at 40 % gravel void",
+    "indoor": "0.9 m wall clearance, 1.5 m in front and 1.0 m behind MV panels",
+    "live_parts": "at least 3.7 m (33 kV) / 5.2 m (132 kV) above ground, insulator bottom at least 2.4 m"
+  },
+  "ports": [
+    {
+      "id": "B",
+      "type": "face-v"
+    },
+    {
+      "id": "L",
+      "type": "face-h"
+    },
+    {
+      "id": "R",
+      "type": "face-h"
+    }
+  ],
+  "files": {
+    "parametric": "parametric/substation.html",
+    "studio_component": "core/library/components/substation.json"
+  }
+}

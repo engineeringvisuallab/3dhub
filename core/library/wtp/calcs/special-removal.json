@@ -1,0 +1,183 @@
+{
+  "stage": "special-removal",
+  "calculations": [
+    {
+      "id": "softening-dose",
+      "name": "Lime and soda ash dose",
+      "inputs": [
+        "calcium",
+        "magnesium",
+        "alkalinity"
+      ],
+      "outputs": [
+        "lime",
+        "soda"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "softening-sludge",
+      "name": "Softening sludge",
+      "inputs": [
+        "dose",
+        "hardness"
+      ],
+      "outputs": [
+        "sludge_mass"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "ion-exchange-capacity",
+      "name": "Resin capacity and bed volume",
+      "inputs": [
+        "influent",
+        "capacity"
+      ],
+      "outputs": [
+        "bed_volume",
+        "run_length"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "regenerant-use",
+      "name": "Regenerant dose and brine",
+      "inputs": [
+        "bed",
+        "capacity"
+      ],
+      "outputs": [
+        "salt",
+        "waste_volume"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "iron-oxidant-demand",
+      "name": "Iron and manganese oxidant demand",
+      "inputs": [
+        "iron",
+        "manganese",
+        "ph"
+      ],
+      "outputs": [
+        "oxidant_dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "iron-filter-loading",
+      "name": "Filter loading for iron removal",
+      "inputs": [
+        "iron",
+        "rate"
+      ],
+      "outputs": [
+        "run_time"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "arsenic-coagulant-dose",
+      "name": "Coagulant dose for arsenic removal",
+      "inputs": [
+        "arsenic",
+        "iron",
+        "ph"
+      ],
+      "outputs": [
+        "dose",
+        "removal"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "arsenic-adsorbent-life",
+      "name": "Adsorbent bed life for arsenic",
+      "inputs": [
+        "arsenic",
+        "capacity"
+      ],
+      "outputs": [
+        "bed_volume",
+        "life"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "nalgonda-dose",
+      "name": "Alum and lime dose for defluoridation",
+      "inputs": [
+        "fluoride",
+        "alkalinity"
+      ],
+      "outputs": [
+        "alum",
+        "lime"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "fluoride-adsorbent-life",
+      "name": "Defluoridation adsorbent life",
+      "inputs": [
+        "fluoride",
+        "capacity"
+      ],
+      "outputs": [
+        "life"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "nitrate-removal-design",
+      "name": "Nitrate removal design",
+      "inputs": [
+        "nitrate",
+        "process"
+      ],
+      "outputs": [
+        "bed_or_reactor"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "desal-recovery-energy",
+      "name": "Desalination recovery, energy and brine",
+      "inputs": [
+        "tds",
+        "recovery"
+      ],
+      "outputs": [
+        "energy",
+        "brine"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "taste-odor-dose",
+      "name": "PAC or ozone dose for taste and odour",
+      "inputs": [
+        "threshold_odor"
+      ],
+      "outputs": [
+        "dose"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

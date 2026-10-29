@@ -1,0 +1,62 @@
+{
+  "id": "adsorption",
+  "name": "Adsorption and organics control",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/adsorption",
+  "order": 12,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.14 Activated Carbon Processes"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.11 Color, Taste, and Odor Control"
+    }
+  ],
+  "groups": [
+    {
+      "id": "carbon",
+      "name": "Activated carbon",
+      "types": [
+        {
+          "id": "granular-activated-carbon-contactor",
+          "name": "GAC contactor",
+          "status": "listed"
+        },
+        {
+          "id": "gac-filter-adsorber",
+          "name": "GAC filter-adsorber",
+          "status": "listed"
+        },
+        {
+          "id": "powdered-activated-carbon-dosing",
+          "name": "Powdered activated carbon dosing",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "other-adsorbents",
+      "name": "Other adsorbents",
+      "types": [
+        {
+          "id": "activated-alumina",
+          "name": "Activated alumina",
+          "status": "listed"
+        },
+        {
+          "id": "bone-char",
+          "name": "Bone char",
+          "status": "listed"
+        },
+        {
+          "id": "iron-based-adsorbent",
+          "name": "Iron-based adsorbent",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

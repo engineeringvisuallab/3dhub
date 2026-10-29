@@ -1,0 +1,1234 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>EVLab 3D Hub – Substation</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#15202b;--mut:#5b6773;--card:#fff;--bd:#d9dee4;--ac:#1f5fa8;--ok:#1a7f4b;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}}
+:root[data-theme="dark"]{--bg:#12161b;--fg:#e8edf2;--mut:#98a4b0;--card:#1b222a;--bd:#2e3843;--ac:#5aa0e6;--ok:#4cc38a;--bad:#ef6a5b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:16px 20px 4px}h1{margin:0;font-size:20px}header p{margin:2px 0 0;color:var(--mut);font-size:13px}a{color:var(--ac)}
+main{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:12px 20px 24px;max-width:1280px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+#view{height:min(70vh,640px);min-height:320px;padding:0;overflow:hidden}#view canvas{display:block;width:100%;height:100%}
+label{display:block;font-size:13px;color:var(--mut);margin-top:10px}label b{color:var(--fg);font-weight:600}
+select,input[type=range],input[type=number]{width:100%;box-sizing:border-box}select,input[type=number]{padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px}
+.row{display:flex;gap:8px}.row>div{flex:1}.chips{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;margin-top:6px}.chips label{margin:0;color:var(--fg)}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-size:15px;font-weight:600;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}li{padding:2px 0}li::before{content:"✔ ";color:var(--ok)}li.bad{color:var(--bad)}li.bad::before{content:"✘ ";color:var(--bad)}li.note::before{content:"ℹ ";color:var(--mut)}
+small{color:var(--mut);display:block;margin-top:10px;font-size:12px}#msg{font-size:13px;margin-top:8px;color:var(--mut)}h3{margin:14px 0 0;font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+</style></head><body>
+<header><p><a href="../../../../site/index.html">&larr; EVLab 3D Hub</a></p><h1>Electrical substation – parametric</h1><p>EVLab 3D Hub · pole-mounted, compact kiosk, indoor building, outdoor AIS yard and GIS hall · transformers, bays, bus, gantries, control building, fence, oil pits, fire walls, trenches, masts, earthing</p></header>
+<main><div class="card" id="view"></div>
+<div class="card">
+<div class="row"><div><label>Substation type<select id="type"></select></label></div><div><label>Voltage kV<select id="kv"></select></label></div></div>
+<div class="row"><div><label>Transformer rating<select id="rating"></select></label></div><div><label>Transformers<input type="number" id="tx" min="1" max="3" step="1" value="2"></label></div></div>
+<div class="row"><div><label>Incoming line bays<input type="number" id="lines" min="1" max="2" step="1" value="2"></label></div><div><label>Outgoing MV feeders<input type="number" id="feeders" min="0" max="12" step="1" value="4"></label></div><div><label>Wall colour<select id="wallColor"><option value="grey">Grey</option><option value="cream">Cream</option><option value="white">White</option></select></label></div></div>
+<h3>Facilities (grey = not used by this type)</h3>
+<div class="chips" id="fac"></div>
+<label>Gate and doors open: <b id="ov">0 %</b><input type="range" id="open" min="0" max="100" step="10" value="0"></label>
+<label><input type="checkbox" id="cut" checked> Cutaway: hide roofs and front walls (view only)</label>
+<ul id="chk"></ul>
+<label>Format<select id="fmt"><option value="zip">ZIP (GLB + OBJ + spec.json with bill of quantities)</option><option value="glb">GLB only (Blender)</option><option value="obj">OBJ only (Blender / SketchUp)</option></select></label><button id="dl">Download</button><div id="msg"></div>
+<small>Generic, indicative sizes and clearances from common practice (phase-phase, phase-earth and sectional clearance, bay width, bus and terminal heights, transformer gap, oil pit, fire wall). They are not a maker's catalogue and not a code. Confirm with the utility standard, the equipment makers and the fire authority before construction. Not included: double bus / transfer bus, relay settings, cable and earth-mat calculation, lightning protection zone check.</small>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<script>
+window.SUB=(function(){const MOD={};
+MOD['math3']=(()=>{
+// Tiny 3D math. Transform = { R:[9 numbers row-major], t:[x,y,z] }. Units: mm.
+const D = Math.PI / 180;
+const ID = () => ({ R: [1,0,0, 0,1,0, 0,0,1], t: [0,0,0] });
+function mulRR(a, b) {
+  const r = new Array(9);
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++)
+    r[i*3+j] = a[i*3]*b[j] + a[i*3+1]*b[3+j] + a[i*3+2]*b[6+j];
+  return r;
+}
+function rotEuler(rot = [0,0,0]) { // degrees, R = Rz*Ry*Rx
+  const [x,y,z] = rot.map(v => v * D);
+  const cx=Math.cos(x), sx=Math.sin(x), cy=Math.cos(y), sy=Math.sin(y), cz=Math.cos(z), sz=Math.sin(z);
+  const Rx=[1,0,0, 0,cx,-sx, 0,sx,cx], Ry=[cy,0,sy, 0,1,0, -sy,0,cy], Rz=[cz,-sz,0, sz,cz,0, 0,0,1];
+  return mulRR(Rz, mulRR(Ry, Rx));
+}
+const mulRV = (R, v) => [R[0]*v[0]+R[1]*v[1]+R[2]*v[2], R[3]*v[0]+R[4]*v[1]+R[5]*v[2], R[6]*v[0]+R[7]*v[1]+R[8]*v[2]];
+const mulRtV = (R, v) => [R[0]*v[0]+R[3]*v[1]+R[6]*v[2], R[1]*v[0]+R[4]*v[1]+R[7]*v[2], R[2]*v[0]+R[5]*v[1]+R[8]*v[2]];
+const add = (a, b) => [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
+const sub = (a, b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
+const scale = (a, s) => [a[0]*s, a[1]*s, a[2]*s];
+const len = a => Math.hypot(a[0], a[1], a[2]);
+const norm = a => { const l = len(a) || 1; return [a[0]/l, a[1]/l, a[2]/l]; };
+const cross = (a, b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+const dot = (a, b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+function fromEuler(pos = [0,0,0], rot = [0,0,0]) { return { R: rotEuler(rot), t: pos.slice() }; }
+function compose(a, b) { return { R: mulRR(a.R, b.R), t: add(mulRV(a.R, b.t), a.t) }; } // a ∘ b
+const apply = (T, p) => add(mulRV(T.R, p), T.t);
+const applyInv = (T, p) => mulRtV(T.R, sub(p, T.t));
+function rotFromTo(a, b) { // minimal rotation taking unit a to unit b
+  a = norm(a); b = norm(b);
+  const v = cross(a, b), c = dot(a, b);
+  if (c > 0.999999) return [1,0,0, 0,1,0, 0,0,1];
+  if (c < -0.999999) { // antiparallel: 180° about world Z when horizontal (keeps 'up' up), else about X
+    const u = Math.abs(a[2]) < 0.99 ? [0,0,1] : [1,0,0];
+    return [2*u[0]*u[0]-1, 2*u[0]*u[1], 2*u[0]*u[2], 2*u[1]*u[0], 2*u[1]*u[1]-1, 2*u[1]*u[2], 2*u[2]*u[0], 2*u[2]*u[1], 2*u[2]*u[2]-1];
+  }
+  const k = 1 / (1 + c);
+  return [v[0]*v[0]*k+c, v[0]*v[1]*k-v[2], v[0]*v[2]*k+v[1],
+          v[1]*v[0]*k+v[2], v[1]*v[1]*k+c, v[1]*v[2]*k-v[0],
+          v[2]*v[0]*k-v[1], v[2]*v[1]*k+v[0], v[2]*v[2]*k+c];
+}
+
+function rotAxis(axis, deg) { // Rodrigues, axis need not be unit
+  const [x,y,z] = norm(axis), c = Math.cos(deg*D), s = Math.sin(deg*D), t = 1-c;
+  return [t*x*x+c, t*x*y-s*z, t*x*z+s*y, t*x*y+s*z, t*y*y+c, t*y*z-s*x, t*x*z-s*y, t*y*z+s*x, t*z*z+c];
+}
+function eulerFromR(R) { // inverse of rotEuler (degrees); gimbal-safe enough for placement
+  const sy = -R[6], y = Math.asin(Math.max(-1, Math.min(1, sy)));
+  if (Math.abs(sy) < 0.999999) return [Math.atan2(R[7], R[8])/D, y/D, Math.atan2(R[3], R[0])/D];
+  return [0, y/D, Math.atan2(-R[1], R[4])/D];
+}
+
+return {ID,mulRR,rotEuler,mulRV,mulRtV,add,sub,scale,len,norm,cross,dot,fromEuler,compose,apply,applyInv,rotFromTo,rotAxis,eulerFromR};})();
+MOD['mesh']=(()=>{
+// Visual mesh builder: plain triangle meshes (no DOM, no three.js), local space, mm, Z up.
+// Used by core/engine/visual/*.js to build the real shape of a component (flange rings with bolt holes, torus bends,
+// valve bodies, handwheels ...). Winding is counter-clockwise seen from outside, normals point outward.
+// Collision still uses the simple boxes / cylinders of the component json; this layer is only what the user SEES and exports.
+const { apply, mulRV, norm, cross, dot, sub, add, scale, rotFromTo } = MOD['math3'];
+const TAU = Math.PI * 2;
+
+class Geo {
+  constructor() { this.pos = []; this.nor = []; this.idx = []; }
+  get verts() { return this.pos.length / 3; }
+  v(p, n) { this.pos.push(p[0], p[1], p[2]); this.nor.push(n[0], n[1], n[2]); return this.pos.length / 3 - 1; }
+  q(a, b, c, d) { this.idx.push(a, b, c, a, c, d); }
+  tri(a, b, c) { this.idx.push(a, b, c); }
+  // append another Geo, optionally moved by T = { R, t }
+  merge(g, T) {
+    const o = this.verts;
+    for (let i = 0; i < g.pos.length; i += 3) {
+      let p = [g.pos[i], g.pos[i + 1], g.pos[i + 2]], n = [g.nor[i], g.nor[i + 1], g.nor[i + 2]];
+      if (T) { p = apply(T, p); n = mulRV(T.R, n); }
+      this.pos.push(p[0], p[1], p[2]); this.nor.push(n[0], n[1], n[2]);
+    }
+    for (const k of g.idx) this.idx.push(k + o);
+    return this;
+  }
+  get empty() { return this.idx.length === 0; }
+}
+
+// Pose with local Z along `dir`, local Y = world up (so bolt patterns straddle the vertical centre line), origin at `at`.
+function frame(dir, at = [0, 0, 0]) {
+  const Z = norm(dir);
+  let X = Math.abs(Z[2]) > 0.999 ? [1, 0, 0] : norm(cross([0, 0, 1], Z));
+  const Y = cross(Z, X);
+  return { R: [X[0], Y[0], Z[0], X[1], Y[1], Z[1], X[2], Y[2], Z[2]], t: at.slice() };
+}
+const move = (x, y, z) => ({ R: [1, 0, 0, 0, 1, 0, 0, 0, 1], t: [x, y, z] });
+
+function box(sx, sy, sz) {
+  const g = new Geo(), [x, y, z] = [sx / 2, sy / 2, sz / 2];
+  const face = (a, b, c, d, n) => g.q(g.v(a, n), g.v(b, n), g.v(c, n), g.v(d, n));
+  face([x, -y, -z], [x, y, -z], [x, y, z], [x, -y, z], [1, 0, 0]);   face([-x, y, -z], [-x, -y, -z], [-x, -y, z], [-x, y, z], [-1, 0, 0]);
+  face([x, y, -z], [-x, y, -z], [-x, y, z], [x, y, z], [0, 1, 0]);   face([-x, -y, -z], [x, -y, -z], [x, -y, z], [-x, -y, z], [0, -1, 0]);
+  face([-x, -y, z], [x, -y, z], [x, y, z], [-x, y, z], [0, 0, 1]);   face([-x, y, -z], [x, y, -z], [x, -y, -z], [-x, -y, -z], [0, 0, -1]);
+  return g;
+}
+
+// Revolve a profile [[r, z], ...] around the local Z axis. Walk the profile with the solid on the LEFT
+// (outer wall going up, top cap going towards the axis). opts: seg (default 48), smooth (average normals of neighbouring
+// segments when they bend less than 40 degrees), flat (one normal per angular facet, for hex nuts).
+function lathe(profile, opts = {}) {
+  const seg = opts.seg || 48, g = new Geo(), n2 = [];
+  for (let i = 0; i + 1 < profile.length; i++) {
+    const dr = profile[i + 1][0] - profile[i][0], dz = profile[i + 1][1] - profile[i][1], L = Math.hypot(dr, dz);
+    n2.push(L < 1e-9 ? null : [dz / L, -dr / L]);
+  }
+  const blend = (a, b) => {
+    if (!opts.smooth || !a || !b || a[0] * b[0] + a[1] * b[1] < Math.cos(40 * Math.PI / 180)) return a;
+    const m = [a[0] + b[0], a[1] + b[1]], L = Math.hypot(m[0], m[1]) || 1; return [m[0] / L, m[1] / L];
+  };
+  for (let i = 0; i + 1 < profile.length; i++) {
+    const nc = n2[i]; if (!nc) continue;
+    let prev = null, next = null;
+    for (let j = i - 1; j >= 0 && !prev; j--) prev = n2[j];
+    for (let j = i + 1; j < n2.length && !next; j++) next = n2[j];
+    const n0 = blend(nc, prev), n1 = blend(nc, next);
+    for (let k = 0; k < seg; k++) {
+      const a0 = TAU * k / seg, a1 = TAU * (k + 1) / seg, am = (a0 + a1) / 2;
+      const P = (pt, a) => [pt[0] * Math.cos(a), pt[0] * Math.sin(a), pt[1]];
+      const N = (n, a) => opts.flat ? [nc[0] * Math.cos(am), nc[0] * Math.sin(am), nc[1]] : [n[0] * Math.cos(a), n[0] * Math.sin(a), n[1]];
+      const a = g.v(P(profile[i], a0), N(n0, a0)), b = g.v(P(profile[i], a1), N(n0, a1));
+      const c = g.v(P(profile[i + 1], a1), N(n1, a1)), d = g.v(P(profile[i + 1], a0), N(n1, a0));
+      g.q(a, b, c, d);
+    }
+  }
+  return g;
+}
+// solid cylinder, axis Z, centred
+const cyl = (r, len, opts) => lathe([[0, -len / 2], [r, -len / 2], [r, len / 2], [0, len / 2]], opts);
+// hollow tube (axis Z, centred) with open ends
+const hollow = (ro, ri, len, opts) => lathe([[ri, -len / 2], [ro, -len / 2], [ro, len / 2], [ri, len / 2], [ri, -len / 2]], opts);
+// hex prism (nut / bolt head), across-corners radius r, axis Z, centred
+const hex = (r, len) => lathe([[0, -len / 2], [r, -len / 2], [r, len / 2], [0, len / 2]], { seg: 6, flat: true });
+// cone / frustum, axis Z, from z0 (radius r0) to z1 (radius r1), closed
+const cone = (r0, r1, z0, z1, opts) => lathe([[0, z0], [r0, z0], [r1, z1], [0, z1]], opts);
+// sphere of radius r (axis Z)
+function sphere(r, opts = {}) {
+  const prof = [], n = opts.rings || 14;
+  for (let i = 0; i <= n; i++) { const a = -Math.PI / 2 + Math.PI * i / n; prof.push([Math.max(0, r * Math.cos(a)), r * Math.sin(a)]); }
+  return lathe(prof, { smooth: true, seg: opts.seg || 40 });
+}
+
+// Sweep a circle of radius r along a polyline `pts` (rotation-minimising frames). closed = loop (handwheel rim).
+function tube(pts, r, opts = {}) {
+  const seg = opts.seg || 24, g = new Geo(), n = pts.length, closed = !!opts.closed;
+  const tan = pts.map((p, i) => {
+    const a = pts[closed ? (i + n - 1) % n : Math.max(i - 1, 0)], b = pts[closed ? (i + 1) % n : Math.min(i + 1, n - 1)];
+    return norm(sub(b, a));
+  });
+  let N = norm(cross(tan[0], Math.abs(tan[0][2]) < 0.9 ? [0, 0, 1] : [1, 0, 0]));
+  const rings = [];
+  for (let i = 0; i < n; i++) {
+    if (i > 0) { // parallel transport: rotate previous N by the change of tangent
+      const R = rotFromTo(tan[i - 1], tan[i]); N = norm(mulRV(R, N));
+    }
+    const B = cross(tan[i], N), ring = [], rr = typeof r === 'function' ? r(i / (n - 1)) : r;
+    for (let k = 0; k < seg; k++) {
+      const a = TAU * k / seg, d = add(scale(N, Math.cos(a)), scale(B, Math.sin(a)));
+      ring.push(g.v(add(pts[i], scale(d, rr)), d));
+    }
+    rings.push(ring);
+  }
+  const last = closed ? n : n - 1;
+  for (let i = 0; i < last; i++) {
+    const A = rings[i], B = rings[(i + 1) % n];
+    for (let k = 0; k < seg; k++) g.q(A[k], A[(k + 1) % seg], B[(k + 1) % seg], B[k]);
+  }
+  if (!closed && opts.caps !== false) for (const [i, flip] of [[0, true], [n - 1, false]]) {
+    const rr = typeof r === 'function' ? r(i / (n - 1)) : r, nn = flip ? scale(tan[i], -1) : tan[i];
+    const c = g.v(pts[i], nn), ring = rings[i].map((_, k) => { const idx = rings[i][k]; return g.v([g.pos[idx * 3], g.pos[idx * 3 + 1], g.pos[idx * 3 + 2]], nn); });
+    for (let k = 0; k < seg; k++) flip ? g.tri(c, ring[(k + 1) % seg], ring[k]) : g.tri(c, ring[k], ring[(k + 1) % seg]);
+  }
+  return g;
+}
+// points of a circular arc: centre c, radius R, starting direction u0 (unit), turning towards unit v0 (u0 ⟂ v0), angle in degrees
+function arcPoints(c, R, u0, v0, deg, steps = 20) {
+  const out = [];
+  for (let i = 0; i <= steps; i++) { const a = (deg * Math.PI / 180) * i / steps; out.push(add(c, add(scale(u0, R * Math.cos(a)), scale(v0, R * Math.sin(a))))); }
+  return out;
+}
+
+// inside-out copy: normals and winding reversed (inner wall of a hollow part)
+function flip(g) {
+  const o = new Geo(); o.pos = g.pos.slice(); o.nor = g.nor.map(v => -v);
+  for (let i = 0; i < g.idx.length; i += 3) o.idx.push(g.idx[i], g.idx[i + 2], g.idx[i + 1]);
+  return o;
+}
+
+return {Geo,frame,move,box,lathe,cyl,hollow,hex,cone,sphere,tube,arcPoints,flip};})();
+MOD['gen/genroom']=(()=>{
+// Generator room (diesel generator set room) generator.
+// One component = a complete, ready-to-build DG room: floor slab, walls with real openings, roof slab, one or two DG sets on plinths,
+// day fuel tank with bund, exhaust line (bellows, silencer, pipe, sleeve, stack), cooling-air louvres, equipment and personnel doors,
+// control panel, battery rack, cable trench, monorail hoist, fire kit, lights, extraction fan, acoustic lining.
+// plan(p) is the single source of truth: gen/genroom.js (collision shapes, ports, details) and visual/genroom.js (real mesh) both read it.
+// Engine space: X = room length (radiator end = -X, alternator end and doors = +X), Y = room width (+Y = service side), Z = up.
+// Origin = bottom centre of the outer footprint (under the floor slab). Ports: B (bottom), T (roof top) = face-v; L / R (ends) = face-h.
+// All sizes below are generic envelopes (indicative), not a maker's catalogue. Confirm with the DG set maker and local rules.
+
+// kVA -> [length, width, height of the set on its skid (mm), exhaust pipe DN (mm), mass (kg)]
+const SETS = {
+  62.5: [2300, 900, 1450, 75, 1100], 100: [2600, 1000, 1600, 100, 1500], 125: [2800, 1050, 1650, 100, 1800], 160: [3000, 1100, 1750, 125, 2200],
+  250: [3400, 1250, 1900, 150, 3000], 320: [3700, 1300, 2000, 150, 3600], 400: [4000, 1400, 2100, 200, 4200], 500: [4300, 1550, 2200, 200, 4900],
+  625: [4600, 1700, 2300, 250, 5800], 750: [5000, 1800, 2400, 250, 6800], 1000: [5500, 2000, 2500, 300, 8800]
+};
+const TANKS = [100, 150, 200, 300, 500, 750, 1000, 1500, 2000, 3000, 5000];   // standard day tank sizes (litres)
+const SWL = [1, 2, 3, 5, 10, 15];                                             // hoist safe working loads (tonnes)
+const WALL = { grey: 0xb4b8bc, cream: 0xe0d4b4, white: 0xe8e8e4 };
+const SETCOL = { blue: 0x2f5fa8, green: 0x2f7d4f, yellow: 0xd9a81e, grey: 0x7d858c, red: 0xb83a2c };
+
+// Rules (indicative, all in one place)
+const RULE = {
+  floorPlain: 200, floorTrench: 500, trenchDepth: 300, trenchW: 400, roofT: 150, plinth: 150,
+  sideClear: 1200,          // set to wall, and set to set
+  radClear: 1500,           // radiator end: minimum distance from the radiator to the wall
+  altClear: 1800, altBattery: 900, // alternator end: minimum distance (panel, door, service), plus the battery rack
+  airPerKva: 0.025,         // m3/s of cooling + combustion air per kVA
+  inletVelocity: 4,         // m/s through the free area of the inlet louvre
+  louvreFree: 0.5,          // free area ratio of a louvre
+  dischargeVelocity: 8,     // m/s through the free area of the discharge louvre
+  fuelPerKva: 0.15,         // L/h per kVA at 75 % load (about 0.25 L per kWh)
+  bundMargin: 200, bundWall: 100, bundFactor: 1.1,
+  stackPerSqrtKva: 200,     // mm of stack above the roof per sqrt(kVA)  (guideline 0.2 * sqrt(kVA) m: check the local rule)
+  minHeight: 3600
+};
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const up = (v, s) => Math.ceil(v / s - 1e-9) * s;
+const r1 = v => Math.round(v * 10) / 10;
+const on = v => +v === 1;
+
+// ---- 2D helper: a rectangle [0,W]x[0,H] minus holes -> list of rectangles {u0,u1,v0,v1} (walls with real openings, floor with trench) ----
+function rectMinus(W, H, holes) {
+  const xs = new Set([0, W]); for (const h of holes) { xs.add(clamp(h.u0, 0, W)); xs.add(clamp(h.u1, 0, W)); }
+  const X = [...xs].sort((a, b) => a - b), cells = [];
+  for (let i = 0; i + 1 < X.length; i++) {
+    const a = X[i], b = X[i + 1]; if (b - a < 1e-6) continue;
+    const cov = holes.filter(h => h.u0 <= a + 1e-6 && h.u1 >= b - 1e-6).map(h => [clamp(h.v0, 0, H), clamp(h.v1, 0, H)]).sort((p, q) => p[0] - q[0]);
+    let c = 0; const iv = [];
+    for (const [lo, hi] of cov) { if (lo > c + 1e-6) iv.push([c, lo]); c = Math.max(c, hi); }
+    if (c < H - 1e-6) iv.push([c, H]);
+    for (const [v0, v1] of iv) cells.push({ u0: a, u1: b, v0, v1 });
+  }
+  cells.sort((p, q) => p.v0 - q.v0 || p.v1 - q.v1 || p.u0 - q.u0);   // merge neighbours in u that share the same v range
+  const out = [];
+  for (const c of cells) { const l = out[out.length - 1]; if (l && l.v0 === c.v0 && l.v1 === c.v1 && Math.abs(l.u1 - c.u0) < 1e-6) l.u1 = c.u1; else out.push({ ...c }); }
+  return out;
+}
+
+// ---- the plan: every size and position, plus the rule notes ----
+function plan(p) {
+  const S = SETS[p.kva]; if (!S) throw new Error(`Unknown DG set size "${p.kva}" kVA.`);
+  const [Ls, Ws, Hs, D, kg] = S, n = +p.sets === 2 ? 2 : 1, t = +p.t, ph = RULE.plinth, notes = [];
+  const trench = on(p.trench), tankOn = on(p.dayTank), battery = on(p.battery), panel = on(p.panel);
+  const fl = trench ? RULE.floorTrench : RULE.floorPlain, rt = RULE.roofT, zf = fl;
+  // air
+  const Q = RULE.airPerKva * p.kva;                                             // m3/s per set
+  const Aw = n * Q * 1e6 / (RULE.inletVelocity * RULE.louvreFree) / 2;           // gross inlet louvre area per long wall (mm2)
+  // fuel
+  const lph = RULE.fuelPerKva * p.kva, vNeed = lph * n * +p.tankHours;
+  const V = TANKS.find(v => v >= vNeed) ?? TANKS[TANKS.length - 1];
+  if (tankOn && vNeed > TANKS[TANKS.length - 1]) notes.push(`Warning: ${Math.round(vNeed)} L of fuel is needed for ${p.tankHours} h. The largest day tank here is ${TANKS[TANKS.length - 1]} L: add a bulk tank outside.`);
+  const sq = up(Math.cbrt(V * 1e6 / 2), 50);                                     // tank shape: length about twice the width and height
+  const tank = { V, Ht: sq, Wt: sq }; tank.Lt = up(V * 1e6 / (sq * sq), 50);
+  const m = RULE.bundMargin, bw = RULE.bundWall;
+  tank.bx = tank.Lt + 2 * m; tank.by = tank.Wt + 2 * m;
+  tank.hB = Math.max(150, up(RULE.bundFactor * V * 1e6 / ((tank.bx - 2 * bw) * (tank.by - 2 * bw)), 50));   // bund keeps 110 % of the tank
+  tank.leg = tank.hB + 150;
+  // minimum sizes
+  const cS = RULE.sideClear, cR = Math.max(RULE.radClear, tankOn ? tank.bx + 450 : 0), cA = RULE.altClear + (battery ? RULE.altBattery : 0);
+  const u0 = tankOn ? tank.bx + 450 : 600;                                       // inlet louvres start after the tank
+  const wReq = Math.max(600, up(Aw / 1500, 100));                                // louvre about 1500 mm high
+  const Lmin = Math.max(cR + Ls + cA, u0 + 1500 + wReq);
+  const Wmin = n === 2 ? 2 * Ws + 3 * cS : Ws + 2 * cS;
+  const legUp = Math.max(300, 1.5 * D);                                          // straight pipe above the silencer before the elbow
+  const Hmin = Math.max(RULE.minHeight, up(ph + Hs + 400 + 5 * D + legUp + 1.5 * D + 300, 100));
+  const pick = (want, min, what) => { want = +want; if (want > 0 && want < min - 1e-6) notes.push(`Note: room ${what} raised from ${want} to ${min} mm (smallest that fits this set, its clearances and its air).`); return Math.max(want, min); };
+  const Li = pick(p.L, Lmin, 'length'), Wi = pick(p.W, Wmin, 'width'), Hi = pick(p.H, Hmin, 'height');
+  const Lo = Li + 2 * t, Wo = Wi + 2 * t, zc = zf + Hi, zr = zc + rt;
+  // sets
+  const extraL = Li - Lmin, g = n === 2 ? (Wi - 2 * Ws) / 3 : cS;
+  const xs0 = -Li / 2 + cR + extraL / 2, xs1 = xs0 + Ls;
+  const sets = []; for (let k = 0; k < n; k++) sets.push({ k, ya: n === 1 ? 0 : (k === 0 ? 1 : -1) * (Ws / 2 + g / 2), x0: xs0, x1: xs1, zBase: zf + ph, zTop: zf + ph + Hs });
+  // exhaust
+  const stackGuide = up(RULE.stackPerSqrtKva * Math.sqrt(p.kva), 100), stackAbove = +p.stack > 0 ? +p.stack : stackGuide;
+  if (+p.stack > 0 && +p.stack < stackGuide) notes.push(`Warning: stack ${p.stack} mm above the roof is below the guideline ${stackGuide} mm (0.2 x sqrt(kVA) m). Check the local rule.`);
+  const sil = { L: 5 * D, Dia: Math.round(2.4 * D) };
+  const roofExit = p.exhaust === 'roof';
+  for (const s of sets) {
+    s.xEx = xs0 + 0.45 * Ls; s.dir = s.ya >= 0 ? 1 : -1;
+    s.zBell = s.zTop + 400; s.zSil0 = s.zBell; s.zSil1 = s.zBell + sil.L; s.zH = s.zSil1 + legUp;
+    s.yOut = s.dir * (Wo / 2 + D / 2 + 150);
+  }
+  const zStackTop = zr + stackAbove;
+  // louvres (inlet, both long walls)
+  const wL = clamp(wReq, 600, Li - 1500 - u0), hL = up(Aw / wL, 50), sill = 500;
+  if (sill + hL > Hi - 400) notes.push('Warning: the inlet louvre does not fit the wall height. Increase the room length.');
+  const louvre = { u0, u1: u0 + wL, v0: sill, v1: sill + hL, w: wL, h: hL, free: wL * hL * RULE.louvreFree / 1e6 };
+  // discharge opening (radiator end) per set
+  const dw = Ws, dh = Math.min(Hi - 300 - (ph + 100), up(Math.max(0.8 * Hs, Q * 1e6 / (RULE.dischargeVelocity * RULE.louvreFree) / dw), 50));
+  const disc = { w: dw, v0: ph + 100, v1: ph + 100 + dh, h: dh, vel: Q / (dw * dh * RULE.louvreFree / 1e6) };
+  if (disc.vel > RULE.dischargeVelocity + 0.01) notes.push(`Warning: discharge air speed ${r1(disc.vel)} m/s is above ${RULE.dischargeVelocity} m/s.`);
+  // doors
+  const Weq = Ws + 600, Heq = Math.min(Hi - 300, up(ph + Hs + 300, 100)), pd = { w: 1000, h: 2100, u0: Li - 1200 };
+  // facilities (positions in room coordinates)
+  const fac = {};
+  fac.tank = tankOn ? { ...tank, x0: -Li / 2 + 150, y1: Wi / 2 - 150, y0: Wi / 2 - 150 - tank.by } : null;
+  fac.panel = panel ? { x0: xs1 + 300, w: 1000, d: 500, h: 1800, base: 100, y1: Wi / 2 } : null;
+  fac.battery = battery ? { x0: xs1 + 1400, w: 900, d: 450, h: 800, y1: Wi / 2 } : null;
+  fac.trench = trench ? { xc: xs1 + 800, w: RULE.trenchW, depth: RULE.trenchDepth, yA: Wi / 2 - 250, yB: Math.min(...sets.map(s => s.ya)) } : null;
+  fac.hoist = on(p.hoist) ? { y: n === 1 ? sets[0].ya : 0, x0: -Li / 2 + 400, x1: Li / 2 - 400, zTop: zc - 50, depth: 250, xHook: (xs0 + xs1) / 2 } : null;
+  // hoist capacity: heaviest lift = engine or alternator, about half the set mass
+  const swl = SWL.find(v => v * 1000 >= 0.5 * kg) ?? SWL[SWL.length - 1];
+  // openings per wall: u along the wall, v = height above the floor top
+  const walls = { negx: { axis: 'x', side: -1, W: Wo, holes: [] }, posx: { axis: 'x', side: 1, W: Wo, holes: [] }, negy: { axis: 'y', side: -1, W: Li, holes: [] }, posy: { axis: 'y', side: 1, W: Li, holes: [] } };
+  const hole = (w, h) => walls[w].holes.push(h);
+  for (const s of sets) {
+    hole('negx', { kind: 'discharge', set: s.k, u0: s.ya + Wo / 2 - dw / 2, u1: s.ya + Wo / 2 + dw / 2, v0: disc.v0, v1: disc.v1 });
+    hole('posx', { kind: 'equipment-door', set: s.k, u0: s.ya + Wo / 2 - Weq / 2, u1: s.ya + Wo / 2 + Weq / 2, v0: 0, v1: Heq });
+    if (!roofExit) { const sl = D + 200, wl = s.dir > 0 ? 'posy' : 'negy'; hole(wl, { kind: 'exhaust-sleeve', set: s.k, u0: s.xEx + Li / 2 - sl / 2, u1: s.xEx + Li / 2 + sl / 2, v0: s.zH - zf - sl / 2, v1: s.zH - zf + sl / 2 }); }
+  }
+  if (on(p.vent)) hole('negx', { kind: 'fan', u0: -(Wi / 2 - 500) + Wo / 2 - 350, u1: -(Wi / 2 - 500) + Wo / 2 + 350, v0: Hi - 1050, v1: Hi - 350 });
+  hole('negy', { kind: 'personnel-door', u0: pd.u0, u1: pd.u0 + pd.w, v0: 0, v1: pd.h });
+  for (const w of ['negy', 'posy']) hole(w, { kind: 'inlet-louvre', u0: louvre.u0, u1: louvre.u1, v0: louvre.v0, v1: louvre.v1 });
+  if (tankOn) { const xc = fac.tank.x0 + tank.bx / 2, zp = tank.leg + tank.Ht + 300; fac.fill = { x: xc, z: zp }; hole('posy', { kind: 'fuel-sleeve', u0: xc + Li / 2 - 100, u1: xc + Li / 2 + 100, v0: zp - 100, v1: zp + 100 }); }
+  const roofHoles = roofExit ? sets.map(s => { const sl = D + 200; return { kind: 'exhaust-sleeve', set: s.k, u0: s.xEx + Lo / 2 - sl / 2, u1: s.xEx + Lo / 2 + sl / 2, v0: s.ya + Wo / 2 - sl / 2, v1: s.ya + Wo / 2 + sl / 2 }; }) : [];
+  // notes
+  if (on(p.hoist) && 0.5 * kg > SWL[SWL.length - 1] * 1000) notes.push('Warning: the heaviest lift is above the largest hoist offered here (15 t).');
+  return { n, t, fl, zf, rt, zc, zr, Li, Wi, Hi, Lo, Wo, Lmin, Wmin, Hmin, S: { L: Ls, W: Ws, H: Hs, D, kg }, ph, sets, Q, Aw, lph, tank, fac, sil, stackAbove, stackGuide, zStackTop, roofExit, louvre, disc,
+    Weq, Heq, pd, walls, roofHoles, swl, g, cR, cA, notes, trenchOn: trench, tankOn };
+}
+
+function describe(p) {
+  const P = plan(p), tag = want => (+want > 0 ? '' : ' (automatic)');
+  const out = [
+    `DG set${P.n === 2 ? 's: 2 x' : ':'} ${p.kva} kVA (${r1(p.kva * 0.8)} kW), each ${P.S.L} x ${P.S.W} x ${P.S.H} mm, about ${P.S.kg} kg (generic envelope)`,
+    `Room inside ${P.Li} x ${P.Wi} x ${P.Hi} mm; walls ${P.t} mm; floor ${P.fl} mm${P.trenchOn ? ' with cable trench' : ''}; roof ${P.rt} mm`,
+    `Smallest room for this set: ${P.Lmin} x ${P.Wmin} x ${P.Hmin} mm (length${tag(p.L)}, width${tag(p.W)}, height${tag(p.H)})`,
+    `Air: ${r1(P.Q * P.n)} m3/s. Inlet louvre on each long wall ${P.louvre.w} x ${P.louvre.h} mm (free area ${r1(P.louvre.free)} m2 each, ${RULE.inletVelocity} m/s). Discharge opening ${P.disc.w} x ${P.disc.h} mm per set, ${r1(P.disc.vel)} m/s`,
+    `Exhaust: DN${P.S.D}, silencer ${P.sil.Dia} x ${P.sil.L} mm, ${P.roofExit ? 'through the roof' : 'through the wall, then up the outside'}; stack ${P.stackAbove} mm above the roof (guideline ${P.stackGuide} mm)`,
+    `Fuel: about ${Math.round(P.lph)} L/h per set at 75 % load${P.tankOn ? `. Day tank ${P.tank.V} L (${p.tankHours} h), ${P.tank.Lt} x ${P.tank.Wt} x ${P.tank.Ht} mm, bund ${P.tank.hB} mm high (110 % of the tank)` : '. No day tank'}`,
+    `Doors: equipment door ${P.Weq} x ${P.Heq} mm per set (${p.doorType === 'shutter' ? 'rolling shutter' : 'double leaf'}), personnel door ${P.pd.w} x ${P.pd.h} mm`,
+    ...(P.fac.hoist ? [`Monorail hoist: ${P.swl} t (half the set mass)`] : []),
+    ...P.notes];
+  return out;
+}
+function validate(p) { plan(p); }
+
+// ---- collision shapes + ports ----
+function generate(p) {
+  const P = plan(p), shapes = [], R = v => Math.round(v * 100) / 100;
+  const wallCol = WALL[p.wallColor] ?? WALL.grey;
+  let n = 0;
+  const box = (id, role, tags, size, at, extra = {}) => shapes.push({ id: id + '-' + (++n), role, type: 'box', size: size.map(R), at: at.map(R), tags, ...extra });
+  const cyl = (id, role, tags, radius, length, axis, at, extra = {}) => shapes.push({ id: id + '-' + (++n), role, type: 'cylinder', radius: R(radius), length: R(length), axis, at: at.map(R), tags, ...extra });
+  const { Li, Wi, Lo, Wo, t, zf, zc, zr, Hi } = P;
+  box('floor', 'solid', ['concrete'], [Lo, Wo, P.fl], [0, 0, P.fl / 2]);
+  for (const [name, w] of Object.entries(P.walls)) for (const r of rectMinus(w.W, Hi, w.holes)) {
+    const uc = (r.u0 + r.u1) / 2, zz = zf + (r.v0 + r.v1) / 2, sz = r.v1 - r.v0;
+    if (w.axis === 'x') box('wall-' + name, 'solid', ['masonry'], [t, r.u1 - r.u0, sz], [w.side * (Li / 2 + t / 2), -Wo / 2 + uc, zz], { color: wallCol });
+    else box('wall-' + name, 'solid', ['masonry'], [r.u1 - r.u0, t, sz], [-Li / 2 + uc, w.side * (Wi / 2 + t / 2), zz], { color: wallCol });
+  }
+  for (const r of rectMinus(Lo, Wo, P.roofHoles)) box('roof', 'solid', ['concrete'], [r.u1 - r.u0, r.v1 - r.v0, P.rt], [-Lo / 2 + (r.u0 + r.u1) / 2, -Wo / 2 + (r.v0 + r.v1) / 2, zc + P.rt / 2]);
+  // doors (closed or open by the Open parameter, 0-100 %)
+  const open = clamp(+p.open || 0, 0, 100) / 100, ang = 110 * open;
+  for (const s of P.sets) {
+    const yc = s.ya, xo = Li / 2 + t - 25;
+    if (p.doorType === 'shutter') {
+      const hc = Math.max(100, P.Heq * (1 - open));
+      box('shutter', 'solid', ['steel'], [40, P.Weq, hc], [xo - 5, yc, zf + P.Heq - hc / 2], { color: 0x9aa3ab });
+      box('shutter-hood', 'solid', ['steel'], [300, P.Weq + 200, 300], [Li / 2 + t + 120, yc, zf + P.Heq + 150], { color: 0x6b747c });
+    } else {
+      const wl = (P.Weq - 20) / 2;
+      for (const sd of [1, -1]) {
+        const hy = yc + sd * (P.Weq / 2 - 10);
+        const th = ang * Math.PI / 180, c = [xo + (wl / 2) * Math.sin(th), hy - sd * (wl / 2) * Math.cos(th), zf + (P.Heq - 20) / 2 + 10];   // leaf swings outward (+X) around its hinge
+        box('equipment-door', 'solid', ['steel'], [50, wl, P.Heq - 20], c, { rot: [0, 0, R(sd * ang)], color: 0x5e6a74 });
+      }
+      box('door-swing', 'clearance', [], [P.Weq / 2 + 300, P.Weq, 100], [Lo / 2 + (P.Weq / 2 + 300) / 2, yc, zf + 50], { opacity: 0.12 });
+    }
+  }
+  { const hx = Li / 2 - 205, wl = P.pd.w - 10, a = ang * Math.PI / 180, yo = -Wi / 2 - t + 25;
+    box('personnel-door', 'solid', ['steel'], [wl, 50, P.pd.h - 20], [hx - (wl / 2) * Math.cos(a), yo - (wl / 2) * Math.sin(a), zf + (P.pd.h - 20) / 2 + 10], { rot: [0, 0, R(ang)], color: 0x5e6a74 }); }
+  // louvres: one thin block in each opening (blades are in the visual mesh)
+  for (const [name, w] of Object.entries(P.walls)) for (const h of w.holes) if (h.kind === 'inlet-louvre' || h.kind === 'discharge') {
+    const uc = (h.u0 + h.u1) / 2, zz = zf + (h.v0 + h.v1) / 2;
+    if (w.axis === 'x') box('louvre-' + name, 'solid', ['steel'], [30, h.u1 - h.u0, h.v1 - h.v0], [w.side * (Li / 2 + t / 2), -Wo / 2 + uc, zz], { color: 0x8a949c });
+    else box('louvre-' + name, 'solid', ['steel'], [h.u1 - h.u0, 30, h.v1 - h.v0], [-Li / 2 + uc, w.side * (Wi / 2 + t / 2), zz], { color: 0x8a949c });
+  }
+  // DG sets on plinths
+  const sc = SETCOL[p.setColor] ?? SETCOL.blue;
+  for (const s of P.sets) {
+    const L = P.S.L, W = P.S.W, H = P.S.H, xc = (s.x0 + s.x1) / 2;
+    box('plinth', 'solid', ['concrete'], [L + 400, W + 400, P.ph], [xc, s.ya, zf + P.ph / 2]);
+    box('dg-set', 'solid', ['steel'], [L, W, H], [xc, s.ya, zf + P.ph + H / 2], { color: sc });
+    box('set-service', 'clearance', [], [L, 500, 100], [xc, s.ya + s.dir * (W / 2 + 350), zf + 50], { opacity: 0.1 });
+    // exhaust line (collision envelope: straight pieces)
+    const D = P.S.D, rr = D / 2 + 50, zH = s.zH;
+    cyl('exhaust-riser', 'solid', ['steel'], rr, zH - s.zTop, 'z', [s.xEx, s.ya, (zH + s.zTop) / 2], { color: 0x3a3f45 });
+    cyl('silencer', 'solid', ['steel'], P.sil.Dia / 2, P.sil.L, 'z', [s.xEx, s.ya, (s.zSil0 + s.zSil1) / 2], { color: 0x4a4f55 });
+    if (P.roofExit) cyl('exhaust-stack', 'solid', ['steel'], rr, P.zStackTop - zH, 'z', [s.xEx, s.ya, (P.zStackTop + zH) / 2], { color: 0x3a3f45 });
+    else {
+      const y0 = s.ya, y1 = s.yOut;
+      cyl('exhaust-run', 'solid', ['steel'], rr, Math.abs(y1 - y0), 'y', [s.xEx, (y0 + y1) / 2, zH], { color: 0x3a3f45 });
+      cyl('exhaust-stack', 'solid', ['steel'], rr, P.zStackTop - zH, 'z', [s.xEx, y1, (P.zStackTop + zH) / 2], { color: 0x3a3f45 });
+    }
+  }
+  const T = P.fac.tank;
+  if (T) {
+    const cx = T.x0 + T.bx / 2, cy = T.y1 - T.by / 2, bw = RULE.bundWall;
+    box('day-tank', 'solid', ['steel'], [T.Lt, T.Wt, T.Ht], [cx, cy, zf + T.leg + T.Ht / 2], { color: 0xc8892a });
+    box('bund-x', 'solid', ['concrete'], [T.bx, bw, T.hB], [cx, cy - T.by / 2 + bw / 2, zf + T.hB / 2]); box('bund-x', 'solid', ['concrete'], [T.bx, bw, T.hB], [cx, cy + T.by / 2 - bw / 2, zf + T.hB / 2]);
+    box('bund-y', 'solid', ['concrete'], [bw, T.by - 2 * bw, T.hB], [cx - T.bx / 2 + bw / 2, cy, zf + T.hB / 2]); box('bund-y', 'solid', ['concrete'], [bw, T.by - 2 * bw, T.hB], [cx + T.bx / 2 - bw / 2, cy, zf + T.hB / 2]);
+  }
+  const PN = P.fac.panel;
+  if (PN) { box('control-panel', 'solid', ['steel'], [PN.w, PN.d, PN.h], [PN.x0 + PN.w / 2, PN.y1 - PN.d / 2, zf + PN.h / 2 + PN.base], { color: 0x8c9399 });
+    box('panel-front', 'clearance', [], [PN.w, 1000, 100], [PN.x0 + PN.w / 2, PN.y1 - PN.d - 500, zf + 50], { opacity: 0.1 }); }
+  const B = P.fac.battery;
+  if (B) box('battery-rack', 'solid', ['steel'], [B.w, B.d, B.h], [B.x0 + B.w / 2, B.y1 - B.d / 2, zf + B.h / 2], { color: 0x4d5760 });
+  const Hh = P.fac.hoist;
+  if (Hh) box('hoist-beam', 'solid', ['steel'], [Hh.x1 - Hh.x0, 100, Hh.depth], [(Hh.x0 + Hh.x1) / 2, Hh.y, Hh.zTop - Hh.depth / 2], { color: 0xd8a21c });
+  if (on(p.fire)) for (const dy of [0, 260]) cyl('extinguisher', 'solid', ['steel'], 90, 600, 'z', [Li / 2 - 130, Wi / 2 - 300 - dy, zf + 600], { color: 0xc0392b });
+  // ports
+  const ports = [
+    { id: 'B', at: [0, 0, 0], dir: [0, 0, -1], type: 'face-v' }, { id: 'T', at: [0, 0, R(zr)], dir: [0, 0, 1], type: 'face-v' },
+    { id: 'L', at: [R(-Lo / 2), 0, 0], dir: [-1, 0, 0], type: 'face-h' }, { id: 'R', at: [R(Lo / 2), 0, 0], dir: [1, 0, 0], type: 'face-h' }];
+  return { shapes, ports, info: describe(p) };
+}
+
+return {SETS,TANKS,SWL,WALL,SETCOL,RULE,rectMinus,plan,describe,validate,generate};})();
+MOD['gen/substation']=(()=>{
+// Electrical substation generator, five types in one component:
+//   pole    pole-mounted 11/0.4 kV (single pole up to 63 kVA, H-pole from 100 kVA)
+//   kiosk   compact / packaged 11/0.4 kV (RMU + transformer + LT panel in one enclosure)
+//   indoor  indoor 11/0.4 kV building (HT switch room, transformer room(s), LT room)
+//   ais     outdoor air-insulated yard 33/11 kV or 132/33 kV with control building (gantries, bus, bays, transformers)
+//   gis     indoor GIS hall 33/11 kV or 132/33 kV + outdoor transformers + control building
+// plan(p) is the single source of truth: items (equipment with an envelope), building shells (walls with real openings), notes.
+// gen/substation.js turns it into collision shapes and ports; visual/substation.js draws the real mesh from the same plan.
+// Engine space: X = length, Y = width, Z = up. Origin = bottom centre of the plot. Ground plate top = zf. All sizes in mm.
+// Every number below is a generic / indicative value (typical practice), NOT a maker's catalogue or a code. Confirm with the utility standard.
+const { rectMinus } = MOD['gen/genroom'];
+
+const TYPES = { pole: 'Pole-mounted (11/0.4 kV)', kiosk: 'Compact kiosk (11/0.4 kV)', indoor: 'Indoor building (11/0.4 kV)', ais: 'Outdoor AIS yard with control building', gis: 'Indoor GIS hall + outdoor transformers' };
+const S33 = { '33/11': [5000, 8000, 10000, 16000, 20000], '132/33': [20000, 31500, 40000, 50000, 63000] };
+const ALLOWED = { pole: { '11/0.4': [25, 50, 63, 100, 200] }, kiosk: { '11/0.4': [200, 315, 500, 630, 800, 1000, 1250, 1600] }, indoor: { '11/0.4': [500, 630, 800, 1000, 1250, 1600, 2000] }, ais: S33, gis: S33 };
+// distribution transformer: [length, width, height, mass kg, oil L, HV bushing height]
+const DIST = { 25: [900, 600, 1050, 300, 35, 120], 50: [1000, 650, 1150, 450, 50, 120], 63: [1050, 700, 1200, 520, 60, 120], 100: [1100, 750, 1300, 700, 85, 150], 200: [1300, 850, 1500, 1000, 150, 150], 315: [1450, 900, 1600, 1350, 220, 180], 500: [1650, 1000, 1750, 1800, 350, 180], 630: [1750, 1050, 1850, 2100, 440, 200], 800: [1850, 1100, 1950, 2500, 560, 200], 1000: [1950, 1200, 2050, 3000, 700, 220], 1250: [2050, 1250, 2150, 3500, 875, 220], 1600: [2250, 1350, 2300, 4300, 1120, 250], 2000: [2400, 1450, 2450, 5200, 1400, 250] };
+// power transformer: [length, width, height, mass kg, oil L]
+const POWER = { 5000: [4200, 2800, 3800, 14000, 5000], 8000: [4800, 3000, 4100, 20000, 7500], 10000: [5000, 3100, 4300, 24000, 9000], 16000: [5800, 3500, 4800, 35000, 14000], 20000: [6000, 3600, 5000, 40000, 17000], 31500: [7500, 4500, 5800, 62000, 27000], 40000: [8000, 4800, 6000, 72000, 33000], 50000: [8500, 5000, 6200, 82000, 40000], 63000: [9000, 5200, 6500, 95000, 48000] };
+// yard data per voltage: phase spacing, minimum bay width, terminal height Ht, bus height, line gantry beam height, equipment spacings, clearances (Ph-Ph, Ph-E, sectional), fence margin, tx gaps (with / without fire wall), mast height
+const YARD = {
+  '33/11': { hv: 33, mv: 11, ph: 1300, bay: 8000, Ht: 3800, Hbus: 6100, Hg: 8000, dIC: 1500, dCI: 2000, dBus: 2500, dGI: 1500, phPh: 430, phE: 500, sect: 2800, margin: 3800, gapFW: 5000, gapNo: 10000, mast: 18000, pole: 450, stand: { iso: 2800, cb: 2400, ct: 2800, la: 3000, pt: 2800 }, body: { iso: 1000, cb: 1400, ct: 1000, la: 800, pt: 1000 }, busR: 50 },
+  '132/33': { hv: 132, mv: 33, ph: 3000, bay: 13500, Ht: 5200, Hbus: 8000, Hg: 11000, dIC: 2500, dCI: 3750, dBus: 4500, dGI: 1800, phPh: 1300, phE: 1300, sect: 4000, margin: 5000, gapFW: 8000, gapNo: 15000, mast: 25000, pole: 700, stand: { iso: 2900, cb: 2400, ct: 2900, la: 3300, pt: 2200 }, body: { iso: 2300, cb: 2800, ct: 2300, la: 1900, pt: 3000 }, busR: 75 }
+};
+const RULE = {
+  gT: 150, floor: 250, floorDeep: 500, roofT: 150, wallT: 230, panelFront: 1500, panelRear: 1000, wallClear: 900, itemClear: 600, aisle: 1200,
+  mvPanel: { 11: [800, 1600, 2300], 33: [1000, 2400, 2800] }, ltPanel: [800, 800, 2200], relayPanel: [800, 800, 2200],
+  oilVoid: 0.4, oilPitMargin: 1000, fireWallT: 230, fireWallOver: 600, fenceH: 2400, gateW: 6000, roadW: 3500, flood: 12000,
+  ground: 'live parts at least 3.7 m (33 kV) / 5.2 m (132 kV) above ground, insulator bottom at least 2.4 m', gis: { '33/11': [900, 3800, 2900], '132/33': [1500, 6000, 4300] }, // GIS bay [width, length, height]
+};
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v)), up = (v, s) => Math.ceil(v / s - 1e-9) * s, on = v => +v === 1, r1 = v => Math.round(v * 10) / 10;
+const nearest = (list, v) => list.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a));
+
+// ---- building shell: boxes for floor, walls with openings, partitions, roof ----
+// spec: { x0, x1, y0, y1 (outer), t, zb (floor top), fl, Hi, roofT, holes: {negx,posx,negy,posy: [{kind,u0,u1,v0,v1}]}, parts: [{axis,pos,from,to,t,holes}], floorHoles: [{x0,x1,y0,y1}] }
+// u of a wall hole = distance from the outer corner (x0 for the Y walls, y0 for the X walls)
+function shell(s) {
+  const out = [], { x0, x1, y0, y1, t, zb, fl, Hi, roofT } = s, L = x1 - x0, W = y1 - y0, zc = zb + Hi;
+  const bx = (kind, cx, cy, cz, sx, sy, sz) => { if (sx > 1e-6 && sy > 1e-6 && sz > 1e-6) out.push({ kind, c: [cx, cy, cz], s: [sx, sy, sz] }); };
+  for (const r of rectMinus(L, W, (s.floorHoles || []).map(h => ({ u0: h.x0 - x0, u1: h.x1 - x0, v0: h.y0 - y0, v1: h.y1 - y0 })))) bx('floor', x0 + (r.u0 + r.u1) / 2, y0 + (r.v0 + r.v1) / 2, zb - fl / 2 + (s.floorHoles && s.floorHoles.length ? 0 : 0), r.u1 - r.u0, r.v1 - r.v0, fl);
+  const H = s.holes || {};
+  for (const [name, side, axis] of [['negx', -1, 'x'], ['posx', 1, 'x'], ['negy', -1, 'y'], ['posy', 1, 'y']]) {
+    const full = axis === 'x' ? W : L - 2 * t, off = axis === 'x' ? 0 : t;
+    const holes = (H[name] || []).map(h => ({ ...h, u0: h.u0 - off, u1: h.u1 - off }));
+    for (const r of rectMinus(full, Hi, holes)) {
+      const uc = (r.u0 + r.u1) / 2, z = zb + (r.v0 + r.v1) / 2, sz = r.v1 - r.v0, du = r.u1 - r.u0;
+      if (axis === 'x') bx('wall', side < 0 ? x0 + t / 2 : x1 - t / 2, y0 + uc, z, t, du, sz);
+      else bx('wall', x0 + t + uc, side < 0 ? y0 + t / 2 : y1 - t / 2, z, du, t, sz);
+    }
+  }
+  for (const p of s.parts || []) {
+    const len = p.to - p.from;
+    for (const r of rectMinus(len, Hi, p.holes || [])) {
+      const uc = p.from + (r.u0 + r.u1) / 2, z = zb + (r.v0 + r.v1) / 2;
+      if (p.axis === 'y') bx('part', uc, p.pos, z, r.u1 - r.u0, p.t, r.v1 - r.v0); else bx('part', p.pos, uc, z, p.t, r.u1 - r.u0, r.v1 - r.v0);
+    }
+  }
+  if (!s.noRoof) bx('roof', (x0 + x1) / 2, (y0 + y1) / 2, zc + roofT / 2, L, W, roofT);
+  return out;
+}
+// world placement of a wall hole (centre on the outer face, outward yaw in degrees), used by the visual layer for doors and louvres
+function openings(s) {
+  const out = [], { x0, x1, y0, y1, zb } = s;
+  for (const [name, side, axis] of [['negx', -1, 'x'], ['posx', 1, 'x'], ['negy', -1, 'y'], ['posy', 1, 'y']]) for (const h of (s.holes || {})[name] || []) {
+    const uc = (h.u0 + h.u1) / 2, yaw = axis === 'x' ? (side < 0 ? 180 : 0) : (side < 0 ? -90 : 90);
+    out.push({ ...h, wall: name, w: h.u1 - h.u0, h: h.v1 - h.v0, yaw, c: axis === 'x' ? [side < 0 ? x0 : x1, y0 + uc, zb + h.v0] : [x0 + uc, side < 0 ? y0 : y1, zb + h.v0] });
+  }
+  return out;
+}
+
+// ---- the plan ----
+function plan(p) {
+  const type = TYPES[p.type] ? p.type : 'ais', notes = [], items = [], blds = [], extra = {};
+  let kv = p.kv;
+  const okKv = Object.keys(ALLOWED[type]);
+  if (!okKv.includes(kv)) { const to = okKv[0]; notes.push(`Note: voltage ${kv} kV is not offered for this type. Using ${to} kV.`); kv = to; }
+  const list = ALLOWED[type][kv], rating = nearest(list, +p.rating);
+  if (rating !== +p.rating) notes.push(`Note: rating ${p.rating} kVA is not offered for this type and voltage. Using ${rating} kVA.`);
+  const maxTx = { pole: 1, kiosk: 1, indoor: 2, ais: 3, gis: 3 }[type], tx = clamp(Math.round(+p.tx || 1), 1, maxTx);
+  if (tx !== +p.tx) notes.push(`Note: ${type} type has at most ${maxTx} transformer(s). Using ${tx}.`);
+  const feeders = clamp(Math.round(+p.feeders || 0), 0, 12), lines = clamp(Math.round(+p.lines || 1), 1, 2);
+  const yard = YARD[kv], gT = RULE.gT, zf = gT, fac = k => on(p[k]);
+  const ctx = { type, kv, rating, tx, feeders, lines, yard, zf, gT, notes, items, blds, extra, fac, p, wallT: RULE.wallT };
+  let box;
+  if (type === 'pole') box = layoutPole(ctx); else if (type === 'kiosk') box = layoutKiosk(ctx); else if (type === 'indoor') box = layoutIndoor(ctx); else box = layoutYard(ctx);
+  // plot: ground plate = fence rectangle (or the building / equipment bounds + clearance)
+  const plot = box;
+  const shift = [-(plot.x0 + plot.x1) / 2, -(plot.y0 + plot.y1) / 2];
+  const moveBox = b => ({ ...b, x0: b.x0 + shift[0], x1: b.x1 + shift[0], y0: b.y0 + shift[1], y1: b.y1 + shift[1] });
+  for (const it of items) {
+    it.at = [it.at[0] + shift[0], it.at[1] + shift[1], it.at[2]];
+    const o = it.opts; if (!o) continue;                                  // coordinates stored in opts move with the plot centre
+    if (o.x0 !== undefined) { o.x0 += shift[0]; o.x1 += shift[0]; } if (o.y0 !== undefined) { o.y0 += shift[1]; o.y1 += shift[1]; }
+    for (const k of ['from', 'to']) if (o[k]) o[k] = [o[k][0] + shift[0], o[k][1] + shift[1], o[k][2]];
+    if (o.pts) o.pts = o.pts.map(q => [q[0] + shift[0], q[1] + shift[1], q[2]]);
+    if (o.paths) o.paths = o.paths.map(pp => pp.map(q => [q[0] + shift[0], q[1] + shift[1], q[2]]));
+  }
+  const bl = blds.map(b => { const m = moveBox(b); m.parts = (b.parts || []).map(q => q.axis === 'y' ? { ...q, pos: q.pos + shift[1], from: q.from + shift[0], to: q.to + shift[0] } : { ...q, pos: q.pos + shift[0], from: q.from + shift[1], to: q.to + shift[1] }); m.floorHoles = (b.floorHoles || []).map(h => ({ x0: h.x0 + shift[0], x1: h.x1 + shift[0], y0: h.y0 + shift[1], y1: h.y1 + shift[1] })); return m; });
+  const P = { type, kv, rating, tx, feeders, lines, yard, zf, gT, plot: moveBox(plot), items, blds: bl, notes, extra, p, hv: kv === '11/0.4' ? 11 : yard.hv, mv: kv === '11/0.4' ? 0.4 : yard.mv };
+  P.Lo = P.plot.x1 - P.plot.x0; P.Wo = P.plot.y1 - P.plot.y0;
+  P.top = Math.max(zf + 1, ...items.map(i => i.at[2] + (i.size ? i.size[2] : 0)), ...bl.map(b => b.zb + b.Hi + b.roofT));
+  return P;
+}
+
+// ---- helpers used by the layouts ----
+const add = (c, kind, id, x, y, z, size, o = {}) => { const it = { kind, id, at: [x, y, z], size, yaw: 0, ...o }; c.items.push(it); return it; };
+const phases = (sx, pw, sz, pitch) => [-1, 0, 1].map(k => ({ t: 'box', s: [sx, pw, sz], c: [0, k * pitch, sz / 2] }));
+const equipDims = (y, kind) => { const b = y.body, st = y.stand, w = y.pole; return { iso: [y.hv === 33 ? 1500 : 2800, w, st.iso + b.iso], cb: [y.hv === 33 ? 1200 : 1800, w + (y.hv === 33 ? 200 : 300), st.cb + b.cb], ct: [y.hv === 33 ? 600 : 800, w, st.ct + b.ct], la: [y.hv === 33 ? 500 : 700, w, st.la + b.la], pt: [y.hv === 33 ? 600 : 900, w, st.pt + b.pt] }[kind]; };
+// 3-phase equipment group in a bay: envelope per pole, base at ground
+function addEquip(c, kind, id, x, y, yaw = 0) {
+  const Y = c.yard, d = equipDims(Y, kind), it = add(c, 'eq-' + kind, id, x, y, c.zf, d, { yaw, ph: Y.ph, col: phases(d[0], d[1], d[2], Y.ph), opts: { kv: Y.hv, stand: Y.stand[kind], body: Y.body[kind], pitch: Y.ph } });
+  return it;
+}
+function oilPit(c, id, x, y, T) {   // soak pit under a transformer: plan = transformer + 1 m each side, depth from the oil volume (void 40 %)
+  const m = RULE.oilPitMargin, L = T[0] + 2 * m, W = T[1] + 2 * m, depth = Math.max(300, up(T[4] / 1000 / (RULE.oilVoid * (L / 1000) * (W / 1000)) * 1000, 50));
+  c.extra.pits = c.extra.pits || []; c.extra.pits.push({ x, y, L, W, depth, oil: T[4] });
+  add(c, 'oil-pit', id, x, y, c.zf, [L, W, 60], { col: [{ t: 'box', s: [L, W, 60], c: [0, 0, 30] }], opts: { depth } });
+  return depth;
+}
+const door = (u0, w, h = 2100) => ({ kind: 'door', u0, u1: u0 + w, v0: 0, v1: h });
+const louvre = (u0, w, v0, h) => ({ kind: 'louvre', u0, u1: u0 + w, v0, v1: v0 + h });
+
+// ============ POLE ============
+function layoutPole(c) {
+  const T = DIST[c.rating], H = c.rating >= 100, zf = c.zf, poleH = 11000, sp = 2500, yp = H ? [-sp / 2, sp / 2] : [0];
+  c.extra.hpole = H; c.extra.poleH = poleH;
+  yp.forEach((y, i) => add(c, 'pole', 'pole-' + (i + 1), 0, y, zf, [280, 280, poleH], { col: [{ t: 'cyl', r: 140, h: poleH, c: [0, 0, poleH / 2] }], opts: { r0: 140, r1: 90 } }));
+  const zTx = H ? 4000 : 4500;
+  if (H) add(c, 'platform', 'platform', 0, 0, zf + zTx - 150, [900, sp + 400, 150], { col: [{ t: 'box', s: [900, sp + 400, 150], c: [0, 0, 75] }] });
+  else add(c, 'bracket', 'bracket', 330, 0, zf + zTx - 150, [700, 400, 150], { col: [{ t: 'box', s: [700, 400, 150], c: [0, 0, 75] }] });
+  const tx = add(c, 'tx-dist', 'transformer', H ? 0 : 330 + 80, 0, zf + zTx, [T[0], T[1], T[2]], { yaw: 90, opts: { rating: c.rating, hv: T[5], pole: true } });
+  tx.size = [T[0], T[1], T[2]]; tx.col = [{ t: 'box', s: [T[0], T[1], T[2]], c: [0, 0, T[2] / 2] }];
+  const arm = H ? sp + 700 : 2000;
+  add(c, 'crossarm', 'ht-crossarm', 0, 0, zf + 9400, [150, arm, 100], { col: [{ t: 'box', s: [150, arm, 100], c: [0, 0, 50] }], opts: { insulators: 3 } });
+  add(c, 'do-fuse', 'ht-fuses', 0, 0, zf + 8200, [600, arm, 700], { ph: 700, col: phases(500, 150, 700, 700), opts: { pitch: 700 } });
+  add(c, 'la-pole', 'ht-arresters', 220, 0, zf + 8200, [250, arm, 600], { col: phases(250, 150, 600, 700), opts: { pitch: 700 } });
+  add(c, 'lt-box', 'lt-fuse-box', 200, H ? -sp / 2 : 0, zf + 1600, [250, 450, 600], { col: [{ t: 'box', s: [250, 450, 600], c: [0, 0, 300] }] });
+  c.extra.stay = c.fac('stay');
+  if (c.extra.stay) for (const sx of [-1]) add(c, 'stay', 'stay-wire', sx * 3600, 0, zf, [7200, 60, 8500], { col: [{ t: 'box', s: [100, 100, 100], c: [-3600, 0, 50] }], opts: { from: [0, 0, zf + 8500], to: [sx * 7200, 0, zf] } });
+  if (c.fac('earth')) { add(c, 'earth-pit', 'earth-pit-1', 1000, 0, zf, [400, 400, 20], { col: [{ t: 'box', s: [400, 400, 20], c: [0, 0, 10] }] }); add(c, 'earth-pit', 'earth-pit-2', -1000, 0, zf, [400, 400, 20], { col: [{ t: 'box', s: [400, 400, 20], c: [0, 0, 10] }] }); }
+  const fx = H ? 4200 : 3000, fy = H ? 3600 : 3000;
+  if (c.fac('fence')) addFence(c, -fx, fx, -fy, fy, { gate: 'negy', gateU: fx });
+  c.notes.push(...[]);
+  const b = c.fac('fence') ? { x0: -fx - 300, x1: fx + 300, y0: -fy - 300, y1: fy + 300 } : { x0: -3500, x1: 3500, y0: -3500, y1: 3500 };
+  c.extra.hvLine = { z: 9400 };
+  return b;
+}
+
+// ============ FENCE + GATE ============
+function addFence(c, x0, x1, y0, y1, o = {}) {
+  const H = RULE.fenceH, t = 80, gw = o.gateW || (c.type === 'pole' ? 1800 : RULE.gateW), z = c.zf;
+  c.extra.fence = { x0, x1, y0, y1, H, gw, gate: o.gate || 'negy', gateU: o.gateU ?? (x0 + x1) / 2 };
+  // collision: four thin solid boxes; the gate gap is left empty on its side (the leaf is added in the visual layer / as its own item)
+  const seg = (id, ax, a0, a1, fixed) => { if (a1 - a0 < 1) return; const cx = ax === 'x' ? (a0 + a1) / 2 : fixed, cy = ax === 'x' ? fixed : (a0 + a1) / 2; add(c, 'fence-run', id, cx, cy, z, [ax === 'x' ? a1 - a0 : t, ax === 'x' ? t : a1 - a0, H], { col: [{ t: 'box', s: [ax === 'x' ? a1 - a0 : t, ax === 'x' ? t : a1 - a0, H], c: [0, 0, H / 2] }], opts: { ax, len: a1 - a0 } }); };
+  const g = c.extra.fence, gx0 = g.gateU - gw / 2, gx1 = g.gateU + gw / 2;
+  if (g.gate === 'negy') { seg('fence-s1', 'x', x0, gx0, y0); seg('fence-s2', 'x', gx1, x1, y0); } else seg('fence-s', 'x', x0, x1, y0);
+  seg('fence-n', 'x', x0, x1, y1); seg('fence-w', 'y', y0, y1, x0); seg('fence-e', 'y', y0, y1, x1);
+  const open = clamp(+c.p.open || 0, 0, 100) / 100;
+  if (g.gate === 'negy') add(c, 'gate', 'gate', g.gateU, y0, z, [gw, 100, H], { col: [{ t: 'box', s: [gw, 100, H], c: [-gw * open, 0, H / 2] }], opts: { open } });
+}
+
+// ============ KIOSK ============
+function layoutKiosk(c) {
+  const T = DIST[c.rating], zf = c.zf, t = 100, plinth = 600, mvw = 1400, ltw = 1000;
+  const cx1 = mvw, cx2 = T[0] + 600, cx3 = ltw;            // compartment lengths: HT (RMU), transformer, LT
+  const Lo = cx1 + cx2 + cx3 + 2 * 50 + 2 * t, Wo = Math.max(T[1] + 600, 1700) + 2 * t, Hi = Math.max(T[2] + 500, 2300);
+  const x0 = -Lo / 2, x1 = Lo / 2, y0 = -Wo / 2, y1 = Wo / 2, zb = zf + plinth;
+  c.extra.kiosk = { Lo, Wo, Hi, plinth, mvw, ltw, cx1, cx2, cx3 };
+  const px1 = x0 + t + cx1, px2 = px1 + 50 + cx2;
+  const holes = { negy: [door(cx1 / 2 + t - 450, 900), door(t + cx1 + 50 + (cx2 - 1400) / 2, 1400), door(t + cx1 + 50 + cx2 + 50 + (cx3 - 900) / 2, 900)], posy: [louvre(t + 200, cx1 - 400, 300, 900), louvre(t + cx1 + 50 + 200, cx2 - 400, 300, 900), louvre(t + cx1 + 50 + cx2 + 50 + 150, cx3 - 300, 300, 900)], negx: [louvre(Wo / 2 - 400, 800, 600, 700)], posx: [louvre(Wo / 2 - 400, 800, 600, 700)] };
+  c.blds.push({ id: 'kiosk', x0, x1, y0, y1, t, zb, fl: 150, Hi, roofT: 100, holes, parts: [{ axis: 'x', pos: px1 + 0, from: y0 + t, to: y1 - t, t: 50, holes: [{ u0: 0, u1: 0, v0: 0, v1: 0 }].slice(1) }, { axis: 'x', pos: px2 + 25, from: y0 + t, to: y1 - t, t: 50, holes: [] }], kind: 'kiosk' });
+  c.blds[0].parts[0].pos = x0 + t + cx1 + 25; c.blds[0].parts[1].pos = x0 + t + cx1 + 50 + cx2 + 25;
+  // plinth (cable chamber) under the enclosure
+  add(c, 'plinth', 'plinth', 0, 0, zf, [Lo + 200, Wo + 200, plinth], { col: [{ t: 'box', s: [Lo + 200, Wo + 200, plinth], c: [0, 0, plinth / 2] }] });
+  const xc1 = x0 + t + cx1 / 2, xc2 = x0 + t + cx1 + 50 + cx2 / 2, xc3 = x0 + t + cx1 + 50 + cx2 + 50 + cx3 / 2;
+  add(c, 'rmu', 'rmu', xc1, 0, zb, [1300, 800, 1600], { col: [{ t: 'box', s: [1300, 800, 1600], c: [0, 0, 800] }], opts: { ways: 3 } });
+  add(c, 'tx-dist', 'transformer', xc2, 0, zb, [T[0], T[1], T[2]], { opts: { rating: c.rating, hv: T[5] }, col: [{ t: 'box', s: [T[0], T[1], T[2]], c: [0, 0, T[2] / 2] }] });
+  add(c, 'lt-panel', 'lt-panel', xc3, 0, zb, [800, 600, 1900], { col: [{ t: 'box', s: [800, 600, 1900], c: [0, 0, 950] }], opts: { ways: 6 } });
+  if (c.fac('earth')) for (const [i, [ex, ey]] of [[x0 - 600, y0 - 600], [x1 + 600, y1 + 600]].entries()) add(c, 'earth-pit', 'earth-pit-' + (i + 1), ex, ey, zf, [400, 400, 20], { col: [{ t: 'box', s: [400, 400, 20], c: [0, 0, 10] }] });
+  const m = 1200;
+  if (c.fac('fence')) { addFence(c, x0 - m, x1 + m, y0 - m - 1500, y1 + m, { gate: 'negy', gateU: x0 + Lo / 2, gateW: 3000 }); return { x0: x0 - m - 200, x1: x1 + m + 200, y0: y0 - m - 1700, y1: y1 + m + 200 }; }
+  return { x0: x0 - 1500, x1: x1 + 1500, y0: y0 - 1500, y1: y1 + 1500 };
+}
+
+// ============ INDOOR 11/0.4 ============
+function layoutIndoor(c) {
+  const T = DIST[c.rating], zf = c.zf, t = RULE.wallT, R = RULE, deep = c.fac('trench') || c.fac('oilPit');
+  const pitD = Math.max(300, up(T[4] / 1000 / (R.oilVoid * ((T[1] + 600) / 1000) * ((T[0] + 600) / 1000)) * 1000, 50));
+  const fl = deep ? Math.max(R.floorDeep, c.fac('oilPit') ? up(pitD + 50, 50) : 0) : R.floor, zb = zf + fl;
+  const mv = R.mvPanel[11], lt = R.ltPanel, tx = c.tx, extraOut = c.feeders;
+  const nMv = (tx > 1 ? 2 : 1) + tx + extraOut + 1 + (tx > 1 ? 1 : 0), nLt = tx * (1 + Math.ceil(c.rating / 315) + (c.fac('capBank') ? 1 : 0)) + (tx > 1 ? 1 : 0), ltw = c.rating >= 1250 ? 1000 : lt[0];
+  // rooms along X: HT | TX1 [TX2] | LT. All share the building depth (Y).
+  const htL = nMv * mv[0] + 2 * R.wallClear, htD = mv[1] + R.panelFront + R.panelRear;
+  const txL = T[1] + 2 * R.wallClear + 600, txD = T[0] + 2 * R.wallClear + 400;          // transformer length runs along Y in its room
+  const ltL = nLt * ltw + 2 * R.wallClear, ltD = lt[1] + R.panelFront + R.panelRear;
+  const Wi = Math.max(htD, txD, ltD), Hi = Math.max(3600, up(T[2] + 1300, 100), mv[2] + 1000);
+  const rooms = [{ id: 'ht', L: htL }, ...Array.from({ length: tx }, (_, i) => ({ id: 'tx' + (i + 1), L: txL })), { id: 'lt', L: ltL }];
+  const Li = rooms.reduce((a, r) => a + r.L, 0) + (rooms.length - 1) * t, x0 = -Li / 2 - t, x1 = Li / 2 + t, y0 = -Wi / 2 - t, y1 = Wi / 2 + t;
+  let xs = x0 + t; const parts = [], holes = { negy: [], posy: [], negx: [], posx: [] }, floorHoles = [];
+  c.extra.rooms = []; rooms.forEach((r, i) => { r.x0 = xs; r.x1 = xs + r.L; xs += r.L; c.extra.rooms.push(r); if (i < rooms.length - 1) { parts.push({ axis: 'x', pos: xs + t / 2, from: y0 + t, to: y1 - t, t, holes: c.fac('trench') ? [{ u0: Wi / 2 + t - 300 - 0 - (y0 + t) * 0 + 0 - 0, u1: Wi / 2 + t + 300, v0: -fl, v1: 0 }].map(h => ({ ...h, u0: Wi / 2 - 300, u1: Wi / 2 + 300, v0: 0, v1: 700 })) : [] }); xs += t; } });
+  // doors and louvres (u from the outer corner x0 for the Y walls)
+  for (const r of rooms) {
+    const u = r.x0 - x0, w = r.L;
+    if (r.id === 'ht') { holes.negy.push(door(u + 400, 1800, 2400)); holes.posy.push(louvre(u + w / 2 - 600, 1200, 2400, 700)); }
+    else if (r.id === 'lt') { holes.negy.push(door(u + 400, 1000)); holes.posy.push(louvre(u + w / 2 - 600, 1200, 2400, 700)); }
+    else { const dw = T[1] + 700; holes.negy.push(door(u + (w - dw) / 2, dw, Math.min(Hi - 400, T[2] + 500))); holes.posy.push(louvre(u + 300, w - 600, 400, 700)); holes.posy.push(louvre(u + 300, w - 600, Hi - 1200, 700)); }
+  }
+  const trench = c.fac('trench') ? { x0: x0 + t + 300, x1: x1 - t - 300, y0: y1 - t - 1100 - 0, y1: y1 - t - 500 } : null;
+  if (trench) { floorHoles.push({ ...trench, x0: trench.x0, x1: trench.x1 }); c.extra.trench = trench; }
+  const pits = [];
+  for (const r of rooms) if (r.id.startsWith('tx') && c.fac('oilPit')) { const cx = (r.x0 + r.x1) / 2, dep = Math.max(300, up(T[4] / 1000 / (R.oilVoid * ((T[1] + 600) / 1000) * ((T[0] + 600) / 1000)) * 1000, 50)); pits.push({ x: cx, y: 0, L: T[1] + 600, W: T[0] + 600, depth: dep, oil: T[4] }); floorHoles.push({ x0: cx - (T[1] + 600) / 2, x1: cx + (T[1] + 600) / 2, y0: -(T[0] + 600) / 2, y1: (T[0] + 600) / 2 }); }
+  c.extra.pits = pits; c.extra.fl = fl; if (pits.length && fl > R.floorDeep) c.notes.push(`Note: floor thickened to ${fl} mm to hold the ${pitD} mm soak pit.`);
+  c.blds.push({ id: 'building', x0, x1, y0, y1, t, zb, fl, Hi, roofT: R.roofT, holes, parts, floorHoles, kind: 'indoor' });
+  // equipment
+  const yf = y0 + t + R.panelFront;       // front aisle of the panels is on the -Y side: panels stand against the +Y wall
+  const ht = rooms[0];
+  add(c, 'vcb-row', 'mv-panels', (ht.x0 + ht.x1) / 2, y1 - t - mv[1] / 2 - R.panelRear * 0.6, zb, [nMv * mv[0], mv[1], mv[2]], { col: [{ t: 'box', s: [nMv * mv[0], mv[1], mv[2]], c: [0, 0, mv[2] / 2] }], opts: { n: nMv, w: mv[0], kv: 11, bus: true } });
+  for (const r of rooms.filter(q => q.id.startsWith('tx'))) {
+    const cx = (r.x0 + r.x1) / 2; add(c, 'tx-dist', 'transformer-' + r.id, cx, 0, zb + (c.fac('oilPit') ? 0 : 0), [T[1], T[0], T[2]], { yaw: 90, opts: { rating: c.rating, hv: T[5], wheels: true }, col: [{ t: 'box', s: [T[0], T[1], T[2]], c: [0, 0, T[2] / 2] }] });
+    if (c.fac('crane')) add(c, 'hoist', 'hoist-' + r.id, cx, 0, zb + Hi - 350, [200, T[0] + 800, 350], { col: [{ t: 'box', s: [100, T[0] + 800, 300], c: [0, 0, 175] }] });
+  }
+  const lr = rooms[rooms.length - 1];
+  add(c, 'lt-row', 'lt-panels', (lr.x0 + lr.x1) / 2, y1 - t - lt[1] / 2 - R.panelRear * 0.6, zb, [nLt * ltw, lt[1], lt[2]], { col: [{ t: 'box', s: [nLt * ltw, lt[1], lt[2]], c: [0, 0, lt[2] / 2] }], opts: { n: nLt, w: ltw } });
+  if (c.fac('capBank')) add(c, 'capbank-panel', 'capacitor-bank', lr.x0 + 700, y0 + t + 500, zb, [900, 700, 1900], { col: [{ t: 'box', s: [900, 700, 1900], c: [0, 0, 950] }], opts: { stages: 6 } });
+  if (c.fac('earth')) add(c, 'earth-strip', 'earth-bar', 0, 0, zb + 300, [Li, Wi, 30], { col: [], opts: { x0: x0 + t, x1: x1 - t, y0: y0 + t, y1: y1 - t } });
+  if (c.fac('flood')) add(c, 'lights', 'led-lights', 0, 0, zb + Hi - 80, [Li, Wi, 60], { col: [], opts: { x0: x0 + t + 800, x1: x1 - t - 800, rows: [-Wi / 4, Wi / 4], zStep: 2400 } });
+  c.extra.Li = Li; c.extra.Wi = Wi; c.extra.Hi = Hi; c.extra.nMv = nMv; c.extra.nLt = nLt;
+  if (c.fac('earth')) add(c, 'earth-pit', 'earth-pit-1', x0 - 600, y0 - 600, c.zf, [400, 400, 20], { col: [{ t: 'box', s: [400, 400, 20], c: [0, 0, 10] }] });
+  const m = 1500;
+  if (c.fac('fence')) { addFence(c, x0 - m, x1 + m, y0 - m - 1500, y1 + m, { gate: 'negy', gateU: 0 }); return { x0: x0 - m - 200, x1: x1 + m + 200, y0: y0 - m - 1700, y1: y1 + m + 200 }; }
+  return { x0: x0 - 2000, x1: x1 + 2000, y0: y0 - 2500, y1: y1 + 1500 };
+}
+
+// ============ OUTDOOR YARD (AIS) and GIS ============
+function layoutYard(c) {
+  const Y = c.yard, T = POWER[c.rating], zf = c.zf, tx = c.tx, lines = c.lines, gis = c.type === 'gis', fw = c.fac('fireWall') && tx > 1;
+  const slots = Math.max(lines, tx), gapReq = (fw || tx === 1) ? Y.gapFW : Y.gapNo;
+  const pitch = Math.max(Y.bay, T[1] + gapReq), ySlot = i => (i - (slots - 1) / 2) * pitch;
+  if (tx > 1 && !c.fac('fireWall')) c.notes.push(`Note: no fire wall, so the transformer gap is ${Y.gapNo / 1000} m (with fire wall ${Y.gapFW / 1000} m).`);
+  c.extra.pitch = pitch; c.extra.slots = slots;
+  // control building first (its size decides the plot)
+  const MV = RULE.mvPanel[Y.mv], nMv = tx + c.feeders + (tx > 1 ? 1 : 0) + 1, nRelay = lines + tx + 2;
+  const mvL = nMv * MV[0] + 2 * RULE.wallClear, mvD = MV[1] + RULE.panelFront + RULE.panelRear, ctlL = Math.max(6000, nRelay * 800 + 3200), batL = 4000, auxL = c.fac('aux') ? 4000 : 0;
+  const bD = Math.max(mvD, 6000), bHi = Math.max(4200, MV[2] + 1200);
+  c.extra.control = { mvL, ctlL, batL, auxL, nMv, nRelay, depth: bD };
+  // ---- X stations ----
+  let xg, xb, xTx0 = 0, xBld;
+  if (!gis) {
+    xg = 0; const seqL = [Y.dIC, Y.dIC * 2, Y.dIC * 3, Y.dIC * 4, Y.dIC * 5, Y.dIC * 5 + Y.dCI];   // LA, PT, line iso, CT, CB, bus iso
+    c.extra.seqL = seqL; xb = xg + seqL[5] + Y.dBus;
+    const sTx = [Y.dBus, Y.dBus + Y.dCI, Y.dBus + Y.dCI + Y.dIC, Y.dBus + Y.dCI + 2 * Y.dIC];  // bus iso, CB, CT, LA (from the bus)
+    c.extra.seqT = sTx; xTx0 = xb + sTx[3] + 2000;
+  } else { /* GIS: hall first, set below */ }
+  const txX = i => xTx0 + T[0] / 2;
+  const txL = T[0];
+  // ---- GIS hall ----
+  let hall = null, gxHall = 0;
+  if (gis) {
+    const [bw, bl, bh] = RULE.gis[c.kv], nb = lines + tx + 1, t = RULE.wallT, crane = c.fac('crane');
+    const Xi = bl + 2 * 2500, Yi = nb * bw + 2 * 1500 + (nb - 1) * 200, Hi = bh + (crane ? 2600 : 1500);
+    hall = { nb, bw, bl, bh, Xi, Yi, Hi, t };
+    xg = -20000; const hx0 = 0, hx1 = Xi + 2 * t; gxHall = hx0;
+    hall.x0 = hx0; hall.x1 = hx1; hall.y0 = -(Yi + 2 * t) / 2; hall.y1 = (Yi + 2 * t) / 2; c.extra.hall = hall;
+    xTx0 = hx1 + 5000; c.extra.gisBay = [bw, bl, bh];
+  }
+  const txFront = xTx0, txBack = xTx0 + txL;
+  xBld = txBack + 6000;
+  const bx0 = xBld, bx1 = xBld + bD + 2 * RULE.wallT;
+  const bLen = mvL + ctlL + batL + auxL + 3 * RULE.wallT * 1 + (auxL ? RULE.wallT : 0);     // building length along Y
+  const by0 = -bLen / 2, by1 = bLen / 2;
+  // ---- fence extents ----
+  const m = Y.margin, xmin = gis ? -(c.lines ? 9000 : 3000) : xg - 2000, yHalf = Math.max(slots * pitch / 2 + m, bLen / 2 + 2000, hall ? hall.y1 + 3000 : 0) + (c.fac('capBank') ? 0 : 0);
+  const capS = Y.mv === 11 ? [5000, 2500, 2600] : [8000, 4000, 4000];
+  let yMax = yHalf; if (c.fac('capBank')) yMax += capS[1] + 2500;
+  const fx0 = xmin, fx1 = bx1 + 3000, fy0 = -yHalf, fy1 = yMax;
+  // ---- items ----
+  const E = (kind, id, x, y, yaw) => addEquip(c, kind, id, x, y, yaw);
+  if (!gis) {
+    // gantries (shared columns between line bays), beam above the bays
+    const nCol = lines + 1, gW = 700, Hg = Y.Hg, gy = k => (k - lines / 2) * pitch + (slots - lines) * 0 + (lines % 2 === slots % 2 ? 0 : 0);
+    const lineY = i => ySlot(i + (slots - lines) / 2);
+    for (let k = 0; k <= lines; k++) { const y = k === 0 ? lineY(0) - pitch / 2 : lineY(k - 1) + pitch / 2; add(c, 'gantry-col', 'gantry-col-' + (k + 1), xg, y, zf, [gW, gW, Hg + 600], { col: [{ t: 'box', s: [gW, gW, Hg + 600], c: [0, 0, (Hg + 600) / 2] }], opts: { h: Hg + 600, w: gW } }); }
+    for (let i = 0; i < lines; i++) {
+      const yc = lineY(i);
+      add(c, 'gantry-beam', 'gantry-beam-' + (i + 1), xg, yc, zf + Hg, [500, pitch, 500], { col: [{ t: 'box', s: [500, pitch, 500], c: [0, 0, 250] }], opts: { span: pitch, strings: 3, pitch: Y.ph, line: true } });
+      const sq = c.extra.seqL;
+      E('la', `line${i + 1}-arrester`, xg + sq[0], yc); E('pt', `line${i + 1}-cvt`, xg + sq[1], yc); E('iso', `line${i + 1}-line-isolator`, xg + sq[2], yc);
+      E('ct', `line${i + 1}-ct`, xg + sq[3], yc); E('cb', `line${i + 1}-breaker`, xg + sq[4], yc); E('iso', `line${i + 1}-bus-isolator`, xg + sq[5], yc);
+    }
+    // bus (tube along Y) over all slots
+    const busLen = slots * pitch; add(c, 'busbar', 'main-bus', xb, 0, zf + Y.Hbus, [Y.busR * 2, busLen, Y.busR * 2], { col: [{ t: 'cyl', r: Y.busR, h: busLen, axis: 'y', c: [0, 0, 0] }, ...[-1, 0, 1].map(k => ({ t: 'box', s: [200, 200, 100], c: [0, 0, 0] })).slice(0, 0)], opts: { len: busLen, pitch: Y.ph, slots, busR: Y.busR, post: { h: Y.Hbus - Y.Ht + 0, spacing: pitch / 2 } } });
+    for (let i = 0; i < tx; i++) {
+      const yc = ySlot(i), sq = c.extra.seqT, yt = yc;
+      E('iso', `tx${i + 1}-bus-isolator`, xb + sq[0], yc); E('cb', `tx${i + 1}-breaker`, xb + sq[1], yc); E('ct', `tx${i + 1}-ct`, xb + sq[2], yc); E('la', `tx${i + 1}-arrester`, xb + sq[3], yc);
+    }
+  } else {
+    // GIS: line towers west of the hall, hall bays, wall bushings, ducts to the transformers
+    const h = hall, t = h.t, yb = k => h.y0 + t + 1500 + h.bw / 2 + k * (h.bw + 200), zBay = zf + RULE.gT * 0 + 800;
+    c.extra.hallZ = zf + 800;
+    for (let i = 0; i < lines; i++) { const yc = yb(i); add(c, 'line-tower', `line${i + 1}-tower`, h.x0 - 7000, yc, zf, [700, 3200, Y.Hg], { col: [{ t: 'box', s: [600, 600, Y.Hg], c: [0, 0, Y.Hg / 2] }], opts: { h: Y.Hg, strings: 3, pitch: Y.ph / 3 } }); }
+    c.extra.bayY = []; for (let k = 0; k < h.nb; k++) c.extra.bayY.push(yb(k));
+  }
+  // ---- transformers, pits, firewalls, NER ----
+  const pits = [];
+  for (let i = 0; i < tx; i++) {
+    const yc = ySlot(i), xc = txFront + txL / 2;
+    const t0 = add(c, 'tx-power', 'transformer-' + (i + 1), xc, yc, zf + 300, [T[0], T[1], T[2]], { opts: { rating: c.rating, kv: Y.hv, mv: Y.mv, plinth: 300 }, col: [{ t: 'box', s: [T[0], T[1], T[2]], c: [0, 0, T[2] / 2] }] });
+    add(c, 'plinth', 'tx-plinth-' + (i + 1), xc, yc, zf, [T[0] + 600, T[1] + 600, 300], { col: [{ t: 'box', s: [T[0] + 600, T[1] + 600, 300], c: [0, 0, 150] }] });
+    if (c.fac('oilPit')) { oilPit(c, 'oil-pit-' + (i + 1), xc, yc, T); }
+    if (c.fac('ner')) add(c, 'ner', 'ner-' + (i + 1), xc + T[0] / 2 - 500, yc + T[1] / 2 + 1400, zf, [1200, 800, 1500], { col: [{ t: 'box', s: [1200, 800, 1500], c: [0, 0, 750] }] });
+  }
+  // HV jumpers: line bay (gantry string -> equipment height -> bus phase) and transformer bay (bus phase -> arrester -> bushing), LV cables down to the trench
+  if (!gis) {
+    const paths = [], zT = zf + Y.Ht, zH = zf + Y.Hbus, bp = Y.hv === 132 ? 1500 : 900, lineY = i => ySlot(i + (slots - lines) / 2), sq = c.extra.seqT;
+    for (let i = 0; i < lines; i++) for (const k of [-1, 0, 1]) { const yk = lineY(i) + k * Y.ph; paths.push([[xg, yk, zf + Y.Hg - 2300], [xg, yk, zT], [xb + k * Y.ph, yk, zT], [xb + k * Y.ph, yk, zH]]); }
+    for (let i = 0; i < tx; i++) {
+      const yc = ySlot(i), zTop = zf + 300 + T[2], zJ = zTop + 500, xLA = xb + sq[3], xBush = txFront + 500, xLV = txFront + txL - 600, zLV = zf + 350 + 0.8 * T[2];
+      for (const k of [-1, 0, 1]) { const yk = yc + k * Y.ph; paths.push([[xb + k * Y.ph, yk, zH], [xb + k * Y.ph, yk, zT], [xLA, yk, zT], [xLA, yk, zJ], [xBush, yc + k * bp, zJ], [xBush, yc + k * bp, zTop]]); }
+      for (const k of [-1.5, -0.5, 0.5, 1.5]) paths.push([[xLV, yc + k * 650, zLV], [xLV, yc + k * 650, zLV + 400], [txBack + 800, yc + k * 650, zLV + 400], [txBack + 800, yc + k * 650, zf + 150]]);
+    }
+    add(c, 'bay-conn', 'hv-jumpers', 0, 0, zf, [1, 1, 1], { col: [], opts: { paths, r: Y.hv === 132 ? 40 : 28 } });
+  }
+  c.extra.txX = xTx0 + txL / 2; c.extra.txFront = txFront; c.extra.txBack = txBack;
+  if (fw) for (let i = 0; i < tx - 1; i++) { const ym = (ySlot(i) + ySlot(i + 1)) / 2, hh = T[2] + RULE.fireWallOver, ww = T[0] + RULE.oilPitMargin * 2; add(c, 'fire-wall', 'fire-wall-' + (i + 1), txFront + txL / 2, ym, zf, [ww, RULE.fireWallT, hh], { col: [{ t: 'box', s: [ww, RULE.fireWallT, hh], c: [0, 0, hh / 2] }] }); }
+  // ---- control building ----
+  const t = RULE.wallT, zbB = zf + 200, holesB = { negx: [], posx: [], negy: [], posy: [] }, partsB = [];
+  let u = t; const rm = [{ id: 'mv', L: mvL }, { id: 'control', L: ctlL }, { id: 'battery', L: batL }, ...(auxL ? [{ id: 'aux', L: auxL }] : [])];
+  rm.forEach((r, i) => { r.y0 = by0 + u; r.y1 = r.y0 + r.L; u += r.L; if (i < rm.length - 1) { partsB.push({ axis: 'y', pos: by0 + u + t / 2, from: bx0 + t, to: bx1 - t, t, holes: [] }); u += t; } });
+  c.extra.bRooms = rm;
+  for (const r of rm) { const uc = (r.y0 - by0) + (r.id === 'mv' ? 700 : r.L / 2 - 500); holesB.negx.push(door((r.y0 - by0) + (r.id === 'mv' ? 500 : r.L / 2 - 600), r.id === 'mv' ? 1800 : 1000, r.id === 'mv' ? 2400 : 2100)); }
+  holesB.posx.push(louvre((rm[0].y0 - by0) + rm[0].L / 2 - 600, 1200, 2600, 800)); holesB.posx.push(louvre((rm[2].y0 - by0) + rm[2].L / 2 - 500, 1000, 2600, 600));
+  const trenchB = c.fac('trench') ? { x0: bx0 + t + RULE.panelFront - 600, x1: bx0 + t + RULE.panelFront + 200, y0: by0 + t + 400, y1: by0 + t + mvL - 400 } : null;
+  c.blds.push({ id: 'control-building', x0: bx0, x1: bx1, y0: by0, y1: by1, t, zb: zbB, fl: 200, Hi: bHi, roofT: RULE.roofT, holes: holesB, parts: partsB, floorHoles: trenchB ? [trenchB] : [], kind: 'control' });
+  c.extra.bld = { x0: bx0, x1: bx1, y0: by0, y1: by1, zb: zbB, Hi: bHi };
+  // equipment in the building
+  const mvR = rm[0], mvY = (mvR.y0 + mvR.y1) / 2, xRowMv = bx1 - t - RULE.panelRear - MV[1] / 2;
+  add(c, 'vcb-row', 'mv-switchgear', xRowMv, mvY, zbB, [MV[1], nMv * MV[0], MV[2]], { yaw: 0, col: [{ t: 'box', s: [MV[1], nMv * MV[0], MV[2]], c: [0, 0, MV[2] / 2] }], opts: { n: nMv, w: MV[0], kv: Y.mv, along: 'y', depth: MV[1], bus: true } });
+  const cr = rm[1], cry = (cr.y0 + cr.y1) / 2;
+  add(c, 'relay-row', 'control-relay-panels', xRowMv, cry, zbB, [800, nRelay * 800, 2200], { col: [{ t: 'box', s: [800, nRelay * 800, 2200], c: [0, 0, 1100] }], opts: { n: nRelay, w: 800, along: 'y' } });
+  add(c, 'desk', 'operator-desk', bx0 + t + 1500, cry, zbB, [900, 2400, 760], { col: [{ t: 'box', s: [900, 2400, 760], c: [0, 0, 380] }] });
+  const br = rm[2], bry = (br.y0 + br.y1) / 2;
+  add(c, 'battery-bank', 'battery-bank', bx1 - t - 700, bry, zbB, [800, 2600, 1400], { col: [{ t: 'box', s: [800, 2600, 1400], c: [0, 0, 700] }], opts: { cells: 2 } });
+  add(c, 'charger', 'dc-chargers', bx0 + t + 500, bry - 1000, zbB, [800, 1600, 2000], { col: [{ t: 'box', s: [800, 1600, 2000], c: [0, 0, 1000] }] });
+  if (auxL) { const ar = rm[3], ay = (ar.y0 + ar.y1) / 2; add(c, 'lt-row', 'ac-distribution', bx1 - t - 600, ay, zbB, [600, 3000, 2200], { col: [{ t: 'box', s: [600, 3000, 2200], c: [0, 0, 1100] }], opts: { n: 4, w: 750, along: 'y' } }); }
+  // ---- trench from the transformers to the building and the cross trench in front of it ----
+  const road = { x0: bx0 - 2500 - RULE.roadW, x1: bx0 - 2500, y0: fy0, y1: by1 };
+  if (c.extra.pits && c.extra.pits.some(q => q.depth > 1500)) c.notes.push('Warning: the oil soak pit is deeper than 1500 mm. Use a bigger pit plan or an oil sump with a separator.');
+  c.extra.road = road; add(c, 'road', 'access-road', (road.x0 + road.x1) / 2, (road.y0 + road.y1) / 2, zf, [road.x1 - road.x0, road.y1 - road.y0, 30], { col: [] });
+  if (c.fac('trench')) { for (let i = 0; i < tx; i++) add(c, 'trench-run', 'cable-trench-' + (i + 1), (txBack + bx0) / 2, ySlot(i), zf, [bx0 - txBack, 600, 150], { col: [{ t: 'box', s: [bx0 - txBack, 600, 150], c: [0, 0, 75] }], opts: { len: bx0 - txBack } }); }
+  // ---- cap bank, aux transformer ----
+  if (c.fac('capBank')) add(c, 'capbank-yard', 'capacitor-bank', (txFront + txBack) / 2, fy1 - 1500 - capS[1] / 2, zf, capS, { col: [{ t: 'box', s: capS, c: [0, 0, capS[2] / 2] }], opts: { kv: Y.mv } });
+  // ---- masts, flood poles, earthing, fence ----
+  if (c.fac('mast')) for (const sy of [-1, 1]) add(c, 'mast', 'lightning-mast-' + (sy < 0 ? 1 : 2), gis ? txFront - 4000 : xb, sy * (slots * pitch / 2 + 500), zf, [500, 500, Y.mast], { col: [{ t: 'cyl', r: 250, h: Y.mast, c: [0, 0, Y.mast / 2] }], opts: { h: Y.mast } });
+  if (c.fac('flood')) for (const [sx, sy] of [[fx0 + 1500, fy0 + 1500], [fx0 + 1500, fy1 - 1500], [fx1 - 1500, fy0 + 1500], [fx1 - 1500, fy1 - 1500]]) add(c, 'flood-pole', 'flood-pole', sx, sy, zf, [300, 300, RULE.flood], { col: [{ t: 'cyl', r: 150, h: RULE.flood, c: [0, 0, RULE.flood / 2] }], opts: { h: RULE.flood } });
+  if (c.fac('earth')) { add(c, 'earth-grid', 'earth-grid', (fx0 + fx1) / 2, (fy0 + fy1) / 2, zf, [fx1 - fx0 - 1000, fy1 - fy0 - 1000, 20], { col: [], opts: { x0: fx0 + 500, x1: fx1 - 500, y0: fy0 + 500, y1: fy1 - 500, step: 6000 } }); for (const [i, [px, py]] of [[fx0 + 700, fy0 + 700], [fx0 + 700, fy1 - 700], [fx1 - 700, fy0 + 700], [fx1 - 700, fy1 - 700]].entries()) add(c, 'earth-pit', 'earth-pit-' + (i + 1), px, py, zf, [400, 400, 20], { col: [{ t: 'box', s: [400, 400, 20], c: [0, 0, 10] }] }); }
+  if (c.fac('fence')) addFence(c, fx0, fx1, fy0, fy1, { gate: 'negy', gateU: road.x0 + RULE.roadW / 2 });
+  c.extra.plot = { fx0, fx1, fy0, fy1 };
+  // ---- GIS hall as a building + bays ----
+  if (gis) {
+    const h = hall, t2 = h.t, zbH = zf + 800, holes = { negx: [], posx: [], negy: [], posy: [door(h.Xi / 2 + t2 - 900, 1800, 2600)] };
+    c.extra.bayY.forEach((y, k) => { const u = y - h.y0 - 1500 * 0; if (k < lines) holes.negx.push({ kind: 'bushing', u0: u - 900, u1: u + 900, v0: 1400, v1: 2800 }); else if (k < lines + tx) holes.posx.push({ kind: 'bushing', u0: u - 900, u1: u + 900, v0: 1400, v1: 2800 }); });
+    c.blds.push({ id: 'gis-hall', x0: h.x0, x1: h.x1, y0: h.y0, y1: h.y1, t: t2, zb: zbH, fl: 800, Hi: h.Hi, roofT: RULE.roofT, holes, parts: [], floorHoles: [], kind: 'gis' });
+    const bxc = (h.x0 + h.x1) / 2, cr = c.fac('crane');
+    c.extra.bayY.forEach((y, k) => { const role = k < lines ? 'line' : k < lines + tx ? 'transformer' : 'bus-pt'; add(c, 'gis-bay', `gis-bay-${k + 1}-${role}`, bxc, y, zbH, [h.bl, h.bw, h.bh], { col: [{ t: 'box', s: [h.bl, h.bw, h.bh], c: [0, 0, h.bh / 2] }], opts: { role, kv: Y.hv, w: h.bw } }); });
+    c.extra.bayY.forEach((y, k) => { if (k < lines + tx) { const left = k < lines; add(c, 'wall-bushings', `bushings-${k + 1}`, left ? h.x0 : h.x1, y, zbH + 1400, [1400, 900, 1400], { yaw: left ? 180 : 0, col: [], opts: { pitch: Math.min(900, Y.ph / 2 + 300) } }); } });
+    c.extra.bayY.forEach((y, k) => { if (k >= lines && k < lines + tx) { const i = k - lines, yt = ySlot(i), xa = h.x1 + 1400, xt = txFront; add(c, 'duct', `sf6-duct-${i + 1}`, xa, y, zbH + 2100, [xt - xa, 1, 1], { col: [], opts: { pts: [[xa, y, zbH + 2100], [xa + 1500, y, zbH + 2100], [xa + 1500, yt, zbH + 2100], [xt + 600, yt, zbH + 2100]], r: Y.hv === 33 ? 300 : 400 } }); } });
+    if (cr) add(c, 'crane', 'overhead-crane', bxc, (h.y0 + h.y1) / 2, zbH + h.Hi - 700, [h.Xi - 200, h.Yi - 200, 700], { col: [{ t: 'box', s: [h.Xi - 300, 600, 500], c: [0, 0, 350] }], opts: { span: h.Xi - 200, len: h.Yi - 200 } });
+  }
+  c.extra.hv = Y.hv; c.extra.mvKv = Y.mv; c.extra.T = T;
+  // notes / info
+  c.extra.gapReq = gapReq; c.extra.sect = Y.sect;
+  return { x0: fx0 - (c.fac('fence') ? 200 : 500), x1: fx1 + 300, y0: fy0 - 400, y1: fy1 + 300 };
+}
+
+// ---- details ----
+function describe(p) {
+  const P = plan(p), e = P.extra, out = [`Type: ${TYPES[P.type]}, ${P.kv} kV`];
+  const dist = P.type === 'pole' || P.type === 'kiosk' || P.type === 'indoor', T = dist ? DIST[P.rating] : POWER[P.rating];
+  out.push(`Transformer: ${P.tx} x ${P.rating >= 1000 ? r1(P.rating / 1000) + ' ' + (dist ? 'MVA' : 'MVA') : P.rating + ' kVA'}, ${T[0]} x ${T[1]} x ${T[2]} mm, about ${T[3]} kg, oil about ${T[4]} L (generic envelope)`.replace(dist && P.rating >= 1000 ? / MVA/ : /^$/, dist && P.rating >= 1000 ? ' MVA' : ''));
+  if (P.type === 'pole') out.push(`${e.hpole ? 'H-pole (2 poles, platform)' : 'Single pole with bracket'}, pole ${e.poleH / 1000} m; HT fuses, arresters, LT fuse box${e.stay ? ', stay wire' : ''}`);
+  if (P.type === 'kiosk') out.push(`Enclosure ${e.kiosk.Lo} x ${e.kiosk.Wo} x ${e.kiosk.Hi} mm on a ${e.kiosk.plinth} mm plinth: RMU (3 ways), transformer, LT panel`);
+  if (P.type === 'indoor') out.push(`Building ${e.Li} x ${e.Wi} x ${e.Hi} mm inside: HT room (${e.nMv} panels), ${P.tx} transformer room(s), LT room (${e.nLt} panels)`);
+  if (P.type === 'ais' || P.type === 'gis') {
+    const Y = P.yard;
+    out.push(`Yard: ${Y.hv} kV, phase spacing ${Y.ph} mm, bay ${e.pitch} mm, terminal height ${Y.Ht} mm, bus ${Y.Hbus} mm, line gantry ${Y.Hg} mm, ${P.lines} line bay(s), ${P.tx} transformer bay(s)`);
+    out.push(`Clearances used: phase-phase ${Y.phPh} mm, phase-earth ${Y.phE} mm, sectional ${Y.sect} mm, fence margin ${Y.margin} mm; transformer gap ${e.gapReq / 1000} m`);
+    out.push(`Control building: MV switch room ${e.control.nMv} x ${RULE.mvPanel[Y.mv][0]} mm panels, control room ${e.control.nRelay} relay panels, battery room${e.control.auxL ? ', AC / aux room' : ''}`);
+    if (e.hall) out.push(`GIS hall ${e.hall.Xi} x ${e.hall.Yi} x ${e.hall.Hi} mm inside, ${e.hall.nb} bays of ${e.hall.bw} mm`);
+    out.push(`Plot ${Math.round(P.Lo / 1000)} x ${Math.round(P.Wo / 1000)} m`);
+  }
+  if (e.pits && e.pits.length) out.push(`Oil soak pit: ${e.pits[0].L} x ${e.pits[0].W} mm, ${e.pits[0].depth} mm deep (gravel void 40 %, 100 % of the oil)`);
+  return [...out, ...P.notes];
+}
+function validate(p) { plan(p); }
+
+// ---- collision shapes + ports ----
+function generate(p) {
+  const P = plan(p), shapes = [], R = v => Math.round(v * 100) / 100;
+  let n = 0;
+  const wallColor = { grey: 0xb4b8bc, cream: 0xe0d4b4, white: 0xe8e8e4 }[p.wallColor] ?? 0xb4b8bc;
+  const gp = P.plot; shapes.push({ id: 'ground-plate', role: 'solid', type: 'box', size: [R(P.Lo), R(P.Wo), P.gT], at: [R((gp.x0 + gp.x1) / 2), R((gp.y0 + gp.y1) / 2), P.gT / 2], tags: ['concrete'], color: 0x8f918b });
+  for (const b of P.blds) for (const s of shell(b)) shapes.push({ id: `${b.id}-${s.kind}-${++n}`, role: 'solid', type: 'box', size: s.s.map(R), at: s.c.map(R), tags: [s.kind === 'floor' || s.kind === 'roof' ? 'concrete' : 'masonry'], ...(s.kind === 'wall' || s.kind === 'part' ? { color: wallColor } : {}) });
+  for (const it of P.items) for (const cl of it.col || []) {
+    const yaw = (it.yaw || 0) * Math.PI / 180, cs = Math.cos(yaw), sn = Math.sin(yaw), lx = cl.c[0], ly = cl.c[1];
+    const at = [R(it.at[0] + lx * cs - ly * sn), R(it.at[1] + lx * sn + ly * cs), R(it.at[2] + cl.c[2])];
+    const base = { id: `${it.id}-${++n}`, role: 'solid', at, tags: ['steel'], rot: [0, 0, R(it.yaw || 0)] };
+    if (cl.t === 'cyl') shapes.push({ ...base, type: 'cylinder', radius: R(cl.r), length: R(cl.h), axis: cl.axis || 'z' }); else shapes.push({ ...base, type: 'box', size: cl.s.map(R) });
+  }
+  const zr = P.top;
+  const ports = [{ id: 'B', at: [0, 0, 0], dir: [0, 0, -1], type: 'face-v' }, { id: 'L', at: [R(P.plot.x0), 0, 0], dir: [-1, 0, 0], type: 'face-h' }, { id: 'R', at: [R(P.plot.x1), 0, 0], dir: [1, 0, 0], type: 'face-h' }];
+  return { shapes, ports, info: describe(p) };
+}
+
+return {TYPES,ALLOWED,DIST,POWER,YARD,RULE,shell,openings,plan,describe,validate,generate};})();
+MOD['visual/util']=(()=>{
+// Small helpers shared by the visual builders.
+const { Geo, cyl, hollow, tube, frame, hex } = MOD['mesh'];
+const { apply } = MOD['math3'];
+const RED = 0xc43d2f, STEEL = 0x5d6b7a, BRIGHT = 0xb9bec5, DARK = 0x2b3340;
+const along = (g, dir, p = [0, 0, 0]) => new Geo().merge(g, frame(dir, p));
+const cylAt = (r, len, dir, p, o) => along(cyl(r, len, o), dir, p);
+const hollowAt = (ro, ri, len, dir, p, o) => along(hollow(ro, ri, len, o), dir, p);
+const part = (name, geo, color, extra = {}) => ({ name, geo, color, ...extra });
+// hand wheel in a horizontal plane at height zc around (cx, cy): rim, hub, spokes
+function wheel(rw, rt, zc, cx = 0, cy = 0, spokes = 4) {
+  const g = new Geo(), rim = [];
+  for (let i = 0; i < 48; i++) { const a = 2 * Math.PI * i / 48; rim.push([cx + rw * Math.cos(a), cy + rw * Math.sin(a), zc]); }
+  g.merge(tube(rim, rt, { closed: true, seg: 10 }));
+  g.merge(cylAt(rt * 2.4, rt * 3.2, [0, 0, 1], [cx, cy, zc]));
+  for (let k = 0; k < spokes; k++) {
+    const a = 2 * Math.PI * k / spokes;
+    g.merge(tube([[cx, cy, zc], [cx + rw * Math.cos(a), cy + rw * Math.sin(a), zc]], rt * 0.55, { seg: 8 }));
+  }
+  return g;
+}
+// world position of a point given in a frame(dir, at) coordinate system
+const inFrame = (dir, at, p) => apply(frame(dir, at), p);
+
+
+return {hex,RED,STEEL,BRIGHT,DARK,along,cylAt,hollowAt,part,wheel,inFrame};})();
+MOD['visual/substation']=(()=>{
+// Visual mesh of the substation: what the user SEES and exports. Collision / BOM use the envelopes of gen/substation.js.
+// Every equipment item of the plan (kind) has its own real-shape builder: transformers with fins, radiators, conservator and bushings,
+// disconnectors, circuit breakers, CTs, CVTs, arresters on stands, lattice gantries and masts, bus tubes on posts, RMU, VCB / LT / relay panel rows,
+// battery bank, GIS bays with bus tank, breaker and wall bushings, crane, fence with gate, oil pits, fire walls, trenches, lights, pole, cross arm, fuses.
+const { Geo, box, cyl, lathe, tube, hollow } = MOD['mesh'];
+const { fromEuler, add, sub, scale, norm, len, dot } = MOD['math3'];
+const { plan, shell, openings, RULE } = MOD['gen/substation'];
+const { cylAt, hollowAt, along, part } = MOD['visual/util'];
+
+const mv = (x, y, z) => ({ R: [1, 0, 0, 0, 1, 0, 0, 0, 1], t: [x, y, z] });
+const X = [1, 0, 0], Y = [0, 1, 0], Z = [0, 0, 1], on = v => +v === 1;
+const bxe = (g, x0, x1, y0, y1, z0, z1) => g.merge(box(x1 - x0, y1 - y0, z1 - z0), mv((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2));
+const bxr = (g, size, at, rot) => g.merge(box(size[0], size[1], size[2]), fromEuler(at, rot));
+const put = (g, l, x, y, z) => g.merge(l, mv(x, y, z));
+const COL = { steel: 0x8a929a, galv: 0xa9b0b6, porc: 0x8b5a3c, porcG: 0xc4c4bd, alu: 0xc9ced3, dark: 0x2c3238, rubber: 0x16181a, copper: 0xb87333, txpaint: 0x7d8a86, red: 0xc0392b, yellow: 0xe0b020, conc: 0x9aa0a6, concD: 0x80868c, glass: 0xaed6e6, white: 0xe8e8e4, blue: 0x2f5fa8, panel: 0x8c9399, panelD: 0x4d5760, gravel: 0xaaa89f, road: 0x55575a, lamp: 0xf4f2d8, green: 0x2fa36b, gis: 0x9aa5a0, mesh: 0x39424a, oil: 0x6d6f4a };
+
+// ---- small shared shapes ----
+const memo = new Map();
+function insul(h, r, n = 8, seg = 14) {          // porcelain column with sheds
+  const key = [h, r, n, seg].join('|'); if (memo.has(key)) return memo.get(key);
+  const pr = [[0, 0], [r * 0.85, 0]]; const dz = h / n;
+  for (let i = 0; i < n; i++) { const z = i * dz; pr.push([r * 0.85, z + dz * 0.08], [r * 1.6, z + dz * 0.3], [r * 1.6, z + dz * 0.42], [r * 0.85, z + dz * 0.7]); }
+  pr.push([r * 0.85, h], [0, h]); const g = lathe(pr, { seg }); memo.set(key, g); return g;
+}
+function rounded(pts, R, steps = 6) {
+  const out = [pts[0]];
+  for (let i = 1; i < pts.length - 1; i++) {
+    const a = pts[i - 1], b = pts[i], c = pts[i + 1], u = norm(sub(a, b)), v = norm(sub(c, b)), ang = Math.acos(Math.max(-1, Math.min(1, dot(u, v))));
+    if (ang > Math.PI - 1e-3 || ang < 1e-3) { out.push(b); continue; }
+    const dd = Math.min(R / Math.tan(ang / 2), len(sub(a, b)) / 2, len(sub(c, b)) / 2), Rr = dd * Math.tan(ang / 2);
+    const p1 = add(b, scale(u, dd)), p2 = add(b, scale(v, dd)), Cn = add(b, scale(norm(add(u, v)), Rr / Math.sin(ang / 2)));
+    const r1 = sub(p1, Cn), r2 = sub(p2, Cn), phi = Math.acos(Math.max(-1, Math.min(1, dot(norm(r1), norm(r2)))));
+    for (let k = 0; k <= steps; k++) { const s = k / steps, w1 = Math.sin((1 - s) * phi) / Math.sin(phi), w2 = Math.sin(s * phi) / Math.sin(phi); out.push(add(Cn, add(scale(r1, w1), scale(r2, w2)))); }
+  }
+  out.push(pts[pts.length - 1]); return out;
+}
+const wire = (g, pts, r, R = 500, seg = 8) => { const q = rounded(pts.map(p => p.slice()), R); if (q.length > 1) g.merge(tube(q, r, { seg })); };
+function lattice(h, w, w2 = w) {                  // lattice column: 4 legs, rings and diagonals (tapers from w to w2)
+  const g = new Geo(), n = Math.max(2, Math.ceil(h / 1800)), dz = h / n, W = z => w + (w2 - w) * z / h;
+  for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+    const pts = [[sx * w / 2, sy * w / 2, 0], [sx * w2 / 2, sy * w2 / 2, h]]; g.merge(tube(pts, 55, { seg: 6 }));
+  }
+  for (let i = 0; i <= n; i++) { const z = i * dz, ww = W(z); bxe(g, -ww / 2, ww / 2, -ww / 2 - 20, -ww / 2 + 20, z - 25, z + 25); bxe(g, -ww / 2, ww / 2, ww / 2 - 20, ww / 2 + 20, z - 25, z + 25); bxe(g, -ww / 2 - 20, -ww / 2 + 20, -ww / 2, ww / 2, z - 25, z + 25); bxe(g, ww / 2 - 20, ww / 2 + 20, -ww / 2, ww / 2, z - 25, z + 25); }
+  for (let i = 0; i < n; i++) {
+    const z0 = i * dz, ww = W(z0 + dz / 2), a = Math.atan2(dz, ww) * 180 / Math.PI, L = Math.hypot(ww, dz), sg = i % 2 ? 1 : -1;
+    for (const s of [-1, 1]) { bxr(g, [L, 36, 36], [0, s * ww / 2, z0 + dz / 2], [0, -sg * a, 0]); bxr(g, [36, L, 36], [s * ww / 2, 0, z0 + dz / 2], [sg * a, 0, 0]); }
+  }
+  return g;
+}
+function girder(span, depth) {                  // lattice beam along Y, centred, top at z = 0 .. depth below
+  const g = new Geo(), n = Math.max(2, Math.round(span / 1500)), dy = span / n, a = Math.atan2(depth, dy) * 180 / Math.PI, L = Math.hypot(dy, depth);
+  bxe(g, -150, 150, -span / 2, span / 2, -60, 0); bxe(g, -150, 150, -span / 2, span / 2, -depth, -depth + 60);
+  for (const sx of [-1, 1]) for (let i = 0; i < n; i++) bxr(g, [30, L, 30], [sx * 150, -span / 2 + dy * (i + 0.5), -depth / 2], [(i % 2 ? 1 : -1) * a, 0, 0]);
+  return g;
+}
+function ped(g, y, h, wx, wy = 300) {            // equipment pedestal on four legs
+  for (const sx of [-1, 1]) for (const sy of [-1, 1]) bxe(g, sx * wx / 2 - 60, sx * wx / 2 + 60, y + sy * wy / 2 - 60, y + sy * wy / 2 + 60, 0, h);
+  bxe(g, -wx / 2 - 80, wx / 2 + 80, y - wy / 2 - 80, y + wy / 2 + 80, h - 80, h);
+  bxe(g, -wx / 2, wx / 2, y - wy / 2 - 20, y - wy / 2 + 20, h * 0.4, h * 0.4 + 50); bxe(g, -wx / 2, wx / 2, y + wy / 2 - 20, y + wy / 2 + 20, h * 0.4, h * 0.4 + 50);
+}
+const D = () => { const d = {}; d.g = (k) => d[k] || (d[k] = new Geo()); return d; };
+
+// ---- yard equipment (three phases along Y) ----
+function eqIso(it) { const o = it.opts, sx = it.size[0], d = D(), k33 = o.kv === 33, ri = k33 ? 60 : 100;
+  for (const k of [-1, 0, 1]) { const y = k * o.pitch; ped(d.g('galv'), y, o.stand, sx * 0.7);
+    for (const s of [-1, 1]) put(d.g('porc'), insul(o.body * 0.9, ri, k33 ? 4 : 8), s * sx * 0.28, y, o.stand);
+    bxe(d.g('alu'), -sx * 0.4, sx * 0.4, y - 40, y + 40, o.stand + o.body * 0.9, o.stand + o.body * 0.9 + 70); bxe(d.g('alu'), -sx * 0.5, -sx * 0.3, y - 60, y + 60, o.stand + o.body * 0.9 + 70, o.stand + o.body * 0.9 + 110); }
+  return d; }
+function eqCb(it) { const o = it.opts, sx = it.size[0], d = D(), k33 = o.kv === 33, tr = k33 ? 150 : 300, ri = k33 ? 60 : 110, zt = o.stand + tr + 150;
+  for (const k of [-1, 0, 1]) { const y = k * o.pitch; ped(d.g('galv'), y, o.stand, sx * 0.8);
+    d.g('steel').merge(cylAt(tr, sx * 0.8, X, [0, y, zt])); for (const s of [-1, 1]) { put(d.g('porc'), insul(o.body - tr * 2 - 200, ri, k33 ? 4 : 9), s * sx * 0.32, y, zt + tr * 0.6); bxe(d.g('alu'), s * sx * 0.32 - 100, s * sx * 0.32 + 100, y - 50, y + 50, o.stand + o.body - 60, o.stand + o.body); } }
+  bxe(d.g('panel'), -250, 250, -250, 250, 0, 900); bxe(d.g('panelD'), -250, 250, -255, -250, 100, 800);
+  return d; }
+function eqCt(it) { const o = it.opts, sx = it.size[0], d = D(), k33 = o.kv === 33, ri = k33 ? 75 : 110;
+  for (const k of [-1, 0, 1]) { const y = k * o.pitch; ped(d.g('galv'), y, o.stand, sx * 0.9); put(d.g('porc'), insul(o.body * 0.72, ri, k33 ? 4 : 8), 0, y, o.stand);
+    d.g('steel').merge(cylAt(ri * 2.3, o.body * 0.26, Z, [0, y, o.stand + o.body * 0.86])); bxe(d.g('alu'), -sx * 0.4, sx * 0.4, y - 40, y + 40, o.stand + o.body - 50, o.stand + o.body); }
+  return d; }
+function eqLa(it) { const o = it.opts, d = D(), k33 = o.kv === 33, r = k33 ? 45 : 75;
+  for (const k of [-1, 0, 1]) { const y = k * o.pitch; ped(d.g('galv'), y, o.stand, 300, 250); put(d.g('porcG'), insul(o.body, r, k33 ? 6 : 14), 0, y, o.stand);
+    if (!k33) d.g('alu').merge(hollowAt(340, 300, 30, Z, [0, y, o.stand + o.body - 60])); bxe(d.g('panelD'), 160, 300, y - 60, y + 60, o.stand - 300, o.stand - 100); bxe(d.g('alu'), -60, 60, y - 40, y + 40, o.stand + o.body, o.stand + o.body + 40); }
+  return d; }
+function eqPt(it) { const o = it.opts, d = D(), k33 = o.kv === 33, r = k33 ? 80 : 130;
+  for (const k of [-1, 0, 1]) { const y = k * o.pitch; ped(d.g('galv'), y, o.stand, 500, 400); put(d.g('porcG'), insul(o.body * 0.5, r, 5), 0, y, o.stand); put(d.g('porcG'), insul(o.body * 0.38, r * 0.9, 4), 0, y, o.stand + o.body * 0.5);
+    d.g('steel').merge(cylAt(r * 1.6, 120, Z, [0, y, o.stand + o.body * 0.9])); bxe(d.g('panel'), 250, 650, y - 200, y + 200, o.stand - 500, o.stand); bxe(d.g('alu'), -60, 60, y - 40, y + 40, o.stand + o.body * 0.9 + 60, o.stand + o.body * 0.9 + 100); }
+  return d; }
+function busbar(it) { const o = it.opts, d = D(), L = o.len;
+  for (const k of [-1, 0, 1]) { d.g('alu').merge(cylAt(o.busR, L, Y, [k * o.pitch, 0, 0]));
+    for (let i = 0; i <= o.slots; i++) { const y = -L / 2 + i * (L / o.slots), h = o.post.h; put(d.g('porc'), insul(Math.min(1500, h * 0.25), o.busR * 1.5, 7), k * o.pitch, y, -Math.min(1500, h * 0.25));
+      bxe(d.g('galv'), k * o.pitch - 100, k * o.pitch + 100, y - 100, y + 100, -h, -Math.min(1500, h * 0.25)); } }
+  return d; }
+function gcol(it) { const d = D(); d.g('galv').merge(lattice(it.opts.h, it.opts.w, it.opts.w * 0.6)); return d; }
+function gbeam(it) { const o = it.opts, d = D(); put(d.g('galv'), girder(o.span, 800), 0, 0, 500);
+  for (const k of [-1, 0, 1]) { const y = k * o.pitch; put(d.g('porcG'), insul(1400, 80, 10), 0, y, -900 - 1400 + 500); bxe(d.g('alu'), -50, 50, y - 40, y + 40, -900 - 1400 + 500 - 60, -900 - 1400 + 500); wire(d.g('alu'), [[0, y, -900 - 1400 + 440], [-4000, y, -900 - 1400 + 200], [-9000, y, -900 - 1400 + 700]], 22, 2000); }
+  return d; }
+function mast(it) { const d = D(), h = it.opts.h; d.g('galv').merge(lattice(h * 0.55, 700, 400)); put(d.g('galv'), lattice(h * 0.45, 400, 200), 0, 0, h * 0.55); d.g('steel').merge(cylAt(40, 1500, Z, [0, 0, h - 200])); return d; }
+function floodPole(it) { const d = D(), h = it.opts.h; d.g('galv').merge(lathe([[0, 0], [150, 0], [150, 400], [70, h], [0, h]], { seg: 14 })); bxr(d.g('dark'), [900, 700, 120], [350, 0, h + 100], [0, -15, 0]); bxr(d.g('lamp'), [820, 640, 20], [380, 0, h + 40], [0, -15, 0]); return d; }
+
+// ---- transformers ----
+function txPower(it) { const [L, W, H] = it.size, o = it.opts, d = D(), th = H * 0.58, tw = W * 0.5, k132 = o.kv === 132, bp = k132 ? 1500 : 900;
+  bxe(d.g('txpaint'), -L / 2 + 300, L / 2 - 300, -tw / 2, tw / 2, 0, th); bxe(d.g('txpaint'), -L / 2 + 250, L / 2 - 250, -tw / 2 - 30, tw / 2 + 30, th, th + 50);
+  bxe(d.g('galv'), -L / 2 + 200, L / 2 - 200, -tw / 2 - 40, tw / 2 + 40, -0, 0 + 1);
+  const nrad = Math.max(6, Math.floor((L * 0.66) / 130)), rd = (W - tw) / 2 - 150, rh = th * 0.8;
+  for (const s of [-1, 1]) { for (let i = 0; i < nrad; i++) { const x = -L * 0.33 + i * (L * 0.66 / (nrad - 1)); bxe(d.g('txpaint'), x - 28, x + 28, s * (tw / 2 + 120) - (s > 0 ? 0 : rd), s * (tw / 2 + 120) + (s > 0 ? rd : 0), th * 0.1, th * 0.1 + rh); }
+    d.g('txpaint').merge(cylAt(60, L * 0.66, X, [0, s * (tw / 2 + 140 + rd / 2), th * 0.1 + rh + 40])); d.g('txpaint').merge(cylAt(60, L * 0.66, X, [0, s * (tw / 2 + 140 + rd / 2), th * 0.1 - 40])); }
+  const cr = H * 0.09; d.g('txpaint').merge(cylAt(cr, L * 0.56, X, [0, tw / 4, th + cr + 450])); for (const x of [-L * 0.2, L * 0.2]) bxe(d.g('txpaint'), x - 60, x + 60, tw / 4 - 60, tw / 4 + 60, th + 50, th + 450);
+  d.g('txpaint').merge(cylAt(cr * 0.6, 200, X, [L * 0.28 + cr * 0.3, tw / 4, th + cr + 450]));
+  bxe(d.g('panel'), -250, 250, -tw / 2 - 330, -tw / 2 - 30, th * 0.15, th * 0.15 + 700); bxe(d.g('panelD'), 0 - 300, 300, tw / 2 + 30, tw / 2 + 300, th * 0.2, th * 0.2 + 800);
+  d.g('galv').merge(cylAt(90, 360, Y, [-L * 0.25, tw / 4 - 100, th + cr + 250]));
+  for (const k of [-1, 0, 1]) { put(d.g('porc'), insul(H - th, k132 ? 120 : 80, k132 ? 10 : 6), -L / 2 + 500, k * bp, th + 50); bxe(d.g('alu'), -L / 2 + 460, -L / 2 + 540, k * bp - 40, k * bp + 40, H - 50, H); }
+  for (const k of [-1.5, -0.5, 0.5, 1.5]) { put(d.g('porc'), insul(H * 0.22, 60, 4), L / 2 - 600, k * 650, th + 50); bxe(d.g('alu'), L / 2 - 650, L / 2 - 550, k * 650 - 30, k * 650 + 30, th + 50 + H * 0.22, th + 50 + H * 0.22 + 40); }
+  for (const s of [-1, 1]) for (const x of [-1, 1]) d.g('dark').merge(cylAt(140, 120, Y, [x * L * 0.3, s * (tw / 2 + 60), -0]));
+  return d; }
+function txDist(it) { const [L, W, H] = it.size, o = it.opts, d = D(), th = H * (o.rating >= 500 ? 0.62 : 0.7), tw = W * 0.7;
+  bxe(d.g('txpaint'), -L / 2, L / 2, -tw / 2, tw / 2, 80, th); bxe(d.g('txpaint'), -L / 2 - 10, L / 2 + 10, -tw / 2 - 10, tw / 2 + 10, th, th + 40);
+  const nf = Math.floor(L / 70); for (const s of [-1, 1]) for (let i = 0; i < nf; i++) { const x = -L / 2 + 40 + i * (L - 80) / (nf - 1); bxe(d.g('txpaint'), x - 12, x + 12, s * (tw / 2 + 60) - 60, s * (tw / 2 + 60) + 60, 140, th - 60); }
+  bxe(d.g('galv'), -L / 2, L / 2, -tw / 2 - 40, -tw / 2 - 10, 0, 80); bxe(d.g('galv'), -L / 2, L / 2, tw / 2 + 10, tw / 2 + 40, 0, 80);
+  if (o.rating >= 200 && !o.pole) { const cr = H * 0.1; d.g('txpaint').merge(cylAt(cr, L * 0.6, X, [0, 0, th + cr + 120])); bxe(d.g('txpaint'), -80, 80, -40, 40, th + 40, th + 120); }
+  for (const k of [-1, 0, 1]) { put(d.g('porc'), insul(o.hv + 120, 32, 4, 12), -L * 0.18, k * tw * 0.28, th + 40); bxe(d.g('alu'), -L * 0.18 - 25, -L * 0.18 + 25, k * tw * 0.28 - 25, k * tw * 0.28 + 25, th + 40 + o.hv + 120, th + 40 + o.hv + 150); }
+  for (const k of [-1.5, -0.5, 0.5, 1.5]) { put(d.g('porc'), insul(H * 0.16, 28, 3, 12), L * 0.2, k * tw * 0.2, th + 40); }
+  d.g('galv').merge(cylAt(30, 100, Z, [0, tw * 0.4, th + 90])); if (o.wheels) for (const sx of [-1, 1]) for (const sy of [-1, 1]) d.g('dark').merge(cylAt(70, 50, Y, [sx * L * 0.35, sy * (tw / 2 + 60), -20]));
+  return d; }
+// ---- switchgear and panels ----
+function panelRow(it) { const o = it.opts, d = D(), n = o.n, w = o.w, depth = o.along === 'y' ? it.size[0] : it.size[1], h = it.size[2], along = o.along === 'y';
+  const lt = it.kind === 'lt-row', rel = it.kind === 'relay-row';
+  for (let i = 0; i < n; i++) { const c = -(n * w) / 2 + w * (i + 0.5);
+    const B = (x0, x1, y0, y1, z0, z1, m) => along ? bxe(d.g(m), x0, x1, c + y0, c + y1, z0, z1) : bxe(d.g(m), c + y0, c + y1, x0, x1, z0, z1);   // (depth, across)
+    const f = along ? -depth / 2 : -depth / 2;       // front face at -depth/2
+    B(-depth / 2, depth / 2, -w / 2 + 3, w / 2 - 3, 0, h, 'panel');
+    B(f - 8, f, -w / 2 + 30, w / 2 - 30, h * 0.12, h * 0.62, 'panelD'); B(f - 8, f, -w / 2 + 30, w / 2 - 30, h * 0.66, h * 0.94, 'panelD');
+    if (o.bus && !lt && !rel) { B(f - 14, f - 8, -w * 0.3, w * 0.3, h * 0.74, h * 0.88, 'glass'); }
+    B(f - 20, f - 8, -w * 0.08, w * 0.08, h * 0.3, h * 0.36, 'red'); B(f - 18, f - 8, w * 0.25, w * 0.3, h * 0.4, h * 0.55, 'dark');
+    B(f - 14, f - 8, -w * 0.3, -w * 0.18, h * 0.2, h * 0.24, 'green');
+  }
+  if (o.bus && !lt && !rel) { const B2 = (a, b, z0, z1) => along ? bxe(d.g('copper'), depth / 2 - 60, depth / 2 - 20, -(n * w) / 2, (n * w) / 2, z0, z1) : bxe(d.g('copper'), -(n * w) / 2, (n * w) / 2, depth / 2 - 60, depth / 2 - 20, z0, z1); B2(0, 0, h - 160, h - 120); }
+  return d; }
+function rmu(it) { const [L, W, H] = it.size, d = D(); bxe(d.g('panel'), -L / 2, L / 2, -W / 2, W / 2, 0, H); bxe(d.g('panelD'), -L / 2, L / 2, -W / 2 - 10, -W / 2, 120, H * 0.45);
+  for (let i = 0; i < 3; i++) { const x = -L / 3 + i * L / 3; bxe(d.g('panelD'), x - L * 0.14, x + L * 0.14, -W / 2 - 10, -W / 2, H * 0.52, H * 0.9); d.g('red').merge(cylAt(30, 40, Y, [x, -W / 2 - 25, H * 0.35])); bxe(d.g('glass'), x - 80, x + 80, -W / 2 - 14, -W / 2 - 10, H * 0.62, H * 0.82); bxe(d.g('dark'), x - 180, x + 180, -W / 2 - 14, -W / 2, 0, 120); }
+  return d; }
+function ltPanel(it) { const [L, W, H] = it.size, d = D(), n = it.opts.ways || 4; bxe(d.g('panel'), -L / 2, L / 2, -W / 2, W / 2, 0, H); for (let i = 0; i < n; i++) { const z = 150 + i * (H - 300) / n; bxe(d.g('panelD'), -L / 2 + 40, L / 2 - 40, -W / 2 - 8, -W / 2, z, z + (H - 300) / n - 30); bxe(d.g('alu'), L * 0.3, L * 0.38, -W / 2 - 16, -W / 2 - 8, z + 60, z + 160); } return d; }
+function plainBox(it, m = 'panel') { const [L, W, H] = it.size, d = D(); bxe(d.g(m), -L / 2, L / 2, -W / 2, W / 2, 0, H); return d; }
+function battery(it) { const [L, W, H] = it.size, d = D(); for (const z of [0, H * 0.5]) bxe(d.g('galv'), -L / 2, L / 2, -W / 2, W / 2, z, z + 60); for (const sx of [-1, 1]) for (const sy of [-1, 1]) bxe(d.g('galv'), sx * (L / 2 - 30) - 30, sx * (L / 2 - 30) + 30, sy * (W / 2 - 30) - 30, sy * (W / 2 - 30) + 30, 0, H);
+  for (const z of [60, H * 0.5 + 60]) for (let i = 0; i < 12; i++) { const y = -W / 2 + 120 + i * (W - 240) / 11; bxe(d.g('blue'), -L / 2 + 80, L / 2 - 80, y - 90, y + 90, z, z + H * 0.38); d.g('dark').merge(cylAt(18, 40, Z, [-L * 0.2, y, z + H * 0.38 + 20])); d.g('dark').merge(cylAt(18, 40, Z, [L * 0.2, y, z + H * 0.38 + 20])); }
+  return d; }
+function capYard(it) { const [L, W, H] = it.size, d = D(); for (const sx of [-1, 1]) for (const sy of [-1, 1]) bxe(d.g('galv'), sx * (L / 2 - 100) - 80, sx * (L / 2 - 100) + 80, sy * (W / 2 - 100) - 80, sy * (W / 2 - 100) + 80, 0, H);
+  for (const z of [H * 0.35, H * 0.7, H - 80]) { bxe(d.g('galv'), -L / 2, L / 2, -W / 2, -W / 2 + 160, z, z + 120); bxe(d.g('galv'), -L / 2, L / 2, W / 2 - 160, W / 2, z, z + 120); }
+  for (const z of [H * 0.35 + 120, H * 0.7 + 120]) for (let i = 0; i < 10; i++) for (let j = 0; j < 4; j++) d.g('steel').merge(cylAt(110, H * 0.28, Z, [-L / 2 + 400 + i * (L - 800) / 9, -W / 2 + 500 + j * (W - 1000) / 3, z]));
+  return d; }
+function capPanel(it) { return ltPanel({ ...it, opts: { ways: it.opts.stages || 6 } }); }
+// ---- other site items ----
+function oilPitG(it) { const [L, W] = it.size, d = D(), c = 150; bxe(d.g('conc'), -L / 2, L / 2, -W / 2, -W / 2 + c, 0, 150); bxe(d.g('conc'), -L / 2, L / 2, W / 2 - c, W / 2, 0, 150); bxe(d.g('conc'), -L / 2, -L / 2 + c, -W / 2 + c, W / 2 - c, 0, 150); bxe(d.g('conc'), L / 2 - c, L / 2, -W / 2 + c, W / 2 - c, 0, 150); bxe(d.g('gravel'), -L / 2 + c, L / 2 - c, -W / 2 + c, W / 2 - c, 0, 110); return d; }
+function fireWall(it) { const [L, W, H] = it.size, d = D(); bxe(d.g('conc'), -L / 2, L / 2, -W / 2, W / 2, 0, H); bxe(d.g('concD'), -L / 2 - 60, L / 2 + 60, -W / 2 - 60, W / 2 + 60, H - 120, H); for (let i = 0; i < 4; i++) bxe(d.g('concD'), -L / 2 + (i + 0.5) * L / 4 - 200, -L / 2 + (i + 0.5) * L / 4 + 200, -W / 2 - 40, W / 2 + 40, 0, H - 120); return d; }
+function trenchRun(it) { const o = it.opts, d = D(), L = o.len; bxe(d.g('conc'), -L / 2, L / 2, -300, 300, 0, 150); const n = Math.floor(L / 700); for (let i = 0; i < n; i++) { const x = -L / 2 + (i + 0.5) * L / n; bxe(d.g('steel'), x - L / n / 2 + 10, x + L / n / 2 - 10, -260, 260, 150, 175); bxe(d.g('galv'), x - 30, x + 30, -120, 120, 175, 185); } return d; }
+function earthPit(it) { const d = D(); bxe(d.g('conc'), -200, 200, -200, 200, 0, 25); d.g('steel').merge(cylAt(90, 40, Z, [0, 0, 25])); bxe(d.g('copper'), -20, 20, -500, 0, 25, 40); return d; }
+function earthGrid(it) { const o = it.opts, d = D(), s = o.step, z = 12; for (let x = o.x0; x <= o.x1 + 1; x += s) bxe(d.g('copper'), x - it.at[0] - 25, x - it.at[0] + 25, o.y0 - it.at[1], o.y1 - it.at[1], 0, 15); for (let y = o.y0; y <= o.y1 + 1; y += s) bxe(d.g('copper'), o.x0 - it.at[0], o.x1 - it.at[0], y - it.at[1] - 25, y - it.at[1] + 25, 0, 15); return d; }
+function earthStrip(it) { const o = it.opts, d = D(), cx = it.at[0], cy = it.at[1]; for (const y of [o.y0 + 30, o.y1 - 30]) bxe(d.g('copper'), o.x0 - cx, o.x1 - cx, y - cy - 20, y - cy + 20, 0, 30); for (const x of [o.x0 + 30, o.x1 - 30]) bxe(d.g('copper'), x - cx - 20, x - cx + 20, o.y0 - cy, o.y1 - cy, 0, 30); return d; }
+function lights(it) { const o = it.opts, d = D(), cx = it.at[0], cy = it.at[1]; for (const y of o.rows) for (let x = o.x0 + 600; x < o.x1 - 600; x += o.zStep) bxe(d.g('lamp'), x - cx - 600, x - cx + 600, y - 45, y + 45, 0, 50); return d; }
+function hoistG(it) { const [L, W, H] = it.size, d = D(); bxe(d.g('yellow'), -60, 60, -W / 2, W / 2, 0, H * 0.9); bxe(d.g('yellow'), -90, 90, -W / 2, W / 2, H * 0.8, H * 0.9); bxe(d.g('dark'), -140, 140, -120, 120, -260, 0); wire(d.g('dark'), [[0, 0, -260], [0, 0, -900]], 8, 100); bxe(d.g('steel'), -40, 40, -30, 30, -1000, -900); return d; }
+function fenceRun(it) { const o = it.opts, d = D(), L = o.len, H = RULE.fenceH, ax = o.ax === 'x';
+  const B = (a0, a1, b0, b1, z0, z1, m) => ax ? bxe(d.g(m), a0, a1, b0, b1, z0, z1) : bxe(d.g(m), b0, b1, a0, a1, z0, z1);
+  B(-L / 2, L / 2, -8, 8, 150, H - 150, 'mesh'); B(-L / 2, L / 2, -30, 30, 0, 150, 'conc'); B(-L / 2, L / 2, -20, 20, H - 150, H, 'galv');
+  const n = Math.max(1, Math.round(L / 3000)); for (let i = 0; i <= n; i++) { const a = -L / 2 + i * L / n; B(a - 50, a + 50, -50, 50, 0, H + 350, 'galv'); B(a - 30, a + 30, -200, 200, H + 250, H + 290, 'galv'); }
+  for (const z of [H + 270, H + 310]) B(-L / 2, L / 2, -200, -196, z, z + 4, 'dark'); return d; }
+function gate(it) { const o = it.opts, d = D(), gw = it.size[0], H = RULE.fenceH, sh = gw * o.open, L = gw;
+  bxe(d.g('galv'), -gw / 2 - sh, gw / 2 - sh, -40, 40, H - 150, H); bxe(d.g('galv'), -gw / 2 - sh, gw / 2 - sh, -40, 40, 150, 250); bxe(d.g('mesh'), -gw / 2 - sh, gw / 2 - sh, -10, 10, 250, H - 150);
+  for (const x of [-gw / 2 - sh, gw / 2 - sh - 80]) bxe(d.g('galv'), x, x + 80, -40, 40, 150, H); for (const x of [-gw / 2 - 60, gw / 2 - 60 + 60]) bxe(d.g('galv'), x - 70, x + 70, -100, 100, 0, H + 300);
+  for (let i = 0; i < 6; i++) d.g('dark').merge(cylAt(40, 90, Y, [-gw / 2 - sh + 200 + i * (gw * 0.8 / 5), 0, 90])); return d; }
+function bayConn(it) { const o = it.opts, d = D(); for (const pp of o.paths) wire(d.g('alu'), pp.map(q => [q[0] - it.at[0], q[1] - it.at[1], q[2] - it.at[2]]), o.r, 600); return d; }
+function roadG(it) { const [L, W, H] = it.size, d = D(); bxe(d.g('road'), -L / 2, L / 2, -W / 2, W / 2, 0, H); return d; }
+function pole(it) { const o = it.opts, d = D(), h = it.size[2]; d.g('conc').merge(lathe([[0, 0], [o.r0, 0], [o.r1, h], [0, h]], { seg: 16 })); return d; }
+function crossarm(it) { const L = it.size[1], d = D(); bxe(d.g('galv'), -75, 75, -L / 2, L / 2, 0, 100); for (const k of [-1, 0, 1]) put(d.g('porcG'), insul(230, 45, 3, 12), 0, k * L * 0.36, 100); return d; }
+function doFuse(it) { const o = it.opts, d = D(); for (const k of [-1, 0, 1]) { const y = k * o.pitch; bxe(d.g('galv'), -250, 250, y - 25, y + 25, 650, 700); put(d.g('porcG'), insul(450, 38, 4, 12), -100, y, 200); bxr(d.g('red'), [60, 60, 380], [150, y, 380], [0, 20, 0]); wire(d.g('alu'), [[-100, y, 650], [-100, y, 1000], [-1200, y, 1000]].slice(0, 2), 12, 60); } return d; }
+function laPole(it) { const o = it.opts, d = D(); for (const k of [-1, 0, 1]) { const y = k * o.pitch; put(d.g('porcG'), insul(450, 30, 6, 12), 0, y, 150); bxe(d.g('galv'), -80, 80, y - 20, y + 20, 100, 150); } return d; }
+function simpleBox(m) { return it => plainBox(it, m); }
+function stayWire(it) { const o = it.opts, d = D(); wire(d.g('steel'), [[o.from[0] - it.at[0], o.from[1] - it.at[1], o.from[2] - it.at[2]], [o.to[0] - it.at[0], o.to[1] - it.at[1], 0]], 10, 10); bxe(d.g('conc'), o.to[0] - it.at[0] - 250, o.to[0] - it.at[0] + 250, -250, 250, -50, 100); return d; }
+function ner(it) { const [L, W, H] = it.size, d = D(); bxe(d.g('panel'), -L / 2, L / 2, -W / 2, W / 2, 0, H); put(d.g('porc'), insul(500, 40, 3, 12), 0, 0, H); for (let i = 0; i < 6; i++) bxe(d.g('dark'), -L / 2 + 120 + i * (L - 240) / 5, -L / 2 + 150 + i * (L - 240) / 5, -W / 2 - 6, -W / 2, 200, H - 200); return d; }
+// ---- GIS ----
+function gisBay(it) { const [L, W, H] = it.size, o = it.opts, d = D(), k33 = o.kv === 33, br = H * (k33 ? 0.11 : 0.1);
+  bxe(d.g('galv'), -L / 2, L / 2, -W / 2, W / 2, 0, 250);
+  d.g('gis').merge(cylAt(br * 1.1, W + 200, Y, [-L * 0.3, 0, H * 0.78])); d.g('gis').merge(cylAt(br * 1.1, W + 200, Y, [-L * 0.12, 0, H * 0.78 + 0]));
+  for (const x of [-L * 0.3, -L * 0.12]) { d.g('gis').merge(cylAt(br * 0.65, H * 0.4, Z, [x, 0, H * 0.58])); d.g('alu').merge(hollowAt(br * 1.3, br * 1.1, 60, Y, [x, W / 2 + 70, H * 0.78])); }
+  d.g('gis').merge(cylAt(br * 1.2, L * 0.55, X, [L * 0.12, 0, H * 0.38])); d.g('steel').merge(hollowAt(br * 1.5, br * 1.2, 160, X, [L * 0.05, 0, H * 0.38])); d.g('gis').merge(cylAt(br * 0.55, H * 0.28, Z, [L * 0.38, 0, H * 0.22 + 120]));
+  d.g('gis').merge(cylAt(br * 0.7, L * 0.3, X, [(o.role === 'line' ? -1 : 1) * L * 0.35, 0, H * 0.38]));
+  bxe(d.g('panelD'), -L / 2 + 100, -L / 2 + 700, -W * 0.45, W * 0.45, 250, 2200); bxe(d.g('glass'), -L / 2 + 95, -L / 2 + 100, -W * 0.3, W * 0.3, 1500, 1900);
+  for (const s of [-1, 1]) bxe(d.g('blue'), L * 0.45 - 20, L * 0.45 + 20, s * W * 0.4 - 60, s * W * 0.4 + 60, 250, H * 0.35);
+  return d; }
+function wallBush(it) { const o = it.opts, d = D(); for (const k of [-1, 0, 1]) { d.g('porcG').merge(along(insul(1700, 105, 9), X, [-300, k * o.pitch, 0])); d.g('alu').merge(cylAt(40, 200, X, [1500, k * o.pitch, 0])); } return d; }
+function duct(it) { const o = it.opts, d = D(); d.g('gis').merge(tube(rounded(o.pts.map(p => [p[0] - it.at[0], p[1] - it.at[1], p[2] - it.at[2]]), 900, 8), o.r, { seg: 20 })); for (let i = 0; i < o.pts.length - 1; i++) { const a = o.pts[i], b = o.pts[i + 1], m = [(a[0] + b[0]) / 2 - it.at[0], (a[1] + b[1]) / 2 - it.at[1], (a[2] + b[2]) / 2 - it.at[2]]; const dir = norm(sub(b, a)); d.g('steel').merge(hollowAt(o.r * 1.35, o.r * 0.9, 90, dir, m)); } return d; }
+function lineTower(it) { const o = it.opts, d = D(), h = o.h, py = o.pitch * 3; d.g('galv').merge(lattice(h, 800, 400)); bxe(d.g('galv'), -100, 100, -py - 600, py + 600, h - 200, h);
+  for (const k of [-1, 0, 1]) { const y = k * py; put(d.g('porcG'), insul(1400, 80, 10), 0, y, h - 1600); wire(d.g('alu'), [[0, y, h - 1650], [-3000, y, h - 1850], [-8000, y, h - 1300]], 22, 2000); } return d; }
+function craneG(it) { const o = it.opts, d = D(), s = o.span; bxe(d.g('yellow'), -s / 2, s / 2, -150, 150, 0, 500); bxe(d.g('yellow'), -s / 2 - 100, -s / 2 + 300, -400, 400, -100, 600); bxe(d.g('yellow'), s / 2 - 300, s / 2 + 100, -400, 400, -100, 600);
+  for (const sx of [-1, 1]) bxe(d.g('galv'), sx * (s / 2 + 200) - 60, sx * (s / 2 + 200) + 60, -o.len / 2, o.len / 2, 300, 420); bxe(d.g('dark'), -300, 300, -250, 250, -500, 0); wire(d.g('dark'), [[0, 0, -500], [0, 0, -1500]], 10, 100); bxe(d.g('steel'), -50, 50, -40, 40, -1600, -1500); return d; }
+const KIND = { 'eq-iso': eqIso, 'eq-cb': eqCb, 'eq-ct': eqCt, 'eq-la': eqLa, 'eq-pt': eqPt, busbar, 'gantry-col': gcol, 'gantry-beam': gbeam, mast, 'flood-pole': floodPole, 'tx-power': txPower, 'tx-dist': txDist, 'vcb-row': panelRow, 'lt-row': panelRow, 'relay-row': panelRow, rmu, 'lt-panel': ltPanel,
+  'battery-bank': battery, 'capbank-yard': capYard, 'capbank-panel': capPanel, 'oil-pit': oilPitG, 'fire-wall': fireWall, 'trench-run': trenchRun, 'earth-pit': earthPit, 'earth-grid': earthGrid, 'earth-strip': earthStrip, lights, hoist: hoistG, 'fence-run': fenceRun, gate, road: roadG, 'bay-conn': bayConn, pole, crossarm, 'do-fuse': doFuse, 'la-pole': laPole,
+  'lt-box': simpleBox('panel'), charger: simpleBox('panel'), desk: simpleBox('panelD'), plinth: simpleBox('conc'), platform: simpleBox('galv'), bracket: simpleBox('galv'), stay: stayWire, ner, 'gis-bay': gisBay, 'wall-bushings': wallBush, duct, 'line-tower': lineTower, crane: craneG };
+// names for the exported parts
+const PART = { eq: 'yard-equipment', gantry: 'gantry', tx: 'transformer' };
+
+// ---- doors, louvres (world placement from the building openings) ----
+function leaf(w, h, ysign, color) { const g = new Geo(), y0 = ysign > 0 ? 0 : -w, y1 = ysign > 0 ? w : 0; bxe(g, -50, 0, y0, y1, 0, h); bxe(g, 0, 14, y0 + 60, y1 - 60, h * 0.1, h * 0.9 - 0); bxe(g, 0, 14, y0 + w / 2 - 30, y0 + w / 2 + 30, 60, h - 60); g.merge(cylAt(14, 160, Z, [30, y0 + (ysign > 0 ? w - 90 : 90), 1000])); return g; }
+function building(P, b, cut, open) {
+  const out = D(), wallC = { grey: 0xb4b8bc, cream: 0xe0d4b4, white: 0xe8e8e4 }[P.p.wallColor] ?? 0xb4b8bc;
+  const mat = { floor: 'conc', roof: 'conc', wall: 'wall', part: 'wall' };
+  for (const s of shell({ ...b, noRoof: cut })) {
+    if (cut && s.kind === 'wall' && (Math.abs(s.c[1] - (b.y0 + b.t / 2)) < 1)) continue;          // the front (-Y) wall is not drawn in the cutaway
+    bxe(out.g(mat[s.kind]), s.c[0] - s.s[0] / 2, s.c[0] + s.s[0] / 2, s.c[1] - s.s[1] / 2, s.c[1] + s.s[1] / 2, s.c[2] - s.s[2] / 2, s.c[2] + s.s[2] / 2);
+  }
+  const doors = new Geo(), lou = new Geo(), ang = 110 * open;
+  for (const o of openings(b)) {
+    if (cut && o.wall === 'negy') continue;
+    const fr = { R: fromEuler([0, 0, 0], [0, 0, o.yaw]).R, t: o.c };
+    if (o.kind === 'door') {
+      const g = new Geo();
+      if (o.w > 1300) { const wl = (o.w - 20) / 2; for (const sd of [1, -1]) g.merge(leaf(wl, o.h - 20, -sd), { R: fromEuler([0, 0, 0], [0, 0, sd * ang]).R, t: [-0, sd * (o.w / 2 - 10), 10] }); }
+      else g.merge(leaf(o.w - 20, o.h - 20, -1), { R: fromEuler([0, 0, 0], [0, 0, ang]).R, t: [0, o.w / 2 - 10, 10] });
+      doors.merge(g, fr);
+    } else if (o.kind === 'louvre') {
+      const g = new Geo(), n = Math.max(1, Math.floor((o.h - 80) / 70));
+      for (let i = 0; i < n; i++) bxr(g, [80, o.w - 80, 5], [-t0(b) / 2, 0, 40 + 35 + i * (o.h - 80) / n], [0, 40, 0]);
+      bxe(g, -60, 0, -o.w / 2, -o.w / 2 + 40, 0, o.h); bxe(g, -60, 0, o.w / 2 - 40, o.w / 2, 0, o.h); bxe(g, -60, 0, -o.w / 2, o.w / 2, o.h - 40, o.h); bxe(g, -60, 0, -o.w / 2, o.w / 2, 0, 40);
+      lou.merge(g, fr);
+    }
+  }
+  return { out, doors, lou, wallC };
+}
+const t0 = b => b.t;
+
+function substation({ params: p }) {
+  const P = plan(p), parts = [], cut = on(p.cutaway), open = Math.max(0, Math.min(100, +p.open || 0)) / 100;
+  const wallC = { grey: 0xb4b8bc, cream: 0xe0d4b4, white: 0xe8e8e4 }[p.wallColor] ?? 0xb4b8bc;
+  const bag = new Map();    // part name -> { geo, color }
+  const into = (name, color) => { let e = bag.get(name); if (!e) { e = { geo: new Geo(), color }; bag.set(name, e); } return e.geo; };
+  // ground plate and road
+  const g0 = into('ground-gravel', COL.gravel), pl = P.plot; bxe(g0, pl.x0, pl.x1, pl.y0, pl.y1, 0, P.gT);
+  // equipment items
+  for (const it of P.items) {
+    const fn = KIND[it.kind]; if (!fn) continue;
+    const d = fn(it), fr = { R: fromEuler([0, 0, 0], [0, 0, it.yaw || 0]).R, t: it.at };
+    for (const [m, geo] of Object.entries(d)) { if (m === 'g' || !geo || !geo.pos || !geo.pos.length) continue; into(`${it.kind.replace(/^eq-/, 'yard-')}-${m}`, COL[m] ?? COL.steel).merge(geo, fr); }
+  }
+  // buildings
+  for (const b of P.blds) {
+    const B = building(P, b, cut && (b.kind === 'kiosk' || b.kind === 'indoor' || b.kind === 'control' || b.kind === 'gis'), open);
+    const nm = b.id;
+    if (B.out.conc) into(nm + '-floor-roof', COL.conc).merge(B.out.conc); if (B.out.wall) into(nm + '-walls', wallC).merge(B.out.wall);
+    if (B.doors.pos && B.doors.pos.length) into(nm + '-doors', 0x5e6a74).merge(B.doors); if (B.lou.pos && B.lou.pos.length) into(nm + '-louvres', 0x8a949c).merge(B.lou);
+  }
+  for (const [name, e] of bag) if (e.geo.pos && e.geo.pos.length) parts.push(part(name, e.geo, e.color, name.includes('mesh') ? { opacity: 0.45 } : {}));
+  return parts;
+}
+
+return {substation};})();
+return {plan:MOD['gen/substation'].plan,describe:MOD['gen/substation'].describe,TYPES:MOD['gen/substation'].TYPES,ALLOWED:MOD['gen/substation'].ALLOWED,substation:MOD['visual/substation'].substation};})();
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const FAC=[['fence','Fence + gate'],['fireWall','Fire wall'],['oilPit','Oil soak pit'],['capBank','Capacitor bank'],['trench','Cable trench'],['crane','Crane / hoist'],['mast','Lightning masts'],['flood','Flood lights / lights'],['earth','Earthing'],['ner','Neutral earthing resistor'],['aux','Aux room + AC board'],['stay','Stay wire']];
+const USED={pole:['fence','earth','stay'],kiosk:['fence','earth'],indoor:['fence','oilPit','capBank','trench','crane','earth','flood'],ais:['fence','fireWall','oilPit','capBank','trench','mast','flood','earth','ner','aux'],gis:['fence','fireWall','oilPit','capBank','trench','crane','mast','flood','earth','ner','aux']};
+const BOM={'tx-power':'Power transformer','tx-dist':'Distribution transformer','eq-cb':'Circuit breaker (3-phase)','eq-iso':'Isolator (3-phase)','eq-ct':'Current transformer (3-phase)','eq-pt':'Voltage transformer / CVT (3-phase)','eq-la':'Surge arrester (3-phase)','busbar':'Bus (3-phase)','gantry-col':'Gantry column','gantry-beam':'Gantry beam','mast':'Lightning mast','flood-pole':'Flood light pole','rmu':'Ring main unit','vcb-row':'MV switchgear lineup (panels in opts)','lt-row':'LT panel lineup','relay-row':'Relay / control panel lineup','battery-bank':'Battery bank','charger':'DC charger','capbank-yard':'Capacitor bank (yard)','capbank-panel':'Capacitor bank panel','oil-pit':'Oil soak pit','fire-wall':'Fire wall','ner':'Neutral earthing resistor','gis-bay':'GIS bay','line-tower':'Line tower','crane':'Overhead crane','hoist':'Chain hoist','pole':'Pole','do-fuse':'DO fuse set','la-pole':'Arrester set (pole)','gate':'Sliding gate','earth-pit':'Earth pit'};
+Object.keys(SUB.TYPES).forEach(k=>$('type').add(new Option(SUB.TYPES[k],k)));$('type').value='ais';
+FAC.forEach(([k,l])=>{const d=document.createElement('label');d.id='l_'+k;d.innerHTML='<input type="checkbox" id="'+k+'" checked> '+l;$('fac').appendChild(d)});
+const lab=v=>v>=1000?(v/1000)+' MVA':v+' kVA';
+function fillKv(){const t=$('type').value,old=$('kv').value;$('kv').innerHTML='';Object.keys(SUB.ALLOWED[t]).forEach(k=>$('kv').add(new Option(k+' kV',k)));if([...$('kv').options].some(o=>o.value==old))$('kv').value=old;fillRating()}
+function fillRating(){const t=$('type').value,kv=$('kv').value,old=+$('rating').value||0,l=SUB.ALLOWED[t][kv];$('rating').innerHTML='';l.forEach(v=>$('rating').add(new Option(lab(v),v)));const best=l.reduce((a,b)=>Math.abs(b-old)<Math.abs(a-old)?b:a);$('rating').value=old?best:l[Math.floor(l.length/2)];
+ const mx={pole:1,kiosk:1,indoor:2,ais:3,gis:3}[t];$('tx').max=mx;if(+$('tx').value>mx)$('tx').value=mx;$('lines').disabled=!(t=='ais'||t=='gis');$('feeders').disabled=(t=='pole'||t=='kiosk');
+ FAC.forEach(([k])=>{const u=USED[t].includes(k);$(k).disabled=!u;$('l_'+k).style.opacity=u?1:.4})}
+const box=$('view'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});box.appendChild(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,2000);S.add(new THREE.AmbientLight(0xffffff,.7));
+const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(30,60,40);S.add(dl);
+const ctl=THREE.OrbitControls?new THREE.OrbitControls(C,R.domElement):null;
+let model=null,spec={},bad=false;
+function params(){const p={type:$('type').value,kv:$('kv').value,rating:+$('rating').value,tx:+$('tx').value||1,lines:+$('lines').value||1,feeders:+$('feeders').value||0,wallColor:$('wallColor').value,open:+$('open').value,cutaway:$('cut').checked?1:0};
+ FAC.forEach(([k])=>p[k]=($(k).checked&&!$(k).disabled)?1:0);return p}
+function mesh(part){const n=part.geo.pos.length/3,pos=new Float32Array(n*3),nor=new Float32Array(n*3),a=part.geo.pos,b=part.geo.nor;
+ for(let i=0;i<n;i++){pos[3*i]=a[3*i]/1000;pos[3*i+1]=a[3*i+2]/1000;pos[3*i+2]=-a[3*i+1]/1000;nor[3*i]=b[3*i];nor[3*i+1]=b[3*i+2];nor[3*i+2]=-b[3*i+1]}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('normal',new THREE.BufferAttribute(nor,3));g.setIndex(part.geo.idx);
+ const o=part.opacity===undefined?1:part.opacity,m=new THREE.MeshStandardMaterial({color:part.color,metalness:.2,roughness:.65,side:THREE.DoubleSide,transparent:o<1,opacity:o});
+ const me=new THREE.Mesh(g,m);me.name=part.name;return me}
+function build(fit){
+ const p=params(),P=SUB.plan(p);$('ov').textContent=p.open+' %';
+ if(model){S.remove(model);model.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}
+ model=new THREE.Group();model.name='Substation_'+P.type+'_'+P.kv.replace('/','-')+'kV_'+lab(P.rating).replace(' ','');const parts=SUB.substation({params:p});parts.forEach(q=>model.add(mesh(q)));S.add(model);
+ const bb=new THREE.Box3().setFromObject(model),c=bb.getCenter(new THREE.Vector3()),sz=bb.getSize(new THREE.Vector3()),r=Math.max(sz.x,sz.y,sz.z);
+ if(fit&&ctl){ctl.target.copy(c);C.position.set(c.x+r*.9,c.y+r*.8,c.z+r*1.0);C.far=r*20;C.updateProjectionMatrix()}
+ const lines=SUB.describe(p),ck=lines.map(t=>[!/^Warning/.test(t),t]);
+ bad=ck.some(c=>!c[0]);$('chk').innerHTML=ck.map(c=>'<li'+(c[0]?(/^Note/.test(c[1])?' class="note"':''):' class="bad"')+'>'+c[1]+'</li>').join('');$('dl').disabled=bad;$('msg').textContent=bad?'Fix the red items to enable download.':'';
+ const kinds={};P.items.forEach(i=>{if(BOM[i.kind])kinds[BOM[i.kind]]=(kinds[BOM[i.kind]]||0)+(i.kind=='vcb-row'||i.kind=='lt-row'||i.kind=='relay-row'?(i.opts.n||1):1)});
+ spec={name:model.name,units:'mm',type:SUB.TYPES[P.type],parameters:p,voltage:P.kv+' kV',transformer:{count:P.tx,rating_kVA:P.rating},plot_mm:[Math.round(P.Lo),Math.round(P.Wo)],details:lines,
+  bill_of_quantities:kinds,oil_pits:P.extra.pits||[],parts:parts.map(q=>q.name),notes:P.notes,
+  standards:'Generic indicative sizes and clearances. Confirm with the utility standard, the equipment makers and the fire authority.'}}
+function size(){const w=box.clientWidth,h=box.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+function loop(){requestAnimationFrame(loop);ctl&&ctl.update();R.render(S,C)}
+// zip (store)
+const T=new Uint32Array(256).map((_,n)=>{for(let k=0;k<8;k++)n=n&1?0xEDB88320^n>>>1:n>>>1;return n>>>0});
+const crc=u=>{let c=~0;for(const b of u)c=T[(c^b)&255]^c>>>8;return~c>>>0};
+function zip(fs){const e=new TextEncoder(),P=[],Cd=[];let o=0;
+ for(const f of fs){const nm=e.encode(f.n),c=crc(f.d),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,f.d.length,true);h.setUint32(22,f.d.length,true);h.setUint16(26,nm.length,true);
+  const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.d.length,true);d.setUint32(24,f.d.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,o,true);
+  P.push(h.buffer,nm,f.d);Cd.push(d.buffer,nm);o+=30+nm.length+f.d.length}
+ const cs=Cd.reduce((a,b)=>a+b.byteLength,0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,fs.length,true);z.setUint16(10,fs.length,true);z.setUint32(12,cs,true);z.setUint32(16,o,true);
+ return new Blob([...P,...Cd,z.buffer],{type:'application/zip'})}
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{
+ const was=$('cut').checked;if(was){$('cut').checked=false;build(false)}   // the download always holds the complete room (roof and all walls)
+ const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];model.updateMatrixWorld(true);
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(was){$('cut').checked=true;build(false)}
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+$('dl').onclick=async()=>{const msg=$('msg');if(bad)return;try{
+ const was=$('cut').checked;if(was){$('cut').checked=false;build(false)}   // the download always holds the complete room (roof and all walls)
+ const e=new TextEncoder(),fm=$('fmt').value,base='EVLab_'+model.name,fs=[];model.updateMatrixWorld(true);
+ if((fm=='zip'||fm=='glb')&&THREE.GLTFExporter){const b=await new Promise(r=>new THREE.GLTFExporter().parse(model,r,{binary:true}));fs.push({n:model.name+'.glb',d:new Uint8Array(b)})}
+ if((fm=='zip'||fm=='obj')&&THREE.OBJExporter)fs.push({n:model.name+'.obj',d:e.encode(new THREE.OBJExporter().parse(model))});
+ if(fm=='zip')fs.push({n:model.name+'_spec.json',d:e.encode(JSON.stringify(spec,null,2))});
+ if(was){$('cut').checked=true;build(false)}
+ if(!fs.length){msg.textContent='Exporter not loaded.';return}
+ const one=fm!='zip',blob=one?new Blob([fs[0].d]):zip(fs),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=one?base+'.'+fm:base+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent='Downloaded.'}catch(x){msg.textContent='Could not export: '+(x&&x.message||x)}};
+['type','kv','rating','tx','lines','feeders','wallColor','cut',...FAC.map(f=>f[0])].forEach(i=>$(i).onchange=()=>{if(i=='type')fillKv();else if(i=='kv')fillRating();build(i=='type'||i=='kv'||i=='rating')});$('open').oninput=()=>build(false);
+addEventListener('resize',size);fillKv();size();build(true);loop();
+</script></body></html>

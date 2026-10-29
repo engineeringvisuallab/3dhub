@@ -1,0 +1,202 @@
+{
+  "id": "special-removal",
+  "name": "Softening, ion exchange and contaminant-specific removal",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/special-removal",
+  "order": 14,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.11 Lime Softening, ch.12 Ion Exchange Applications, ch.13"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.18 Nonconventional Water Treatment Processes"
+    }
+  ],
+  "groups": [
+    {
+      "id": "softening",
+      "name": "Softening",
+      "types": [
+        {
+          "id": "lime-softening",
+          "name": "Lime softening",
+          "status": "listed"
+        },
+        {
+          "id": "lime-soda-softening",
+          "name": "Lime-soda softening",
+          "status": "listed"
+        },
+        {
+          "id": "ion-exchange-softening",
+          "name": "Ion-exchange softening",
+          "status": "listed"
+        },
+        {
+          "id": "nanofiltration-softening",
+          "name": "Nanofiltration softening",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "iron-manganese",
+      "name": "Iron and manganese removal",
+      "types": [
+        {
+          "id": "aeration-filtration-iron",
+          "name": "Aeration and filtration",
+          "status": "listed"
+        },
+        {
+          "id": "oxidation-filtration-permanganate",
+          "name": "Permanganate oxidation and filtration",
+          "status": "listed"
+        },
+        {
+          "id": "greensand-filter",
+          "name": "Greensand filter",
+          "status": "listed"
+        },
+        {
+          "id": "biological-iron-removal",
+          "name": "Biological iron removal",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "arsenic",
+      "name": "Arsenic removal",
+      "types": [
+        {
+          "id": "coagulation-filtration-arsenic",
+          "name": "Coagulation and filtration",
+          "status": "listed"
+        },
+        {
+          "id": "activated-alumina-arsenic",
+          "name": "Activated alumina",
+          "status": "listed"
+        },
+        {
+          "id": "iron-adsorbent-arsenic",
+          "name": "Iron-based adsorbent",
+          "status": "listed"
+        },
+        {
+          "id": "ion-exchange-arsenic",
+          "name": "Ion exchange",
+          "status": "listed"
+        },
+        {
+          "id": "ro-arsenic",
+          "name": "Reverse osmosis",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "fluoride",
+      "name": "Fluoride removal",
+      "types": [
+        {
+          "id": "nalgonda-technique",
+          "name": "Nalgonda technique (alum and lime)",
+          "status": "listed"
+        },
+        {
+          "id": "activated-alumina-fluoride",
+          "name": "Activated alumina",
+          "status": "listed"
+        },
+        {
+          "id": "bone-char-fluoride",
+          "name": "Bone char",
+          "status": "listed"
+        },
+        {
+          "id": "ro-fluoride",
+          "name": "Reverse osmosis",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "nitrate",
+      "name": "Nitrate removal",
+      "types": [
+        {
+          "id": "ion-exchange-nitrate",
+          "name": "Ion exchange",
+          "status": "listed"
+        },
+        {
+          "id": "biological-denitrification",
+          "name": "Biological denitrification",
+          "status": "listed"
+        },
+        {
+          "id": "electrodialysis-nitrate",
+          "name": "Electrodialysis",
+          "status": "listed"
+        },
+        {
+          "id": "ro-nitrate",
+          "name": "Reverse osmosis",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "desalination",
+      "name": "Desalination",
+      "types": [
+        {
+          "id": "seawater-reverse-osmosis",
+          "name": "Seawater reverse osmosis",
+          "status": "listed"
+        },
+        {
+          "id": "brackish-reverse-osmosis",
+          "name": "Brackish reverse osmosis",
+          "status": "listed"
+        },
+        {
+          "id": "multi-stage-flash",
+          "name": "Multi-stage flash distillation",
+          "status": "listed"
+        },
+        {
+          "id": "multi-effect-distillation",
+          "name": "Multi-effect distillation",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "taste-odor-organics",
+      "name": "Taste, odour and organics",
+      "types": [
+        {
+          "id": "pac-taste-odor",
+          "name": "PAC for taste and odour",
+          "status": "listed"
+        },
+        {
+          "id": "gac-organics",
+          "name": "GAC for organics",
+          "status": "listed"
+        },
+        {
+          "id": "ozone-taste-odor",
+          "name": "Ozone for taste and odour",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

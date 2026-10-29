@@ -1,0 +1,17 @@
+{
+  "id": "custom-template",
+  "name": "Custom standard profile (copy and fill)",
+  "country": null,
+  "region": null,
+  "units": "SI",
+  "sources": [],
+  "waterQualityTargets": {},
+  "criteria": {},
+  "drawing": {
+    "sheetSeries": "A",
+    "scale": null,
+    "language": "en"
+  },
+  "currency": null,
+  "notes": "criteria keys are \"<stage>.<type>\" then a parameter name. Every value needs {value, unit, source:{ref, loc}}; min/max allowed."
+}

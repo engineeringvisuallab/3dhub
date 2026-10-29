@@ -1,0 +1,270 @@
+{
+  "stage": "filtration",
+  "calculations": [
+    {
+      "id": "filtration-rate-area",
+      "name": "Filtration rate and filter area",
+      "inputs": [
+        "flow",
+        "rate"
+      ],
+      "outputs": [
+        "area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "filter-count-layout",
+      "name": "Number and size of filters with one out for backwash",
+      "inputs": [
+        "flow",
+        "rate",
+        "redundancy"
+      ],
+      "outputs": [
+        "count",
+        "area_each",
+        "dimensions"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "media-design",
+      "name": "Media depth, grain size and uniformity",
+      "inputs": [
+        "source_quality",
+        "filter_type"
+      ],
+      "outputs": [
+        "media_spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "clean-bed-head-loss",
+      "name": "Clean-bed head loss",
+      "inputs": [
+        "rate",
+        "media",
+        "temperature"
+      ],
+      "outputs": [
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "filter-run-head-loss",
+      "name": "Head-loss development and run length",
+      "inputs": [
+        "influent_turbidity",
+        "rate"
+      ],
+      "outputs": [
+        "run_time",
+        "terminal_head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "declining-rate-hydraulics",
+      "name": "Declining-rate distribution",
+      "inputs": [
+        "filter_count",
+        "rates"
+      ],
+      "outputs": [
+        "rate_profile"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "negative-head-check",
+      "name": "Negative head and air-binding check",
+      "inputs": [
+        "head_loss",
+        "depth"
+      ],
+      "outputs": [
+        "min_pressure",
+        "pass_fail"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "backwash-expansion",
+      "name": "Backwash rate and bed expansion",
+      "inputs": [
+        "media",
+        "temperature"
+      ],
+      "outputs": [
+        "rate",
+        "expansion"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "backwash-volume-time",
+      "name": "Backwash volume, time and tank",
+      "inputs": [
+        "area",
+        "rate",
+        "duration"
+      ],
+      "outputs": [
+        "volume",
+        "tank_size"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "air-scour",
+      "name": "Air scour rate and blower",
+      "inputs": [
+        "area",
+        "rate"
+      ],
+      "outputs": [
+        "air_flow",
+        "power"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "underdrain-distribution",
+      "name": "Underdrain orifice and manifold design",
+      "inputs": [
+        "area",
+        "rate"
+      ],
+      "outputs": [
+        "orifice",
+        "manifold_size",
+        "distribution_error"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "wash-trough-layout",
+      "name": "Wash trough layout and level",
+      "inputs": [
+        "area",
+        "rate"
+      ],
+      "outputs": [
+        "trough_spacing",
+        "height"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "backwash-supply",
+      "name": "Backwash pump or elevated tank",
+      "inputs": [
+        "volume",
+        "head"
+      ],
+      "outputs": [
+        "pump_or_tank"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "slow-sand-sizing",
+      "name": "Slow sand area, depth and cleaning cycle",
+      "inputs": [
+        "flow",
+        "rate",
+        "run_length"
+      ],
+      "outputs": [
+        "area",
+        "depth",
+        "scraping_interval"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pressure-vessel-sizing",
+      "name": "Vessel diameter, length and nozzles",
+      "inputs": [
+        "flow",
+        "rate"
+      ],
+      "outputs": [
+        "vessel",
+        "nozzles"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "upflow-filter-sizing",
+      "name": "Upflow coarse-to-fine filter sizing",
+      "inputs": [
+        "flow",
+        "rate",
+        "layers"
+      ],
+      "outputs": [
+        "area",
+        "layers"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "diatomite-precoat",
+      "name": "Diatomite precoat and body feed",
+      "inputs": [
+        "area",
+        "precoat"
+      ],
+      "outputs": [
+        "dose"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "filter-effluent-quality",
+      "name": "Expected effluent turbidity",
+      "inputs": [
+        "influent",
+        "filter_type"
+      ],
+      "outputs": [
+        "effluent"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "filter-gallery-pipes",
+      "name": "Filter gallery pipe sizes",
+      "inputs": [
+        "flows"
+      ],
+      "outputs": [
+        "diameters"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

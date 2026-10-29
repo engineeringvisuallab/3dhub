@@ -1,0 +1,70 @@
+{
+  "id": "geotechnical-site",
+  "title": "Geotechnical and site assessment",
+  "category": "geotechnical",
+  "purpose": "Check the ground, groundwater and flood conditions of the site.",
+  "calculations": [
+    {
+      "id": "bearing-screen",
+      "name": "Bearing capacity screen",
+      "inputs": [
+        "soil"
+      ],
+      "outputs": [
+        "allowable_bearing"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "groundwater-flood",
+      "name": "Groundwater and flood level",
+      "inputs": [
+        "site_data"
+      ],
+      "outputs": [
+        "design_levels"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "slope-stability-screen",
+      "name": "Slope stability screen",
+      "inputs": [
+        "slope",
+        "soil"
+      ],
+      "outputs": [
+        "factor_of_safety"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "site-suitability",
+      "name": "Site suitability score",
+      "inputs": [
+        "criteria"
+      ],
+      "outputs": [
+        "score"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "earthwork-quantity",
+      "name": "Cut, fill and earthwork quantity",
+      "inputs": [
+        "topography",
+        "levels"
+      ],
+      "outputs": [
+        "volumes"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

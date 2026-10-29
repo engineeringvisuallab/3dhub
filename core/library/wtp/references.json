@@ -1,0 +1,84 @@
+{
+  "references": [
+    {
+      "id": "AWWA05",
+      "title": "Water Treatment Plant Design",
+      "publisher": "AWWA / ASCE",
+      "edition": "confirm from title page",
+      "file": "Water-Treatment-Plant-Design.pdf",
+      "pages": 971,
+      "textLayer": "partial",
+      "units": "mixed US customary and SI",
+      "notes": "30 chapters from intake to plant security; use for criteria by process."
+    },
+    {
+      "id": "QASIM",
+      "title": "Water Works Engineering: Planning, Design and Operation",
+      "publisher": "Prentice Hall",
+      "isbn": "0131502115",
+      "file": "water-works-engineering-planning-design-and-operation-0131502115_compress.pdf",
+      "pages": 853,
+      "textLayer": "none (scanned, OCR needed)",
+      "units": "mixed US customary and SI",
+      "notes": "Step-by-step design examples, hydraulic profile, layout, design errors."
+    },
+    {
+      "id": "DELFT-RF",
+      "title": "Rapid filtration",
+      "publisher": "TU Delft lecture notes",
+      "year": 2004,
+      "file": "Rapid_filtration_TU2004.pdf",
+      "pages": 198,
+      "textLayer": "none (scanned, OCR needed)",
+      "units": "SI",
+      "notes": "Filtration theory, backwash, rapid gravity, pressure, upflow, dual and multi-media, dry filtration."
+    },
+    {
+      "id": "DELFT-SED",
+      "title": "Sedimentation and flotation",
+      "publisher": "TU Delft lecture notes",
+      "year": 2004,
+      "file": "Sedimentation_and_flotation_TU2004.pdf",
+      "pages": 171,
+      "textLayer": "none (scanned, OCR needed)",
+      "units": "SI",
+      "notes": "Discrete and flocculent settling, horizontal-flow basins, tube settlers, inlet/outlet, sludge removal, grit, Imhoff, DAF."
+    },
+    {
+      "id": "SCHULZ84",
+      "title": "Surface Water Treatment for Communities in Developing Countries",
+      "authors": "Schulz and Okun",
+      "publisher": "Wiley",
+      "year": 1984,
+      "file": "Surface_Water_Treatment_Plant__Book_.pdf",
+      "pages": 158,
+      "textLayer": "none (scanned, OCR needed)",
+      "units": "SI",
+      "notes": "Low-cost and hydraulic designs: chemical feeding, hydraulic mixing and flocculation, modular and package plants, costs."
+    },
+    {
+      "id": "UTAH66",
+      "title": "Measuring Water with Parshall Flumes",
+      "authors": "Skogerboe, Hyatt, England and Johnson",
+      "publisher": "Utah Water Research Laboratory and Utah State University Extension Services (EC-323)",
+      "year": 1966,
+      "file": "Measuring_Water_with_Parshall_Flumes.pdf",
+      "pages": 41,
+      "textLayer": "yes (OCR text layer)",
+      "units": "US customary (ft, in, cfs)",
+      "notes": "Dimension table, free-flow table, transition submergence, submerged-flow curves, head loss, installation."
+    },
+    {
+      "id": "ARKON11",
+      "title": "Parshall Flume User Guide",
+      "publisher": "Arkon Flow Systems",
+      "edition": "V1.3, 29-04-2011",
+      "file": "Parshall-Flumes-User-Guide-EnG.pdf",
+      "pages": 9,
+      "textLayer": "yes",
+      "units": "SI (cm, m3/s, l/s)",
+      "notes": "Prefabricated polypropylene flumes P1-P9, discharge equation Q = a * h^b, installation and operating conditions."
+    }
+  ],
+  "note": "Add a reference here before citing it in a type, calculation, rule or profile."
+}

@@ -1,0 +1,277 @@
+{
+  "stage": "rapid-mix-and-measurement",
+  "calculations": [
+    {
+      "id": "parshall-free-flow",
+      "name": "Parshall free-flow discharge (Ha to Q)",
+      "inputs": [
+        "throat_width",
+        "Ha"
+      ],
+      "outputs": [
+        "Q"
+      ],
+      "status": "tested",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Table 3"
+        },
+        {
+          "ref": "ARKON11",
+          "loc": "Section 3, equation 1"
+        }
+      ],
+      "tests": [
+        "core/tests/parshall.mjs"
+      ],
+      "implementedIn": "core/engine/wtp/parshall.js",
+      "note": "Table 3 as a power law per throat width, within about two units of the last printed digit."
+    },
+    {
+      "id": "parshall-submerged",
+      "name": "Parshall submerged-flow discharge",
+      "inputs": [
+        "throat_width",
+        "Ha",
+        "Hb"
+      ],
+      "outputs": [
+        "Q",
+        "correction"
+      ],
+      "status": "planned",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Figures 4-18"
+        }
+      ],
+      "note": "Needs the calibration curves of Figures 6-18, not digitised."
+    },
+    {
+      "id": "parshall-size-selection",
+      "name": "Flume size from maximum flow, depth and head loss",
+      "inputs": [
+        "flow_range",
+        "allowable_head_loss",
+        "channel_width"
+      ],
+      "outputs": [
+        "throat_width"
+      ],
+      "status": "tested",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Figure 19, Example 4"
+        }
+      ],
+      "tests": [
+        "core/tests/parshall.mjs"
+      ],
+      "implementedIn": "core/engine/wtp/parshall.js",
+      "note": "Free-flow selection using Table 3 and Table 2 (reproduces Example 4); the Figure 19 chart is not used."
+    },
+    {
+      "id": "parshall-dimensions",
+      "name": "Standard flume dimensions for a throat width",
+      "inputs": [
+        "throat_width"
+      ],
+      "outputs": [
+        "dimension_set"
+      ],
+      "status": "tested",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Table 1"
+        },
+        {
+          "ref": "ARKON11",
+          "loc": "Section 3 table"
+        }
+      ],
+      "tests": [
+        "core/tests/parshall.mjs"
+      ],
+      "implementedIn": "core/engine/wtp/parshall.js"
+    },
+    {
+      "id": "parshall-head-loss",
+      "name": "Flume head loss and crest elevation",
+      "inputs": [
+        "flow",
+        "throat_width",
+        "tailwater"
+      ],
+      "outputs": [
+        "head_loss",
+        "crest_level"
+      ],
+      "status": "tested",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Figure 19"
+        }
+      ],
+      "tests": [
+        "core/tests/parshall.mjs"
+      ],
+      "implementedIn": "core/engine/wtp/parshall.js",
+      "note": "Free-flow installation procedure of the Utah report (Example 6); the Figure 19 chart is not digitised."
+    },
+    {
+      "id": "parshall-mixing-jump",
+      "name": "Hydraulic jump mixing energy",
+      "inputs": [
+        "flow",
+        "throat_width",
+        "Ha"
+      ],
+      "outputs": [
+        "froude",
+        "jump_length",
+        "G"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "as-built-throat-correction",
+      "name": "Discharge correction for as-built throat width",
+      "inputs": [
+        "specified_width",
+        "measured_width"
+      ],
+      "outputs": [
+        "correction_factor"
+      ],
+      "status": "tested",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Example 5"
+        }
+      ],
+      "tests": [
+        "core/tests/parshall.mjs"
+      ],
+      "implementedIn": "core/engine/wtp/parshall.js"
+    },
+    {
+      "id": "weir-discharge",
+      "name": "Weir discharge and head",
+      "inputs": [
+        "weir_type",
+        "crest_length",
+        "flow"
+      ],
+      "outputs": [
+        "head"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "velocity-gradient-G",
+      "name": "Velocity gradient and mixing time",
+      "inputs": [
+        "power",
+        "volume",
+        "viscosity"
+      ],
+      "outputs": [
+        "G",
+        "Gt"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "mechanical-mixer-power",
+      "name": "Mixer power and impeller",
+      "inputs": [
+        "volume",
+        "G",
+        "time"
+      ],
+      "outputs": [
+        "power",
+        "diameter"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "static-mixer-loss",
+      "name": "Static mixer elements and head loss",
+      "inputs": [
+        "flow",
+        "pipe_diameter"
+      ],
+      "outputs": [
+        "elements",
+        "head_loss"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "injection-point-layout",
+      "name": "Coagulant injection point and diffuser",
+      "inputs": [
+        "flow",
+        "dose_rate"
+      ],
+      "outputs": [
+        "diffuser_layout"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "flow-meter-selection",
+      "name": "Flow meter selection and straight length",
+      "inputs": [
+        "flow_range",
+        "pipe",
+        "accuracy"
+      ],
+      "outputs": [
+        "meter_type",
+        "straight_length"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "gauge-point-position",
+      "name": "Gauge or stilling-well position",
+      "inputs": [
+        "throat_width",
+        "Ha_point"
+      ],
+      "outputs": [
+        "sensor_position"
+      ],
+      "status": "tested",
+      "sources": [
+        {
+          "ref": "UTAH66",
+          "loc": "Installation"
+        },
+        {
+          "ref": "ARKON11",
+          "loc": "Section 5"
+        }
+      ],
+      "tests": [
+        "core/tests/parshall.mjs"
+      ],
+      "implementedIn": "core/engine/wtp/parshall.js"
+    }
+  ]
+}

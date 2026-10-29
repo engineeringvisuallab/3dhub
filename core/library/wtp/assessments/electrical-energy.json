@@ -1,0 +1,73 @@
+{
+  "id": "electrical-energy",
+  "title": "Electrical and energy assessment",
+  "category": "electrical",
+  "purpose": "Size power supply and judge energy use.",
+  "calculations": [
+    {
+      "id": "load-list",
+      "name": "Load list",
+      "inputs": [
+        "equipment"
+      ],
+      "outputs": [
+        "loads"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "unit-energy-use",
+      "name": "Energy use per unit and per cubic metre",
+      "inputs": [
+        "loads",
+        "hours"
+      ],
+      "outputs": [
+        "kwh",
+        "kwh_per_m3"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "tariff-cost",
+      "name": "Tariff and energy cost",
+      "inputs": [
+        "tariff",
+        "energy"
+      ],
+      "outputs": [
+        "cost"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "backup-power-duration",
+      "name": "Backup power duration",
+      "inputs": [
+        "essential_load",
+        "fuel"
+      ],
+      "outputs": [
+        "hours"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "solar-offset",
+      "name": "Solar offset potential",
+      "inputs": [
+        "site",
+        "load"
+      ],
+      "outputs": [
+        "fraction_offset"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

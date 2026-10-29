@@ -1,0 +1,165 @@
+{
+  "stage": "chemical-system",
+  "calculations": [
+    {
+      "id": "jar-test-interpretation",
+      "name": "Jar-test dose and pH curve",
+      "inputs": [
+        "jar_data"
+      ],
+      "outputs": [
+        "optimum_dose",
+        "ph"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "coagulant-dose-feed",
+      "name": "Coagulant dose and feed rate",
+      "inputs": [
+        "dose",
+        "flow"
+      ],
+      "outputs": [
+        "kg_per_day",
+        "l_per_h"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "alkalinity-balance",
+      "name": "Alkalinity consumed and pH",
+      "inputs": [
+        "alkalinity",
+        "coagulant_dose"
+      ],
+      "outputs": [
+        "alkalinity_remaining",
+        "ph"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "polymer-dose",
+      "name": "Polymer dose and make-up",
+      "inputs": [
+        "dose",
+        "flow",
+        "concentration"
+      ],
+      "outputs": [
+        "feed_rate",
+        "tank"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "lime-slaker",
+      "name": "Lime slaking and feed",
+      "inputs": [
+        "dose"
+      ],
+      "outputs": [
+        "lime_use",
+        "slaker"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-storage-volume",
+      "name": "Storage volume for days of supply",
+      "inputs": [
+        "use_rate",
+        "days",
+        "density"
+      ],
+      "outputs": [
+        "volume",
+        "floor_area"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "day-tank-pump",
+      "name": "Day tank and metering pump",
+      "inputs": [
+        "feed_rate"
+      ],
+      "outputs": [
+        "tank",
+        "pump_range"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "feeder-selection",
+      "name": "Feeder range and accuracy",
+      "inputs": [
+        "rate_range"
+      ],
+      "outputs": [
+        "feeder_type"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-delivery-handling",
+      "name": "Delivery size, unloading and hoist",
+      "inputs": [
+        "delivery_mass"
+      ],
+      "outputs": [
+        "handling_spec"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-compatibility",
+      "name": "Compatibility and containment",
+      "inputs": [
+        "chemicals"
+      ],
+      "outputs": [
+        "segregation",
+        "bund"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-cost",
+      "name": "Chemical cost per cubic metre",
+      "inputs": [
+        "doses",
+        "unit_cost"
+      ],
+      "outputs": [
+        "cost_per_m3"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "chemical-house-area",
+      "name": "Chemical house area",
+      "inputs": [
+        "storage",
+        "feeders"
+      ],
+      "outputs": [
+        "floor_area"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

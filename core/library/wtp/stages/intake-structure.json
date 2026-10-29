@@ -1,0 +1,134 @@
+{
+  "id": "intake-structure",
+  "name": "Intake structure",
+  "model": "intake",
+  "modelPath": "models/intake/intake-structure",
+  "order": 2,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "AWWA05",
+      "loc": "ch.4 Intake Facilities"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "intake chapter (confirm)"
+    }
+  ],
+  "groups": [
+    {
+      "id": "surface-water",
+      "name": "Surface water intake",
+      "types": [
+        {
+          "id": "river-bank-intake",
+          "name": "River bank intake",
+          "status": "listed"
+        },
+        {
+          "id": "river-tower-intake",
+          "name": "River tower intake",
+          "status": "listed"
+        },
+        {
+          "id": "river-submerged-intake",
+          "name": "River submerged intake",
+          "status": "listed"
+        },
+        {
+          "id": "floating-intake",
+          "name": "Floating intake",
+          "status": "listed"
+        },
+        {
+          "id": "canal-intake",
+          "name": "Canal intake",
+          "status": "listed"
+        },
+        {
+          "id": "reservoir-multilevel-intake",
+          "name": "Reservoir multi-level intake",
+          "status": "listed"
+        },
+        {
+          "id": "lake-crib-intake",
+          "name": "Lake crib intake",
+          "status": "listed"
+        },
+        {
+          "id": "jack-well-intake",
+          "name": "Jack-well intake",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "groundwater",
+      "name": "Groundwater intake",
+      "types": [
+        {
+          "id": "tube-well",
+          "name": "Tube well",
+          "status": "listed"
+        },
+        {
+          "id": "dug-well",
+          "name": "Dug well",
+          "status": "listed"
+        },
+        {
+          "id": "infiltration-gallery",
+          "name": "Infiltration gallery",
+          "status": "listed"
+        },
+        {
+          "id": "collector-well",
+          "name": "Collector (radial) well",
+          "status": "listed"
+        },
+        {
+          "id": "spring-box",
+          "name": "Spring box",
+          "status": "listed"
+        },
+        {
+          "id": "bank-filtration-well",
+          "name": "Bank filtration well",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "seawater",
+      "name": "Seawater intake",
+      "types": [
+        {
+          "id": "open-sea-intake",
+          "name": "Open sea intake",
+          "status": "listed"
+        },
+        {
+          "id": "beach-well-intake",
+          "name": "Beach well intake",
+          "status": "listed"
+        },
+        {
+          "id": "subsurface-seawater-gallery",
+          "name": "Sub-surface seawater gallery",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "rainwater",
+      "name": "Rainwater intake",
+      "types": [
+        {
+          "id": "roof-rainwater-harvesting",
+          "name": "Roof rainwater harvesting",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}

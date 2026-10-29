@@ -1,0 +1,19 @@
+{
+  "id": "ref-awwa-2005",
+  "name": "Criteria from AWWA/ASCE Water Treatment Plant Design",
+  "country": null,
+  "region": null,
+  "units": "SI",
+  "sources": [
+    "AWWA05"
+  ],
+  "waterQualityTargets": {},
+  "criteria": {},
+  "drawing": {
+    "sheetSeries": "A",
+    "scale": null,
+    "language": "en"
+  },
+  "currency": null,
+  "notes": "Empty on purpose: criteria are filled one unit at a time, each with a page reference to AWWA05."
+}

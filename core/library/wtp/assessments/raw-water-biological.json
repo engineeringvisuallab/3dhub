@@ -1,0 +1,82 @@
+{
+  "id": "raw-water-biological",
+  "title": "Raw water microbiological and biological assessment",
+  "category": "biological",
+  "purpose": "Establish the pathogen and algae load and the log removal the plant must deliver.",
+  "calculations": [
+    {
+      "id": "indicator-organisms",
+      "name": "E. coli and coliform statistics",
+      "inputs": [
+        "counts"
+      ],
+      "outputs": [
+        "percentiles"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "pathogen-log-requirement",
+      "name": "Log removal requirement by source class",
+      "inputs": [
+        "source_class",
+        "target_risk"
+      ],
+      "outputs": [
+        "log_targets"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "algae-load",
+      "name": "Algae counts and filter-clogging risk",
+      "inputs": [
+        "counts"
+      ],
+      "outputs": [
+        "risk"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "multi-barrier-credit",
+      "name": "Log credit by barrier",
+      "inputs": [
+        "train"
+      ],
+      "outputs": [
+        "total_log_removal"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "sanitary-survey-score",
+      "name": "Sanitary survey score",
+      "inputs": [
+        "survey"
+      ],
+      "outputs": [
+        "risk_class"
+      ],
+      "status": "planned",
+      "sources": []
+    },
+    {
+      "id": "regrowth-potential",
+      "name": "Biological stability and regrowth potential",
+      "inputs": [
+        "aoc",
+        "residual"
+      ],
+      "outputs": [
+        "risk"
+      ],
+      "status": "planned",
+      "sources": []
+    }
+  ]
+}

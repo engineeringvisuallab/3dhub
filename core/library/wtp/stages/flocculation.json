@@ -1,0 +1,90 @@
+{
+  "id": "flocculation",
+  "name": "Flocculation",
+  "model": "treatment-plant",
+  "modelPath": "models/treatment-plant/flocculation",
+  "order": 8,
+  "needsReference": false,
+  "refs": [
+    {
+      "ref": "SCHULZ84",
+      "loc": "ch.6 Hydraulic Flocculation"
+    },
+    {
+      "ref": "AWWA05",
+      "loc": "ch.6"
+    },
+    {
+      "ref": "QASIM",
+      "loc": "ch.8"
+    },
+    {
+      "ref": "DELFT-SED",
+      "loc": "4.1-4.5"
+    }
+  ],
+  "groups": [
+    {
+      "id": "hydraulic",
+      "name": "Hydraulic flocculators",
+      "types": [
+        {
+          "id": "baffled-horizontal-flow-flocculator",
+          "name": "Baffled horizontal-flow flocculator",
+          "status": "listed"
+        },
+        {
+          "id": "baffled-vertical-flow-flocculator",
+          "name": "Baffled vertical-flow flocculator",
+          "status": "listed"
+        },
+        {
+          "id": "alabama-type-flocculator",
+          "name": "Alabama-type flocculator",
+          "status": "listed"
+        },
+        {
+          "id": "gravel-bed-flocculator",
+          "name": "Gravel-bed flocculator",
+          "status": "listed"
+        },
+        {
+          "id": "jet-hydraulic-flocculator",
+          "name": "Jet or orifice flocculator",
+          "status": "listed"
+        },
+        {
+          "id": "pipe-flocculator",
+          "name": "Pipe flocculator",
+          "status": "listed"
+        }
+      ]
+    },
+    {
+      "id": "mechanical",
+      "name": "Mechanical flocculators",
+      "types": [
+        {
+          "id": "paddle-horizontal-shaft",
+          "name": "Paddle, horizontal shaft",
+          "status": "listed"
+        },
+        {
+          "id": "paddle-vertical-shaft",
+          "name": "Paddle, vertical shaft",
+          "status": "listed"
+        },
+        {
+          "id": "axial-flow-turbine",
+          "name": "Axial-flow turbine",
+          "status": "listed"
+        },
+        {
+          "id": "radial-flow-turbine",
+          "name": "Radial-flow turbine",
+          "status": "listed"
+        }
+      ]
+    }
+  ]
+}
